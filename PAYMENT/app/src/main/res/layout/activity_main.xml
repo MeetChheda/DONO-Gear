@@ -1,5 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,14 +7,47 @@
     android:orientation="vertical">
 
 
+        <com.stripe.android.view.CardMultilineWidget
+            android:id="@+id/card_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/shipping"
+                    android:layout_width="190dp"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Shipping Address"
+                    android:visibility="visible"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="5dp"
+                    tools:layout_editor_absoluteX="11dp"
+                    tools:layout_editor_absoluteY="5dp" />
+
+                <Button
+                    android:id="@+id/reset"
+                    android:layout_width="190dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Clear form"
+                    android:visibility="visible"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="5dp"
+                    tools:layout_editor_absoluteX="11dp"
+                    tools:layout_editor_absoluteY="5dp" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/purchase"
-            android:layout_width="365dp"
-            android:layout_height="60dp"
-            android:text="Purchase Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Purchase Item"
             android:visibility="visible"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="5dp"
             tools:layout_editor_absoluteX="11dp"
             tools:layout_editor_absoluteY="5dp" />
