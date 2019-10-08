@@ -5,9 +5,9 @@
     <!-- Change the following strings as required -->
     <string name="back4app_app_id">Or4AgSlOAnFPWSHFNjzC24xEFG5sUIo8vQfUzaeH</string>
     <string name="back4app_client_key">y55k6b1gmkSm3tNk3nqnbMQ0qgW1D95nzWlOGyZz</string>
-    <string name="button_name">Bid</string>
+    <string name="button_name">Place A Bid</string>
     <string name="bid_hint">Enter bid</string>
-    <string name="user_name">User name</string>
+    <string name="user_name">Enter Username</string>
     <string name="initial_value">0</string>
     <string name="name">Name</string>
     <string name="current_bid">Current Bid:</string>
