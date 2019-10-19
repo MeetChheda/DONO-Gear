@@ -3,8 +3,8 @@
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
 
     <!-- Change the following strings as required -->
-    <string name="back4app_app_id">Or4AgSlOAnFPWSHFNjzC24xEFG5sUIo8vQfUzaeH</string>
-    <string name="back4app_client_key">y55k6b1gmkSm3tNk3nqnbMQ0qgW1D95nzWlOGyZz</string>
+    <string name="back4app_app_id">iEs1elgZmcJ8DBPUeWjpR7LZrVchQzbRn3gyKu4b</string>
+    <string name="back4app_client_key">tTUuIVJ3lG0LEtcgScAuB2dqcyZNVrDiVZvG8bxF</string>
     <string name="button_name">Place A Bid</string>
     <string name="bid_hint">Enter bid</string>
     <string name="user_name">Enter Username</string>
