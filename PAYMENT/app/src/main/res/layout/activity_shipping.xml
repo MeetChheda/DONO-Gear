@@ -71,6 +71,7 @@
     <Button
         android:id="@+id/done"
         android:text="Done"
+        android:backgroundTint="#40E0D0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>

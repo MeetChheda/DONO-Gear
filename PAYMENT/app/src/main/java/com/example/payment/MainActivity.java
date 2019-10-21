@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 card = cardMultilineWidget.getCard();
-                startActivity(new Intent(getBaseContext(), ShippingActivity.class));
+                startActivity(new Intent(getApplicationContext(), ShippingActivity.class));
             }
         });
         reset.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             savedInstancestate.putString("cardNumber", card.getNumber());
             savedInstancestate.putInt("month", card.getExpMonth());
             savedInstancestate.putInt("year", card.getExpYear());
-            savedInstancestate.putString("CVV", card.getCVC());
+            savedInstancestate.putString("CVV", card.getCvc());
         }
     }
 
