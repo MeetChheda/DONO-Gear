@@ -52,7 +52,8 @@
         android:layout_alignParentBottom="true"
         android:backgroundTint="#fff"
         android:padding="10dp"
-        android:layout_margin="25dp">
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="25dp">
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
     </RelativeLayout>

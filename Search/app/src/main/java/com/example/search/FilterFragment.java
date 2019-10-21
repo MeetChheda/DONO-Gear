@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,16 +92,17 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     }
 
     private void addButtons(List<String> tags, List<Button> tagButtons) {
-        int width = linearLayout.getWidth() / 3;
         for (int j = 0; j <= tags.size(); j += 3) {
             LinearLayout newLayout = new LinearLayout(getContext());
             newLayout.setOrientation(LinearLayout.HORIZONTAL);
+            newLayout.setBaselineAligned(false);
             for (int i = 0; i < 3 && j + i < tags.size(); i++) {
                 final Button button = new Button(getContext());
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         320, 130
                 );
                 layoutParams.setMargins(8, 15, 8, 0);
+                layoutParams.gravity = Gravity.TOP;
                 button.setLayoutParams(layoutParams);
                 button.setTextColor(Color.BLACK);
                 String text = tags.get(i + j), fin = text;
@@ -202,7 +204,6 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     public interface onSavePressed {
         void passData(List<String> topics, List<String> causes);
     }
-
     onSavePressed savePressedListener;
 
     @Override

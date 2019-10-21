@@ -58,11 +58,7 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
     public static final String COLLECTIBLE_IMAGES = "CollectibeImages";
     public static final String TAGS = "Tags";
 
-    List<String> dummyArray = Arrays.asList(
-            "Cristiano", "Cristiano Ronaldo", "Jordan", "Michael Jordan", "Ronaldo Shoes", "Ronaldo Jersey",
-            "Jordan Air", "Ronaldo United", "Shoes", "Lionel Messi shoes", "Messi jersey"
-    );
-
+    List<String> searchArray;
     public static List<String>[] tags;
     List<String> tagsSelected;
     Set<String> selectedItemsId;
@@ -90,11 +86,11 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
         );
         // Initialize basic layout specifics and Adapter
         initializeLayout();
-        searchBox();
         readData();
         getFilters();
         System.out.println("--------> In main runnable ----> " + listOfItems.size());
         itemAdapter.notifyDataSetChanged();
+        searchBox();
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,6 +150,7 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
                     System.out.println(itemName + " for " + buyNowPrice + " starting at " + startBid + "---------");
                     ItemDetails itemDetails = new ItemDetails(itemId, itemName, buyNowPrice,
                             currentBid, highestBidder, category, endDate, itemImages);
+                    searchArray.add(itemName);
                     listOfItems.add(itemDetails);
                     itemAdapter.notifyDataSetChanged();
                 }
@@ -203,6 +200,7 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
         tags[0] = new ArrayList<>();
         tags[1] = new ArrayList<>();
         tagsSelected = new ArrayList<>();
+        searchArray = new ArrayList<>();
         copyList = new ArrayList<>();
         selectedItemsId = new HashSet<>();
         tagsToItems = new HashMap<>();
@@ -213,7 +211,7 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
 
     private void searchBox() {
         // Search auto - complete
-        ArrayAdapter<String> adapter = new ArrayAdapter<> (this, android.R.layout.select_dialog_item, dummyArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<> (this, android.R.layout.select_dialog_item, searchArray);
         //Getting the instance of AutoCompleteTextView
         AutoCompleteTextView actv = findViewById(R.id.autoCompleteTextView);
         actv.setThreshold(1);//will start working from first character
