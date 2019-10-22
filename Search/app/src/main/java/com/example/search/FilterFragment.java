@@ -40,6 +40,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     private List<String> topicsTags, causesTags;
     private List<Button> topicButtons, causesButtons;
     private Button save, reset, cancel;
+    private static int AQUA = Color.parseColor("#2fd6d6");
 
     private List<String> topicsSelected, causesSelected;
     private List<String> savedTags;
@@ -110,7 +111,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                 if (split.length > 1) {
                     fin = split[0] + " &\n" + split[1];
                 }
-                setButtonLayout(button, Color.BLACK, Color.WHITE);
+                setButtonLayout(button, AQUA, Color.WHITE);
                 button.setText(fin);
                 if (savedTags != null && savedTags.size() > 0) {
                     if (savedTags.stream().anyMatch(str -> str.startsWith(split[0]))) {
@@ -128,10 +129,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
 
     private void toggleButton(Button button) {
         int color = button.getTextColors().getDefaultColor();
-        if (color == Color.BLACK) {
-            setButtonLayout(button, Color.WHITE, Color.BLACK);
+        if (color == AQUA) {
+            setButtonLayout(button, Color.WHITE, AQUA);
         } else {
-            setButtonLayout(button, Color.BLACK, Color.WHITE);
+            setButtonLayout(button, AQUA, Color.WHITE);
         }
     }
 
@@ -173,10 +174,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                 topicsSelected = new ArrayList<>();
                 causesSelected = new ArrayList<>();
                 for (Button button: topicButtons) {
-                    setButtonLayout(button, Color.BLACK, Color.WHITE);
+                    setButtonLayout(button, AQUA, Color.WHITE);
                 }
                 for (Button button: causesButtons) {
-                    setButtonLayout(button, Color.BLACK, Color.WHITE);
+                    setButtonLayout(button, AQUA, Color.WHITE);
                 }
                 break;
             case R.id.cancel:

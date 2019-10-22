@@ -1,6 +1,8 @@
 package com.example.search;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,14 +20,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.ArraySet;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -52,23 +59,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MainActivity extends FragmentActivity implements FilterFragment.onSavePressed {
+public class MainActivity extends AppCompatActivity implements FilterFragment.onSavePressed {
 
     public static final String COLLECTIBLES = "Collectible";
     public static final String COLLECTIBLE_IMAGES = "CollectibeImages";
     public static final String TAGS = "Tags";
 
-    List<String> searchArray;
+    private List<String> searchArray;
     public static List<String>[] tags;
-    List<String> tagsSelected;
-    Set<String> selectedItemsId;
+    private List<String> tagsSelected;
+    private Set<String> selectedItemsId;
     private RecyclerView recyclerView;
     private List<ItemDetails> listOfItems, copyList;
-    Context context;
-    ItemAdapter itemAdapter;
-    FloatingActionButton filterButton;
+    private Context context;
+    private boolean flagSearch;
+    private ItemAdapter itemAdapter;
+    private FloatingActionButton filterButton;
+    private AutoCompleteTextView actv;
     private Map<String, List<String>> tagsToItems;
     public static BottomSheetDialogFragment fragment;
+    private Button cross;
 
     ParseQuery<ParseObject> tagsQuery, collectibleQuery, imagesQuery;
 
@@ -92,15 +102,19 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
         itemAdapter.notifyDataSetChanged();
         searchBox();
 
-        filterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("tagsSelected", new ArrayList<>(tagsSelected));
-                fragment = new FilterFragment();
-                fragment.setArguments(bundle);
-                fragment.show(getSupportFragmentManager(), fragment.getTag());
-            }
+        filterButton.setOnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("tagsSelected", new ArrayList<>(tagsSelected));
+            fragment = new FilterFragment();
+            fragment.setArguments(bundle);
+            fragment.show(getSupportFragmentManager(), fragment.getTag());
+        });
+
+        cross.setOnClickListener(view -> {
+            actv.setText("");
+            listOfItems = copyList;
+            itemAdapter.setItemList(listOfItems);
+            itemAdapter.notifyDataSetChanged();
         });
     }
 
@@ -188,11 +202,15 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
     }
 
     private void initializeLayout() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         recyclerView = findViewById(R.id.card_view_recycler_list);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
-
+        cross = findViewById(R.id.cross);
         filterButton = findViewById(R.id.filter_button);
+        actv = findViewById(R.id.autoCompleteTextView);
 
         context = getBaseContext();
         listOfItems = new ArrayList<>();
@@ -204,6 +222,7 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
         copyList = new ArrayList<>();
         selectedItemsId = new HashSet<>();
         tagsToItems = new HashMap<>();
+        flagSearch = false;
 
         itemAdapter = new ItemAdapter(context, listOfItems);
         recyclerView.setAdapter(itemAdapter);
@@ -213,10 +232,21 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
         // Search auto - complete
         ArrayAdapter<String> adapter = new ArrayAdapter<> (this, android.R.layout.select_dialog_item, searchArray);
         //Getting the instance of AutoCompleteTextView
-        AutoCompleteTextView actv = findViewById(R.id.autoCompleteTextView);
         actv.setThreshold(1);//will start working from first character
         actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
         actv.setTextColor(Color.BLACK);
+        actv.setOnItemClickListener((adapterView, view, i, l) -> {
+            String item = adapter.getItem(i);
+            listOfItems = copyList
+                    .stream()
+                    .filter(x -> x.itemName.contains(item))
+                    .collect(Collectors.toList());
+            itemAdapter.setItemList(listOfItems);
+            itemAdapter.notifyDataSetChanged();
+            flagSearch = true;
+            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+        });
     }
 
     @Override
@@ -227,6 +257,9 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
 
     @Override
     public void passData(List<String> topics, List<String> causes) {
+        actv.setText("");
+        TextView no_records = findViewById(R.id.no_records);
+        no_records.setVisibility(View.GONE);
         selectedItemsId = new HashSet<>();
         tagsSelected = new ArrayList<>(topics);
         tagsSelected.addAll(causes);
@@ -237,14 +270,50 @@ public class MainActivity extends FragmentActivity implements FilterFragment.onS
                 selectedItemsId.addAll(tagsToItems.get(str));
             }
         }
-        if ((topics == null || topics.size() == 0) && (causes == null || causes.size() == 0)) {
+        if (topics.size() == 0 &&  causes.size() == 0) {
             listOfItems = copyList;
         } else {
             listOfItems = copyList.stream().filter(item -> selectedItemsId.contains(item.id)).collect(Collectors.toList());
+        }
+        if (listOfItems.size() == 0) {
+            no_records.setVisibility(View.VISIBLE);
         }
         System.out.println(selectedItemsId);
         System.out.println(listOfItems.size());
         itemAdapter.setItemList(listOfItems);
         itemAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (flagSearch) {
+            flagSearch = false;
+            listOfItems = copyList;
+            itemAdapter.setItemList(listOfItems);
+            itemAdapter.notifyDataSetChanged();
+            actv.setText("");
+            actv.clearFocus();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.search:
+                cross.setVisibility(View.VISIBLE);
+                actv.setVisibility(View.VISIBLE);
+                break;
+        }
+        return true;
     }
 }
