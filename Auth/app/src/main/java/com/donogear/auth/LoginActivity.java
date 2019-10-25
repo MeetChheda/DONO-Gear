@@ -30,15 +30,14 @@ import java.util.Collection;
 
 
 public class LoginActivity extends Activity {
-    private CallbackManager callbackManager;
-    private TextView textView;
 
+    String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        Button loginButton = (Button) findViewById(R.id.login_button);
+        Button loginButton = findViewById(R.id.login_button);
 
         loginButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
@@ -64,7 +63,7 @@ public class LoginActivity extends Activity {
 
                             Log.d("MyApp", "User logged in through Facebook!");
                             Log.d("MyApp", "User logged in through Facebook!");
-                            alertDisplayer("Oh, you!","Welcome back!");
+                            alertDisplayer("Welcome back!","Signing you in again!");
                         }
 
                         Log.d("MyApp", "All done!!!!!");
@@ -84,6 +83,7 @@ public class LoginActivity extends Activity {
                 ParseUser user = ParseUser.getCurrentUser();
                 try{
                     user.setUsername(object.getString("name"));
+                    name = object.getString("name");
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
@@ -95,7 +95,7 @@ public class LoginActivity extends Activity {
                 user.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        alertDisplayer("First Time Login!", "Welcome!");
+                        alertDisplayer("You're a new User!", "Welcome!");
                     }
                 });
 

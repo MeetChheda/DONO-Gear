@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         initializeLayout();
         readData();
         getFilters();
-        System.out.println("--------> In main runnable ----> " + listOfItems.size());
         itemAdapter.notifyDataSetChanged();
         searchBox();
 
@@ -128,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
                     String name = item.getString("tagName");
                     int tagType = item.getInt("tagClass");
                     List<String> objects = item.getList("itemIdArray");
-                    if (name != null || objects != null && objects.size() > 0) {
+                    if (name != null && objects != null && objects.size() > 0) {
                         tagsToItems.put(name, objects);
                     }
                     System.out.println(name + " ------- " + tagType);
@@ -266,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         System.out.println(tagsSelected);
         System.out.println(tagsToItems);
         for (String str: tagsSelected) {
-            if (tagsToItems.containsKey(str) && tagsToItems.get(str) != null) {
+            if (tagsToItems.containsKey(str)) {
                 selectedItemsId.addAll(tagsToItems.get(str));
             }
         }

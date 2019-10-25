@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
         LoginManager.getInstance().logOut();
         ParseUser.logOut();
 
-        Button button = (Button) findViewById(R.id.myButton);
+        Button button = findViewById(R.id.myButton);
         button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);

@@ -62,8 +62,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         Bitmap bitmap = BitmapFactory.decodeFile(curItem.listOfImages.get(0).toString());
         itemHolder.imageView.setImageBitmap(bitmap);
         String title = curItem.itemName;
-        if(title.length() > 25) {
-            title = title.substring(0, 25);
+        if(title.length() > 30) {
+            title = title.substring(0, 30);
             title = title.substring(0, title.lastIndexOf(" ")) + "...";
         }
         itemHolder.titleText.setText(title);
@@ -75,8 +75,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
         int textColor = getFavourableTextColor(bitmap);
         itemHolder.titleText.setTextColor(textColor);
-        itemHolder.endTimeText.setTextColor(textColor);
-        itemHolder.timeHolder.setTextColor(textColor);
+//        itemHolder.endTimeText.setTextColor(textColor);
     }
 
     private int getFavourableTextColor(Bitmap bitmap) {
