@@ -9,9 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +26,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     private Context mContext;
     private List<ItemDetails> itemDetailsList;
+    private ItemClickListener itemClickListener;
 
     public ItemAdapter(Context context, List<ItemDetails> list) {
         mContext = context;
@@ -33,17 +37,25 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         itemDetailsList = newList;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
         private TextView titleText, endTimeText, timeHolder;
+        private RelativeLayout container;
+        private CardView cardView;
         CountDownTimer timer;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.itemimage);
+            imageView = itemView.findViewById(R.id.item_image);
             titleText = itemView.findViewById(R.id.title);
             endTimeText = itemView.findViewById(R.id.time_left);
             timeHolder = itemView.findViewById(R.id.time_holder);
+            container = itemView.findViewById(R.id.container);
+            cardView = itemView.findViewById(R.id.cardview);
+            itemView.setOnClickListener(view -> {
+                System.out.println(getAdapterPosition());
+                itemClickListener.onItemClick(view, getAdapterPosition());
+            });
         }
     }
 
@@ -57,10 +69,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder itemHolder, final int i) {
         ItemDetails curItem = itemDetailsList.get(i);
-        if (curItem.listOfImages == null || curItem.listOfImages.size() == 0)
-            return;
-        Bitmap bitmap = BitmapFactory.decodeFile(curItem.listOfImages.get(0).toString());
-        itemHolder.imageView.setImageBitmap(bitmap);
+        int textColor = Color.BLACK;
+        if (curItem.listOfImages != null && curItem.listOfImages.size() > 0) {
+            Bitmap bitmap = BitmapFactory.decodeFile(curItem.listOfImages.get(0).toString());
+            textColor = getFavourableTextColor(bitmap);
+            itemHolder.imageView.setImageBitmap(bitmap);
+        }
+
         String title = curItem.itemName;
         if(title.length() > 30) {
             title = title.substring(0, 30);
@@ -71,11 +86,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         if (itemHolder.timer != null) {
             itemHolder.timer.cancel();
         }
-        tickTime(endTime, itemHolder);
-
-        int textColor = getFavourableTextColor(bitmap);
+        tickTime(endTime, itemHolder, i);
         itemHolder.titleText.setTextColor(textColor);
-//        itemHolder.endTimeText.setTextColor(textColor);
     }
 
     private int getFavourableTextColor(Bitmap bitmap) {
@@ -84,28 +96,27 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
     }
 
-    private void tickTime(final Date endTime, final ViewHolder itemHolder) {
+    private void tickTime(final Date endTime, final ViewHolder itemHolder, final int position) {
         final long timeInMilliSec = endTime.getTime() - Calendar.getInstance().getTimeInMillis();
         itemHolder.timer = new CountDownTimer(timeInMilliSec, 1000) {
             @Override
             public void onTick(long l) {
-                long cur = timeInMilliSec;
-                List<String> time = getTime(cur);
+                List<String> time = getTime(timeInMilliSec);
                 String newTime = String.join(" : ", time).trim();
                 itemHolder.endTimeText.setText(newTime);
-                notifyDataSetChanged();
+                notifyItemChanged(position);
             }
 
             @Override
             public void onFinish() {
                 itemHolder.endTimeText.setText("TIME UP");
                 itemHolder.endTimeText.setTextColor(Color.RED);
+                //itemHolder.timeHolder.setVisibility(View.GONE);
             }
         }.start();
     }
 
     private List<String> getTime(long difference) {
-        List<String> time = new ArrayList<>();
         long millisInDay = 1000 * 60 * 60 * 24;
         long millisInHour = 1000 * 60 * 60;
         long millisInMinute = 1000 * 60;
@@ -131,5 +142,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return itemDetailsList.size();
+    }
+
+    void setClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 }

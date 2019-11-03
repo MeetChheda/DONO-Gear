@@ -1,56 +1,32 @@
 package com.example.search;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.ArraySet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MainActivity extends AppCompatActivity implements FilterFragment.onSavePressed {
+public class MainActivity extends AppCompatActivity implements FilterFragment.onSavePressed, ItemClickListener {
 
     public static final String COLLECTIBLES = "Collectible";
     public static final String COLLECTIBLE_IMAGES = "CollectibeImages";
@@ -73,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
     private List<ItemDetails> listOfItems, copyList;
     private Context context;
     private boolean flagSearch;
-    private ItemAdapter itemAdapter;
+    public ItemAdapter itemAdapter;
     private FloatingActionButton filterButton;
     private AutoCompleteTextView actv;
     private Map<String, List<String>> tagsToItems;
@@ -100,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         getFilters();
         itemAdapter.notifyDataSetChanged();
         searchBox();
-
         filterButton.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
             bundle.putSerializable("tagsSelected", new ArrayList<>(tagsSelected));
@@ -114,7 +89,9 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
             listOfItems = copyList;
             itemAdapter.setItemList(listOfItems);
             itemAdapter.notifyDataSetChanged();
+            itemAdapter.setClickListener(this);
         });
+        Toast.makeText(context, "Here", Toast.LENGTH_SHORT).show();
     }
 
     private void getFilters() {
@@ -200,6 +177,13 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         return allImages;
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        ItemDetails item = listOfItems.get(position);
+        System.out.println(item.itemName);
+        Toast.makeText(context, item.itemName, Toast.LENGTH_SHORT).show();
+    }
+
     private void initializeLayout() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -222,9 +206,9 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         selectedItemsId = new HashSet<>();
         tagsToItems = new HashMap<>();
         flagSearch = false;
+        setItemAdapter();
 
-        itemAdapter = new ItemAdapter(context, listOfItems);
-        recyclerView.setAdapter(itemAdapter);
+        itemAdapter.setClickListener(this);
     }
 
     private void searchBox() {
@@ -314,5 +298,10 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
                 break;
         }
         return true;
+    }
+
+    public void setItemAdapter() {
+        itemAdapter = new ItemAdapter(context, listOfItems);
+        recyclerView.setAdapter(itemAdapter);
     }
 }

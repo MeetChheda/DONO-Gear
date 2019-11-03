@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/AppTheme"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:id="@+id/coordinator">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -30,56 +31,58 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="52dp">
+        android:layout_marginTop="52dp"
+        android:id="@+id/relative1">
 
-        <androidx.core.widget.NestedScrollView
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
+            android:orientation="vertical"
+            android:id="@+id/scroll">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/relative2">
 
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:ems="7"
                     android:visibility="gone"
-                    tools:ignore="MissingConstraints"
-                    android:layout_marginTop="10dp"/>
+                    tools:ignore="MissingConstraints" />
 
                 <Button
                     android:id="@+id/cross"
                     android:layout_width="45dp"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:background="@drawable/ic_cross"
-                    android:layout_alignParentEnd="true"/>
+                    android:visibility="gone" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/card_view_recycler_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/autoCompleteTextView"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/card_view_recycler_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/autoCompleteTextView" />
 
             </RelativeLayout>
-        </androidx.core.widget.NestedScrollView>
+        </ScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/filter_button"
             android:layout_width="70dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_filter"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="25dp"
             android:backgroundTint="#fff"
             android:padding="10dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="25dp">
+            android:src="@drawable/ic_filter">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
     </RelativeLayout>
