@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginPageActivity"
+    android:gravity="center_horizontal"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/loginDono_icon"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/dono_icon"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="80dp"
+        />
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@android:color/transparent"
+        >
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/login_tab"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Login"
+            app:tabBackground="@drawable/tabselector"
+            android:background="#2FD6D6"
+            />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/createAccount_tab"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Create Account"
+            app:tabBackground="@drawable/tabselector"
+            android:background="#2FD6D6"
+
+            />
+    </com.google.android.material.tabs.TabLayout>
+
+    <LinearLayout
+        android:id="@+id/login_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/facebook_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/facebook_icon"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="20dp"
+        />
+    <ImageView
+        android:id="@+id/google_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/google_icon"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="20dp"
+        />
+</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+        android:textSize="20dp"
+        android:layout_marginTop="30dp"
+        ></TextView>
+
+    <TextView
+        android:id="@+id/email_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email Address"
+        android:layout_marginLeft="10dp"
+        android:textColor="#4B4B4B"></TextView>
+
+    <EditText
+        android:id="@+id/email_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hapticFeedbackEnabled="true"
+        android:background="@drawable/textborder"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"></EditText>
+
+    <TextView
+        android:id="@+id/password_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Password"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="#4B4B4B"></TextView>
+
+    <EditText
+        android:id="@+id/password_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hapticFeedbackEnabled="true"
+        android:background="@drawable/textborder"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:password="true"
+        android:layout_marginTop="10dp"></EditText>
+
+    <Button
+        android:id="@+id/login_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="#2FD6D6"
+        android:textAllCaps="false"
+        android:onClick="loginBtnClicked"
+        android:paddingEnd="50dp"
+        android:paddingStart="50dp"
+        ></Button>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/createAccount_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/emailCreateAccount_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email Address"
+            android:layout_marginLeft="10dp"
+            android:textColor="#4B4B4B"></TextView>
+
+        <EditText
+            android:id="@+id/emailCreateAccount_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hapticFeedbackEnabled="true"
+            android:background="@drawable/textborder"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"></EditText>
+
+        <TextView
+            android:id="@+id/passwordCreateAccount_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="#4B4B4B"></TextView>
+
+        <EditText
+            android:id="@+id/passwordCreateAccount_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hapticFeedbackEnabled="true"
+            android:background="@drawable/textborder"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:password="true"
+            android:layout_marginTop="10dp"></EditText>
+
+        <Button
+            android:id="@+id/createAccount_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Account"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="30dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="#2FD6D6"
+            android:textAllCaps="false"
+            android:onClick="createAccountBtnClicked"
+            android:paddingStart="50dp"
+            android:paddingEnd="50dp"
+            ></Button>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disclaimer"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="75dp"
+            android:layout_marginRight="75dp"
+            android:textAlignment="center"
+            android:textSize="12dp"></TextView>
+    </LinearLayout>
+
+
+</LinearLayout>
