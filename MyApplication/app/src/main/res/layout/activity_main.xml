@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:text="Login or Create Account"
         android:textColor="@android:color/white"
+        android:textFontWeight="1000"
         android:layout_marginTop="130dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
