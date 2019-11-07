@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">My Application</string>
-    <string name="disclaimer">By signing up you acknowledge that you agree to our terms and conditions and privacy policy.</string>
-    <string name="title_activity_bottom_nav_bar">BottomNavBarActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="title_activity_bottom_navbar">BottomNavbarActivity</string>
-</resources>
