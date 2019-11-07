@@ -1,25 +1,20 @@
 package com.example.search;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -35,26 +30,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MainActivity extends AppCompatActivity implements FilterFragment.onSavePressed, ItemClickListener {
+public class MainActivity extends AppCompatActivity implements
+        BottomNavigationView.OnNavigationItemSelectedListener, onSavePressed {
 
     public static final String COLLECTIBLES = "Collectible";
     public static final String COLLECTIBLE_IMAGES = "CollectibeImages";
     public static final String TAGS = "Tags";
 
-    private List<String> searchArray;
+    public boolean searchFlag;
+    public List<String> searchArray;
     public static List<String>[] tags;
-    private List<String> tagsSelected;
-    private Set<String> selectedItemsId;
-    private RecyclerView recyclerView;
-    private List<ItemDetails> listOfItems, copyList;
-    private Context context;
-    private boolean flagSearch;
+    public List<String> tagsSelected;
+    public Set<String> selectedItemsId;
+    public List<ItemDetails> listOfItems, copyList;
+    public Context context;
     public ItemAdapter itemAdapter;
-    private FloatingActionButton filterButton;
-    private AutoCompleteTextView actv;
-    private Map<String, List<String>> tagsToItems;
-    public static BottomSheetDialogFragment fragment;
-    private Button cross;
+    public AutoCompleteTextView actv;
+    public Map<String, List<String>> tagsToItems;
+    public BottomNavigationView navigationView;
 
     ParseQuery<ParseObject> tagsQuery, collectibleQuery, imagesQuery;
 
@@ -74,24 +67,7 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         initializeLayout();
         readData();
         getFilters();
-        itemAdapter.notifyDataSetChanged();
-        searchBox();
-        filterButton.setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("tagsSelected", new ArrayList<>(tagsSelected));
-            fragment = new FilterFragment();
-            fragment.setArguments(bundle);
-            fragment.show(getSupportFragmentManager(), fragment.getTag());
-        });
-
-        cross.setOnClickListener(view -> {
-            actv.setText("");
-            listOfItems = copyList;
-            itemAdapter.setItemList(listOfItems);
-            itemAdapter.notifyDataSetChanged();
-            itemAdapter.setClickListener(this);
-        });
-        Toast.makeText(context, "Here", Toast.LENGTH_SHORT).show();
+        itemAdapter = new ItemAdapter(context, listOfItems);
     }
 
     private void getFilters() {
@@ -177,23 +153,11 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         return allImages;
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
-        ItemDetails item = listOfItems.get(position);
-        System.out.println(item.itemName);
-        Toast.makeText(context, item.itemName, Toast.LENGTH_SHORT).show();
-    }
-
     private void initializeLayout() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        recyclerView = findViewById(R.id.card_view_recycler_list);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(manager);
-        cross = findViewById(R.id.cross);
-        filterButton = findViewById(R.id.filter_button);
-        actv = findViewById(R.id.autoCompleteTextView);
+        navigationView = findViewById(R.id.navigation);
+        navigationView.setOnNavigationItemSelectedListener(this);
+        navigationView.setSelectedItemId(R.id.navigation_search);
+        loadFragment(new SearchPageFragment());
 
         context = getBaseContext();
         listOfItems = new ArrayList<>();
@@ -205,44 +169,18 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         copyList = new ArrayList<>();
         selectedItemsId = new HashSet<>();
         tagsToItems = new HashMap<>();
-        flagSearch = false;
-        setItemAdapter();
-
-        itemAdapter.setClickListener(this);
+        searchFlag = false;
     }
 
-    private void searchBox() {
-        // Search auto - complete
-        ArrayAdapter<String> adapter = new ArrayAdapter<> (this, android.R.layout.select_dialog_item, searchArray);
-        //Getting the instance of AutoCompleteTextView
-        actv.setThreshold(1);//will start working from first character
-        actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
-        actv.setTextColor(Color.BLACK);
-        actv.setOnItemClickListener((adapterView, view, i, l) -> {
-            String item = adapter.getItem(i);
-            listOfItems = copyList
-                    .stream()
-                    .filter(x -> x.itemName.contains(item))
-                    .collect(Collectors.toList());
-            itemAdapter.setItemList(listOfItems);
-            itemAdapter.notifyDataSetChanged();
-            flagSearch = true;
-            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        ParseQuery.clearAllCachedResults();
-    }
-
+    /**
+     * Implementing interface onSavePressed's method to pass data from Activity to fragment and back
+     * This function receives data ffrom the FilterFragment after the filters have been set. They
+     * are then sent to SearchFragment again to adjust items based on those filters only
+     * @param topics - selected topic filters
+     * @param causes - selected causes filters
+     */
     @Override
     public void passData(List<String> topics, List<String> causes) {
-        actv.setText("");
-        TextView no_records = findViewById(R.id.no_records);
-        no_records.setVisibility(View.GONE);
         selectedItemsId = new HashSet<>();
         tagsSelected = new ArrayList<>(topics);
         tagsSelected.addAll(causes);
@@ -258,27 +196,63 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
         } else {
             listOfItems = copyList.stream().filter(item -> selectedItemsId.contains(item.id)).collect(Collectors.toList());
         }
-        if (listOfItems.size() == 0) {
-            no_records.setVisibility(View.VISIBLE);
-        }
+
         System.out.println(selectedItemsId);
         System.out.println(listOfItems.size());
         itemAdapter.setItemList(listOfItems);
         itemAdapter.notifyDataSetChanged();
+        loadFragment(new SearchPageFragment());
+    }
+
+    /**
+     * Facilitates switching of tabs (as fragments)
+     * @param menuItem - a selectable menu item representing different tabs
+     * @return - returns whether opening the fragment was successful or not
+     */
+
+    /**
+     * Tries to load the fragment using FragmentManager
+     * @param currentFragment - fragment to be loaded based on menuItem click
+     * @return - returns success status of opening a new fragment
+     */
+    private boolean loadFragment(Fragment currentFragment) {
+        if (currentFragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, currentFragment)
+                    .addToBackStack(null)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void onBackPressed() {
-        if (flagSearch) {
-            flagSearch = false;
-            listOfItems = copyList;
-            itemAdapter.setItemList(listOfItems);
-            itemAdapter.notifyDataSetChanged();
-            actv.setText("");
-            actv.clearFocus();
-            return;
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if(!(fragment instanceof  myOnBackPressed)|| !((myOnBackPressed)fragment).onBackPressed()) {
+            super.onBackPressed();
+            finish();
         }
-        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Fragment currentFragment = null;
+        switch (menuItem.getItemId()) {
+            case R.id.navigation_home:
+                currentFragment = new HomePageFragment();
+                break;
+
+            case R.id.navigation_search:
+                currentFragment = new SearchPageFragment();
+                break;
+
+            case R.id.navigation_profile:
+                currentFragment = new UserProfileFragment();
+                break;
+        }
+        return loadFragment(currentFragment);
     }
 
     @Override
@@ -289,19 +263,8 @@ public class MainActivity extends AppCompatActivity implements FilterFragment.on
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.search:
-                cross.setVisibility(View.VISIBLE);
-                actv.setVisibility(View.VISIBLE);
-                break;
-        }
-        return true;
-    }
-
-    public void setItemAdapter() {
-        itemAdapter = new ItemAdapter(context, listOfItems);
-        recyclerView.setAdapter(itemAdapter);
+    public void onDestroy() {
+        super.onDestroy();
+        ParseQuery.clearAllCachedResults();
     }
 }

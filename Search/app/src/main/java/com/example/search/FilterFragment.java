@@ -4,6 +4,7 @@ package com.example.search;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -34,12 +35,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.search.SearchPageFragment.GET_FILTER_TAG;
+
 public class FilterFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private LinearLayout linearLayout;
     private List<String> topicsTags, causesTags;
     private List<Button> topicButtons, causesButtons;
     private Button save, reset, cancel;
+    onSavePressed savePressedListener;
     private static int AQUA = Color.parseColor("#2fd6d6");
 
     private List<String> topicsSelected, causesSelected;
@@ -181,7 +185,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                 }
                 break;
             case R.id.cancel:
-                MainActivity.fragment.dismiss();
+                SearchPageFragment.fragment.dismiss();
                 break;
             case R.id.save:
                 for (Button button: topicButtons) {
@@ -196,20 +200,21 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                         causesSelected.add(button.getText().toString().toLowerCase());
                     }
                 }
+                System.out.println("Sending result -----------");
                 savePressedListener.passData(topicsSelected, causesSelected);
-                MainActivity.fragment.dismiss();
+                SearchPageFragment.fragment.dismiss();
                 break;
         }
     }
 
-    public interface onSavePressed {
-        void passData(List<String> topics, List<String> causes);
-    }
-    onSavePressed savePressedListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        savePressedListener = (onSavePressed) context;
+        try {
+            savePressedListener = (onSavePressed) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement onSavePressed");
+        }
     }
 }
