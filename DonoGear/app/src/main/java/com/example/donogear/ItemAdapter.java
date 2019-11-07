@@ -38,7 +38,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
-        private TextView titleText, endTimeText, timeHolder;
+        private TextView titleText, endTimeText, timeHolder, timeLeft;
         private RelativeLayout container;
         private CardView cardView;
         CountDownTimer timer;
@@ -49,6 +49,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             titleText = itemView.findViewById(R.id.title);
             endTimeText = itemView.findViewById(R.id.time_left);
             timeHolder = itemView.findViewById(R.id.time_holder);
+            timeLeft = itemView.findViewById(R.id.time_left);
             container = itemView.findViewById(R.id.container);
             cardView = itemView.findViewById(R.id.cardview);
             itemView.setOnClickListener(view -> {
@@ -69,9 +70,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder itemHolder, final int i) {
         ItemDetails curItem = itemDetailsList.get(i);
         int textColor = Color.BLACK;
+        int timeColor = Color.BLACK;
         if (curItem.listOfImages != null && curItem.listOfImages.size() > 0) {
             Bitmap bitmap = BitmapFactory.decodeFile(curItem.listOfImages.get(0).toString());
             textColor = getFavourableTextColor(bitmap);
+            timeColor = getFavourableTimeColor(bitmap);
             itemHolder.imageView.setImageBitmap(bitmap);
         }
 
@@ -87,6 +90,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         }
         tickTime(endTime, itemHolder, i);
         itemHolder.titleText.setTextColor(textColor);
+        itemHolder.timeHolder.setTextColor(timeColor);
+        itemHolder.timeLeft.setTextColor(timeColor);
     }
 
     private int getFavourableTextColor(Bitmap bitmap) {
@@ -94,6 +99,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
     }
+
+    private int getFavourableTimeColor(Bitmap bitmap) {
+        int pixel = bitmap.getPixel(bitmap.getWidth() - 1, 0);
+        Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
+        return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
+    }
+
 
     private void tickTime(final Date endTime, final ViewHolder itemHolder, final int position) {
         final long timeInMilliSec = endTime.getTime() - Calendar.getInstance().getTimeInMillis();

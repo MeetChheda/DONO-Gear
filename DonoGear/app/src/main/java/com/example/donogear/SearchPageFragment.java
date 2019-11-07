@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -44,6 +45,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     private RecyclerView recyclerView;
     private List<ItemDetails> listOfItems, copyList;
     private Context context;
+    private BottomNavigationView home_navigation;
     private ItemAdapter itemAdapter;
     private FloatingActionButton filterButton;
     private AutoCompleteTextView actv;
@@ -91,12 +93,14 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         context = getContext();
         listOfItems = activity.listOfItems;
 
+        home_navigation = view.findViewById(R.id.home_navigation);
         tags = MainActivity.tags;
         tagsSelected = activity.tagsSelected;
         searchArray = activity.searchArray;
         copyList = activity.copyList;
         itemAdapter = activity.itemAdapter;
         recyclerView.setAdapter(itemAdapter);
+
 
         searchFlag = false;
 
@@ -118,7 +122,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
             itemAdapter.setItemList(listOfItems);
             itemAdapter.notifyDataSetChanged();
             itemAdapter.setClickListener(this);
-        }); 
+        });
 
         search.setOnClickListener(view -> {
             if (!searchFlag) {

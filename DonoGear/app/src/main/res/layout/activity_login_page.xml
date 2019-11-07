@@ -25,7 +25,7 @@
         android:id="@+id/tabs"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@android:color/transparent"
+        app:tabIndicatorColor="#2FD6D6"
         >
 
         <com.google.android.material.tabs.TabItem
