@@ -12,14 +12,14 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".LoginPageActivity"></activity>
-        <activity android:name=".LauncherActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".LauncherActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity"></activity>
 
         <meta-data
             android:name="com.parse.APPLICATION_ID"

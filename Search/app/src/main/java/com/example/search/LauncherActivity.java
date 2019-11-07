@@ -14,7 +14,7 @@ public class LauncherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
     }
 
-    public void LoginOrCreateAccountBtnClicked(View view) {
+    public void loginClicked(View view) {
         Intent intent = new Intent(LauncherActivity.this, LoginPageActivity.class);
         startActivity(intent);
     }
