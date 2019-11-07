@@ -10,9 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements
         readData();
         getFilters();
         itemAdapter = new ItemAdapter(context, listOfItems);
+
     }
 
     private void getFilters() {
@@ -154,7 +157,9 @@ public class MainActivity extends AppCompatActivity implements
     private void initializeLayout() {
         navigationView = findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(this);
+        navigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
         navigationView.setSelectedItemId(R.id.navigation_search);
+        navigationView.setItemIconSize(120);
         loadFragment(new SearchPageFragment());
 
         context = getBaseContext();

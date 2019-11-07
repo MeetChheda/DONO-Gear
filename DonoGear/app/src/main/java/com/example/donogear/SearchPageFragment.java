@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     private Button cross;
     private View view;
     private MainActivity activity;
+    private ImageView search;
 
     public SearchPageFragment() {
         // Required empty public constructor
@@ -76,8 +78,8 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
      * TO-DO: Cleaner logic for passing data from Activity to Fragment
      */
     private void initializeLayout() {
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        activity.setSupportActionBar(toolbar);
+//        Toolbar toolbar = view.findViewById(R.id.toolbar);
+//        activity.setSupportActionBar(toolbar);
 
         recyclerView = view.findViewById(R.id.card_view_recycler_list);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -85,7 +87,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         cross = view.findViewById(R.id.cross);
         filterButton = view.findViewById(R.id.filter_button);
         actv = view.findViewById(R.id.autoCompleteTextView);
-
+        search = view.findViewById(R.id.search_img);
         context = getContext();
         listOfItems = activity.listOfItems;
 
@@ -116,6 +118,18 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
             itemAdapter.setItemList(listOfItems);
             itemAdapter.notifyDataSetChanged();
             itemAdapter.setClickListener(this);
+        }); 
+
+        search.setOnClickListener(view -> {
+            if (!searchFlag) {
+                searchFlag = true;
+                cross.setVisibility(View.VISIBLE);
+                actv.setVisibility(View.VISIBLE);
+            } else {
+                searchFlag = false;
+                cross.setVisibility(View.GONE);
+                actv.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -190,6 +204,12 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         }
         return false;
     }
+
+//    public void searchClicked(View view) {
+//        searchFlag = true;
+//        cross.setVisibility(View.VISIBLE);
+//        actv.setVisibility(View.VISIBLE);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
