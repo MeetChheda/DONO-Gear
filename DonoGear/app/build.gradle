@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.sonarqube'
+apply plugin: 'jacoco-android'
 
 android {
     compileSdkVersion 28
@@ -42,4 +44,20 @@ repositories {
     mavenCentral()
     jcenter()
     maven { url 'https://jitpack.io' }
+}
+
+jacoco {
+    toolVersion = "0.8.3"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sources", "src/main/java"
+        property "sonar.projectName", "DONO-Gear"
+        property "sonar.projectKey", "dono-gear"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.java.sources", "src/main/java"
+        property "sonar.login", "admin"
+        property "sonar.password", "admin"
+    }
 }
