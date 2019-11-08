@@ -31,25 +31,23 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/home_navigation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:menu="@menu/top_navigation"
             android:background="#FFFFFF"
-            android:layout_marginRight="70dp"
-            android:layout_marginLeft="70dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
             app:elevation="0dp"
             app:itemTextAppearanceActive="@style/BottomNavigationText"
             app:itemTextColor="@drawable/selected_nav_item" />
 
     </RelativeLayout>
 
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:id="@+id/toolbar"-->
-<!--        android:minHeight="?attr/actionBarSize"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:titleTextColor="@android:color/white"-->
-<!--        android:background="?attr/colorPrimary">-->
-<!--    </androidx.appcompat.widget.Toolbar>-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/no_records"
