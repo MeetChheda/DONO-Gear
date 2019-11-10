@@ -1,10 +1,11 @@
 package com.example.donogear;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class ItemDetails {
+public class ItemDetails implements Serializable {
     String id;
     String itemName;
     int buyNowPrice;

@@ -5,17 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.tabs.TabLayout;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -36,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final String COLLECTIBLES = "Collectible";
     public static final String COLLECTIBLE_IMAGES = "CollectibeImages";
+    public static final String COLLECTIBLE_VIDEOS = "CollectibleVideos";
+    public static final String PROCEEDS = "Proceeds";
     public static final String TAGS = "Tags";
 
     public boolean searchFlag;
@@ -46,9 +47,10 @@ public class MainActivity extends AppCompatActivity implements
     public List<ItemDetails> listOfItems, copyList;
     public Context context;
     public ItemAdapter itemAdapter;
-    public AutoCompleteTextView actv;
     public Map<String, List<String>> tagsToItems;
-    public BottomNavigationView navigationView;
+    public BottomNavigationView mainNavigation, innerNavigation;
+
+    public TabLayout innerTabs;
 
     ParseQuery<ParseObject> tagsQuery, collectibleQuery, imagesQuery;
 
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
                 .build()
         );
         // Initialize basic layout specifics and Adapter
+        manageInnerTabs();
         initializeLayout();
         readData();
         getFilters();
@@ -156,12 +159,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initializeLayout() {
-        navigationView = findViewById(R.id.navigation);
-        navigationView.setOnNavigationItemSelectedListener(this);
-        navigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
-        navigationView.setSelectedItemId(R.id.navigation_search);
-        navigationView.setItemIconSize(120);
+
+        mainNavigation = findViewById(R.id.navigation);
+        mainNavigation.setOnNavigationItemSelectedListener(this);
+        mainNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
+        mainNavigation.setSelectedItemId(R.id.navigation_search);
+        mainNavigation.setItemIconSize(120);
         loadFragment(new SearchPageFragment());
+
+//        innerNavigation = findViewById(R.id.home_navigation);
+//        innerNavigation.setOnNavigationItemSelectedListener(this);
+//        innerNavigation.setSelectedItemId(R.id.navigation_auctions);
+
+
 
 
         context = getBaseContext();
@@ -177,9 +187,38 @@ public class MainActivity extends AppCompatActivity implements
         searchFlag = false;
     }
 
+    private void manageInnerTabs() {
+        innerTabs = findViewById(R.id.innertabs);
+        innerTabs.getTabAt(1).select();
+        innerTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        loadFragment(new RafflesFragment());
+                        break;
+                    case 1:
+                        loadFragment(new SearchPageFragment());
+                        break;
+                    case 2:
+                        loadFragment(new DropsFragment());
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
+
     /**
      * Implementing interface onSavePressed's method to pass data from Activity to fragment and back
-     * This function receives data ffrom the FilterFragment after the filters have been set. They
+     * This function receives data from the FilterFragment after the filters have been set. They
      * are then sent to SearchFragment again to adjust items based on those filters only
      * @param topics - selected topic filters
      * @param causes - selected causes filters
@@ -246,14 +285,17 @@ public class MainActivity extends AppCompatActivity implements
         Fragment currentFragment = null;
         switch (menuItem.getItemId()) {
             case R.id.navigation_home:
+                innerTabs.setVisibility(View.GONE);
                 currentFragment = new HomePageFragment();
                 break;
 
             case R.id.navigation_search:
+                innerTabs.setVisibility(View.VISIBLE);
                 currentFragment = new SearchPageFragment();
                 break;
 
             case R.id.navigation_profile:
+                innerTabs.setVisibility(View.GONE);
                 currentFragment = new UserProfileFragment();
                 break;
         }

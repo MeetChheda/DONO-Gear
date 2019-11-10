@@ -13,6 +13,18 @@
         android:layout_height="match_parent"
         android:id="@+id/fragment_container"/>
 
+<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--        android:id="@+id/home_navigation"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp"-->
+<!--        app:menu="@menu/top_navigation"-->
+<!--        android:background="#FFFFFF"-->
+<!--        android:layout_marginRight="30dp"-->
+<!--        android:layout_marginLeft="30dp"-->
+<!--        app:elevation="0dp"-->
+<!--        app:itemTextAppearanceActive="@style/BottomNavigationText"-->
+<!--        app:itemTextColor="@drawable/selected_nav_item" />-->
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
@@ -23,6 +35,39 @@
         app:itemBackground="@drawable/drawable_selector"
         app:itemTextAppearanceActive="@style/BottomNavigationText"
         app:itemTextColor="@drawable/selected_nav_item" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/innertabs"
+        android:layout_width="340dp"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="#000">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/raffles_tab"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Raffles"
+            app:tabBackground="@drawable/tabselector"
+            android:background="#2FD6D6" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/auctions_tab"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Auctions"
+            app:tabBackground="@drawable/tabselector"
+            android:background="#2FD6D6" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/drops_tab"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Drops"
+            app:tabBackground="@drawable/tabselector"
+            android:background="#2FD6D6" />
+    </com.google.android.material.tabs.TabLayout>
 
 </RelativeLayout>
 

@@ -2,14 +2,15 @@ package com.example.donogear;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,10 +23,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +46,6 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     private RecyclerView recyclerView;
     private List<ItemDetails> listOfItems, copyList;
     private Context context;
-    private BottomNavigationView home_navigation;
     private ItemAdapter itemAdapter;
     private FloatingActionButton filterButton;
     private AutoCompleteTextView actv;
@@ -93,14 +93,12 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         context = getContext();
         listOfItems = activity.listOfItems;
 
-        home_navigation = view.findViewById(R.id.home_navigation);
         tags = MainActivity.tags;
         tagsSelected = activity.tagsSelected;
         searchArray = activity.searchArray;
         copyList = activity.copyList;
         itemAdapter = activity.itemAdapter;
         recyclerView.setAdapter(itemAdapter);
-
 
         searchFlag = false;
 
@@ -159,7 +157,9 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     public void onItemClick(View view, int position) {
         ItemDetails item = listOfItems.get(position);
         System.out.println(item.itemName);
-        Toast.makeText(context, item.itemName, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(activity, ProductDetails.class);
+        intent.putExtra("item_details", item);
+        startActivity(intent);
     }
 
     /**
@@ -208,12 +208,6 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         }
         return false;
     }
-
-//    public void searchClicked(View view) {
-//        searchFlag = true;
-//        cross.setVisibility(View.VISIBLE);
-//        actv.setVisibility(View.VISIBLE);
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
