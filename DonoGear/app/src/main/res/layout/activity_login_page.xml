@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -54,6 +59,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal"
+
         >
         <LinearLayout
             android:layout_width="wrap_content"
@@ -90,15 +96,15 @@
             ></TextView>
 
         <TextView
-            android:id="@+id/email_text"
+            android:id="@+id/username_Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Email Address"
+            android:text="Username"
             android:layout_marginLeft="10dp"
             android:textColor="#4B4B4B"></TextView>
 
         <EditText
-            android:id="@+id/email_editText"
+            android:id="@+id/username_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hapticFeedbackEnabled="true"
@@ -140,24 +146,11 @@
             android:textAllCaps="false"
             android:onClick="loginBtnClicked"
             android:paddingEnd="50dp"
+            android:layout_marginBottom="50dp"
             android:paddingStart="50dp"
             ></Button>
 
-        <Button
-            android:id="@+id/logout_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="30dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="#2FD6D6"
-            android:textAllCaps="false"
-            android:onClick="logoutBtnClicked"
-            android:paddingEnd="50dp"
-            android:paddingStart="50dp"
-            ></Button>
+
 
     </LinearLayout>
     <LinearLayout
@@ -167,13 +160,32 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_marginTop="30dp"
-        android:visibility="gone">
+        android:visibility="gone"
+        >
 
+        <TextView
+            android:id="@+id/username_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:layout_marginLeft="10dp"
+            android:textColor="#4B4B4B"></TextView>
+
+        <EditText
+            android:id="@+id/usernameCreateAccount_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hapticFeedbackEnabled="true"
+            android:background="@drawable/textborder"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"></EditText>
         <TextView
             android:id="@+id/emailCreateAccount_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Email Address"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:textColor="#4B4B4B"></TextView>
 
@@ -230,6 +242,8 @@
             android:layout_marginLeft="75dp"
             android:layout_marginRight="75dp"
             android:textAlignment="center"
-            android:textSize="12dp"></TextView>
+            android:textSize="12dp"
+            ></TextView>
     </LinearLayout>
 </LinearLayout>
+</ScrollView>

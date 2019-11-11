@@ -40,14 +40,12 @@
             app:itemTextAppearanceActive="@style/BottomNavigationText"
             app:itemTextColor="@drawable/selected_nav_item" />
 
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            ></ImageView>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/no_records"
