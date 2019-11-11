@@ -7,7 +7,6 @@
     android:theme="@style/AppTheme"
     android:fitsSystemWindows="true">
 
-
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/autoCompleteTextView"
-                    android:layout_marginBottom="40dp"/>
+                    android:layout_marginBottom="50dp"/>
 
             </RelativeLayout>
         </ScrollView>

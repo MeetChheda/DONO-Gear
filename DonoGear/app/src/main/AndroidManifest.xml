@@ -14,16 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ProductDetails"></activity>
-        <activity android:name=".LoginPageActivity" />
-        <activity android:name=".LauncherActivity">
+        <activity android:name=".actionpages.ProductDetails"></activity>
+        <activity android:name=".registeration.LoginPageActivity" />
+        <activity android:name=".registeration.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".actionpages.MainActivity" />
 
         <meta-data
             android:name="com.parse.APPLICATION_ID"

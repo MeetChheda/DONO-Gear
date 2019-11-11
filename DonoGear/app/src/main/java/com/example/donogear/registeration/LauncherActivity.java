@@ -1,10 +1,13 @@
-package com.example.donogear;
+package com.example.donogear.registeration;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.donogear.actionpages.MainActivity;
+import com.example.donogear.R;
 
 public class LauncherActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.donogear;
+package com.example.donogear.actionpages;
 
 
 import android.content.Context;
@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.example.donogear.R;
+import com.example.donogear.interfaces.onSavePressed;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -36,9 +38,9 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     private List<String> topicsTags, causesTags;
     private List<Button> topicButtons, causesButtons;
     private Button save, reset, cancel;
-    onSavePressed savePressedListener;
+    private onSavePressed savePressedListener;
     private static int AQUA = Color.parseColor("#2fd6d6");
-
+    private String category;
     private List<String> topicsSelected, causesSelected;
     private List<String> savedTags;
     public FilterFragment() {
@@ -64,7 +66,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
 
         View view = inflater.inflate(R.layout.fragment_filter, container,
                 false);
-        savedTags = getArguments().getStringArrayList("tagsSelected");
+        if (getArguments() != null) {
+            savedTags = getArguments().getStringArrayList("tagsSelected");
+            category = getArguments().getString("category");
+        }
         System.out.println("\n\n\n" + savedTags);
         save = view.findViewById(R.id.save);
         reset = view.findViewById(R.id.reset);
@@ -194,7 +199,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                     }
                 }
                 System.out.println("Sending result -----------");
-                savePressedListener.passData(topicsSelected, causesSelected);
+                savePressedListener.passData(topicsSelected, causesSelected, category);
                 SearchPageFragment.fragment.dismiss();
                 break;
         }

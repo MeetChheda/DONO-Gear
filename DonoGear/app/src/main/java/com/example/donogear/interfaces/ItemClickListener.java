@@ -1,4 +1,4 @@
-package com.example.donogear;
+package com.example.donogear.interfaces;
 
 import android.view.View;
 

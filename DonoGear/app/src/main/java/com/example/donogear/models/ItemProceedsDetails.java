@@ -1,15 +1,15 @@
-package com.example.donogear;
+package com.example.donogear.models;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemProceedsDetails {
-    String itemId;
-    String title;
-    String description;
-    List<File> proceedsImagesList;
-    List<String> proceedsVideosList;
+    public String itemId;
+    public String title;
+    public String description;
+    public List<File> proceedsImagesList;
+    public List<String> proceedsVideosList;
 
     public ItemProceedsDetails() { }
 
