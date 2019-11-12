@@ -15,10 +15,12 @@ import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.example.donogear.R;
@@ -60,17 +62,19 @@ public class ProductDetails extends AppCompatActivity {
         initData();
         itemVideosUrl = getItemVideos();
         getItemProceedsDetails();
-        //System.out.println(proceedsDetails.printProceeds());
-        displayImages();
+        LinearLayout horizontalScrollViewContainer = findViewById(R.id.inner_layout);
+        LinearLayout itemVideosLayout = findViewById(R.id.videoButtons);
+        displayImages(itemImages, horizontalScrollViewContainer);
         displayRemainingTime();
         displayItemDetails();
         Runnable videoRunnable = new Runnable() {
             @Override
             public void run() {
                 if(hasVideos) {
-                    displayVideo();
+                    displayVideo(itemVideosUrl, itemVideosLayout);
                 }
                 else {
+                    System.out.println("Video? : " + hasVideos);
                     handler.postDelayed(this, 1000);
                 }
             }
@@ -80,7 +84,7 @@ public class ProductDetails extends AppCompatActivity {
         Runnable proceedsRunnable = new Runnable() {
             @Override
             public void run() {
-                if(hasVideos && hasProceeds) {
+                if(hasProceeds) {
                     displayProceedsDetails();
                 }
                 else {
@@ -113,24 +117,42 @@ public class ProductDetails extends AppCompatActivity {
 
     /**
      * Displays the video snipper
-     *
      * TODO - Working code for snippet / better UI to show video display button
      */
-    private void displayVideo() {
-        if (itemVideosUrl == null || itemVideosUrl.size() == 0)
+    private void displayVideo(List<String> videoList, LinearLayout videoContainer) {
+//        final VideoView videoView = findViewById(R.id.videoView);
+        if (videoList == null || videoList.size() == 0) {
             return;
-        final VideoView videoView = findViewById(R.id.videoView);
-        videoView.setVisibility(View.VISIBLE);
+        }
+//        videoView.setVisibility(View.VISIBLE);
 //        MediaController mediaController = new MediaController(context);
 //        mediaController.setAnchorView(videoView);
 //        mediaController.setMediaPlayer(videoView);
 //        videoView.setMediaController(mediaController);
+        for (int i = 0; i < videoList.size(); i += 3) {
+            LinearLayout newLayout = new LinearLayout(getBaseContext());
+            newLayout.setOrientation(LinearLayout.HORIZONTAL);
+            newLayout.setBaselineAligned(false);
 
-        Uri video = Uri.parse(itemVideosUrl.get(0));
-        videoView.setOnClickListener(view -> {
-            startActivity(new Intent(Intent.ACTION_VIEW, video));
-        });
+            for (int j = 0; j < 3 && j + i < videoList.size(); j++) {
+                final Button button = new Button(getBaseContext());
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        320, 130
+                );
+                layoutParams.setMargins(15, 15, 15, 0);
+                layoutParams.gravity = Gravity.TOP;
+                button.setLayoutParams(layoutParams);
+                button.setTextColor(Color.BLACK);
+                String number = "Video " + (i + j + 1);
+                button.setText(number);
+                newLayout.addView(button);
 
+                Uri video = Uri.parse(videoList.get(i + j));
+                button.setOnClickListener(view ->
+                        startActivity(new Intent(Intent.ACTION_VIEW, video)));
+            }
+            videoContainer.addView(newLayout);
+        }
     }
 
     /**
@@ -155,6 +177,9 @@ public class ProductDetails extends AppCompatActivity {
         }
     }
 
+    /**
+     * Uses TickTime interface to display time left for the current auction / raffle to finish
+     */
     private void displayRemainingTime() {
         TextView time_remaining = findViewById(R.id.time_remaining);
         long timeInMilliSec = itemTime.getTime() - Calendar.getInstance().getTimeInMillis();
@@ -175,23 +200,32 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     /**
-     * Display the proceed details for the selected item after it has been read in background
+     * Display the proceed details for the selected item after it has been read in background. It
+     * reuses the methods to displayImages and Videos for the proceeds
      */
     private void displayProceedsDetails() {
+        System.out.println(proceedsDetails.printProceeds());
         System.out.println(proceedsDetails.printProceeds());
         TextView proceedsTitle = findViewById(R.id.proceeds_title);
         proceedsTitle.setText(proceedsDetails.title);
 
         TextView proceedsDescription = findViewById(R.id.proceeds_description);
         proceedsDescription.setText(proceedsDetails.description);
+        LinearLayout proceeds_images_layout = findViewById(R.id.proceeds_images);
+        displayImages(proceedsDetails.proceedsImagesList, proceeds_images_layout);
+
+        LinearLayout proceeds_video_layout = findViewById(R.id.proceed_video_buttons);
+        displayVideo(proceedsDetails.proceedsVideosList, proceeds_video_layout);
     }
 
+
     /**
-     * Display the images in a horizontal scroll view for an item
+     * Display the images in a layout.
+     * TODO: Would have to change use separate methods to incorporate horizontal scroll of images
+     *       (for item) and one with normal vertical layout (for proceeds)
      */
-    private void displayImages() {
-        LinearLayout layout = findViewById(R.id.inner_layout);
-        for (File image: itemImages) {
+    private void displayImages(List<File> imagesList, LinearLayout layout) {
+        for (File image: imagesList) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
@@ -228,13 +262,13 @@ public class ProductDetails extends AppCompatActivity {
                     }
                 }
             }
+            hasVideos = true;
         });
-        hasVideos = true;
         return allVideos;
     }
 
     /**
-     * Get the proceeds for a single item
+     * Get the proceed details for a single item
      */
     private void getItemProceedsDetails() {
         proceedsDetails = new ItemProceedsDetails();
