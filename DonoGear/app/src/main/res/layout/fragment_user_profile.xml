@@ -6,15 +6,21 @@
     android:theme="@style/AppTheme"
     android:fitsSystemWindows="true">
 
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:id="@+id/toolbar"-->
-<!--        android:minHeight="?attr/actionBarSize"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:titleTextColor="@android:color/white"-->
-<!--        android:background="?attr/colorPrimary">-->
-<!--    </androidx.appcompat.widget.Toolbar>-->
-
+    <Button
+        android:id="@+id/myaccount_btn"
+        android:layout_width="321dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="20dp"
+        android:background="#2FD6D6"
+        android:paddingStart="50dp"
+        android:paddingLeft="10dp"
+        android:paddingEnd="50dp"
+        android:paddingRight="10dp"
+        android:text="My Account"
+        android:layout_gravity="center_horizontal"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
 
     <Button
         android:id="@+id/userlogout_btn"
@@ -30,7 +36,6 @@
         android:layout_gravity="center"
         android:paddingEnd="50dp"
         android:paddingStart="50dp"
-        android:layout_marginBottom="20dp"
-        ></Button>
+        android:layout_marginBottom="20dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

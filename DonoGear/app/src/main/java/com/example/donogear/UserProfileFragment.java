@@ -22,6 +22,7 @@ import com.parse.ParseUser;
 public class UserProfileFragment extends Fragment {
 
     private Button logout;
+    private Button myAccount;
     private View view;
     private MainActivity activity;
 
@@ -46,6 +47,8 @@ public class UserProfileFragment extends Fragment {
 //        activity.setSupportActionBar(toolbar);
         logout = view.findViewById(R.id.userlogout_btn);
 
+        myAccount = view.findViewById(R.id.myaccount_btn);
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +59,13 @@ public class UserProfileFragment extends Fragment {
 //                intent.putExtra("finish", true);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+
+            }
+        });
+
+        myAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
         });
