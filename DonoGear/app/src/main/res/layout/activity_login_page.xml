@@ -125,6 +125,15 @@
             android:layout_marginRight="10dp"
             android:password="true"
             android:layout_marginTop="10dp"/>
+        <TextView
+            android:id="@+id/invalid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invalid username/password"
+            android:layout_marginTop="10dp"
+            android:textColor="#FF0000"
+            android:visibility="gone">
+        </TextView>
 
         <Button
             android:id="@+id/login_btn"

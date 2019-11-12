@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +44,7 @@ public class LoginPageActivity extends AppCompatActivity {
     EditText usernameEditTextLogin;
     EditText passwordEditTextLogin;
     EditText emailEditTextSignUp;
+    TextView invalid;
     String username;
     String password;
     String email;
@@ -62,6 +64,7 @@ public class LoginPageActivity extends AppCompatActivity {
 
 //        boolean finish = getIntent().getBooleanExtra("finish", false);
         pgsBar = (ProgressBar)findViewById(R.id.pBar);
+        invalid = findViewById(R.id.invalid);
         tabs = findViewById(R.id.tabs);
         login_layout = findViewById(R.id.login_layout);
         createAccount_layout = findViewById(R.id.createAccount_layout);
@@ -186,10 +189,13 @@ public class LoginPageActivity extends AppCompatActivity {
         email = emailEditTextSignUp.getText().toString();
         password = passwordEditTextSignup.getText().toString();
 
+        if (username.length() == 0) {
+            usernameEditTextSignup.setError("Username cannot be empty");
+        }
         if (!emailValidator(email)) {
             emailEditTextSignUp.setError("Please enter valid email");
         }
-        else if (password.length() == 0) {
+        if (password.length() == 0) {
             passwordEditTextSignup.setError("Password is required");
         }
         else if (password.length() < 8) {
@@ -213,7 +219,13 @@ public class LoginPageActivity extends AppCompatActivity {
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     } else {
-                        usernameEditTextSignup.setError("Please enter different username");
+                        System.out.println(e.getMessage());
+                        if (e.getMessage().equals("Account already exists for this email address.")) {
+                            emailEditTextSignUp.setError("Please enter different email");
+                        }
+                        else {
+                            usernameEditTextSignup.setError("Please enter different username");
+                        }
                         System.out.println("Signup error");
                         ParseUser.logOut();
 //                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -236,22 +248,32 @@ public class LoginPageActivity extends AppCompatActivity {
 
     public void loginBtnClicked(View view) {
 
-
+        invalid.setVisibility(View.GONE);
         username = usernameEditTextLogin.getText().toString();
         System.out.println(username);
         password = passwordEditTextLogin.getText().toString();
         System.out.println(password);
+        if (username.length() == 0) {
+            usernameEditTextLogin.setError("Username cannot be empty");
+        }
+        if (password.length() == 0) {
+            passwordEditTextLogin.setError("Please enter password");
+        }
+
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
-                System.out.println(parseUser);
                 if (parseUser != null) {
                     Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
 //                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
+                    invalid.setVisibility(View.VISIBLE);
+                    usernameEditTextLogin.setText("");
+                    passwordEditTextLogin.setText("");
+                    System.out.println(e.getMessage());
                     ParseUser.logOut();
-                    Toast.makeText(LoginPageActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    
                 }
             }
         });
