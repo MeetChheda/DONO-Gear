@@ -22,16 +22,13 @@
         android:src="@mipmap/dono_icon"
         android:scaleType="fitCenter"
         android:background="@android:color/transparent"
-        android:layout_marginTop="80dp"
-        />
-
+        android:layout_marginTop="80dp"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="#2FD6D6"
-        >
+        app:tabIndicatorColor="#2FD6D6">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/login_tab"
@@ -39,8 +36,7 @@
             android:layout_width="wrap_content"
             android:text="Login"
             app:tabBackground="@drawable/tabselector"
-            android:background="#2FD6D6"
-            />
+            android:background="#2FD6D6"/>
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/createAccount_tab"
@@ -48,9 +44,8 @@
             android:layout_width="wrap_content"
             android:text="Create Account"
             app:tabBackground="@drawable/tabselector"
-            android:background="#2FD6D6"
+            android:background="#2FD6D6"/>
 
-            />
     </com.google.android.material.tabs.TabLayout>
 
     <LinearLayout
@@ -58,9 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-
-        >
+        android:gravity="center_horizontal">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,7 +68,7 @@
                 android:background="@android:color/transparent"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="20dp"
-                />
+                android:clickable="true"/>
             <ImageView
                 android:id="@+id/google_icon"
                 android:layout_width="50dp"
@@ -93,7 +86,7 @@
             android:text="OR"
             android:textSize="20dp"
             android:layout_marginTop="30dp"
-            ></TextView>
+            />
 
         <TextView
             android:id="@+id/username_Text"
@@ -101,7 +94,7 @@
             android:layout_height="wrap_content"
             android:text="Username"
             android:layout_marginLeft="10dp"
-            android:textColor="#4B4B4B"></TextView>
+            android:textColor="#4B4B4B"/>
 
         <EditText
             android:id="@+id/username_editText"
@@ -111,7 +104,7 @@
             android:background="@drawable/textborder"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"></EditText>
+            android:layout_marginTop="10dp"/>
 
         <TextView
             android:id="@+id/password_text"
@@ -120,7 +113,7 @@
             android:text="Password"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
-            android:textColor="#4B4B4B"></TextView>
+            android:textColor="#4B4B4B"/>
 
         <EditText
             android:id="@+id/password_editText"
@@ -131,7 +124,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:password="true"
-            android:layout_marginTop="10dp"></EditText>
+            android:layout_marginTop="10dp"/>
 
         <Button
             android:id="@+id/login_btn"
@@ -147,10 +140,7 @@
             android:onClick="loginBtnClicked"
             android:paddingEnd="50dp"
             android:layout_marginBottom="50dp"
-            android:paddingStart="50dp"
-            ></Button>
-
-
+            android:paddingStart="50dp"/>
 
     </LinearLayout>
     <LinearLayout
@@ -169,7 +159,7 @@
             android:layout_height="wrap_content"
             android:text="Username"
             android:layout_marginLeft="10dp"
-            android:textColor="#4B4B4B"></TextView>
+            android:textColor="#4B4B4B"/>
 
         <EditText
             android:id="@+id/usernameCreateAccount_editText"
@@ -179,7 +169,7 @@
             android:background="@drawable/textborder"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"></EditText>
+            android:layout_marginTop="10dp"/>
         <TextView
             android:id="@+id/emailCreateAccount_text"
             android:layout_width="match_parent"
@@ -187,7 +177,7 @@
             android:text="Email Address"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
-            android:textColor="#4B4B4B"></TextView>
+            android:textColor="#4B4B4B"/>
 
         <EditText
             android:id="@+id/emailCreateAccount_editText"
@@ -197,7 +187,7 @@
             android:background="@drawable/textborder"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"></EditText>
+            android:layout_marginTop="10dp"/>
 
         <TextView
             android:id="@+id/passwordCreateAccount_text"
@@ -206,7 +196,7 @@
             android:text="Password"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
-            android:textColor="#4B4B4B"></TextView>
+            android:textColor="#4B4B4B"/>
 
         <EditText
             android:id="@+id/passwordCreateAccount_editText"
@@ -217,7 +207,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:password="true"
-            android:layout_marginTop="10dp"></EditText>
+            android:layout_marginTop="10dp"/>
 
         <Button
             android:id="@+id/createAccount_btn"
@@ -232,8 +222,8 @@
             android:textAllCaps="false"
             android:onClick="createAccountBtnClicked"
             android:paddingStart="50dp"
-            android:paddingEnd="50dp"
-            ></Button>
+            android:paddingEnd="50dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -242,8 +232,16 @@
             android:layout_marginLeft="75dp"
             android:layout_marginRight="75dp"
             android:textAlignment="center"
-            android:textSize="12dp"
-            ></TextView>
+            android:textSize="12dp"/>
+
+        <ProgressBar
+            android:id="@+id/pBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible">
+        </ProgressBar>
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
+
