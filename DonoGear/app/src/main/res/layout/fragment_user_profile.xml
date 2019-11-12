@@ -15,4 +15,22 @@
 <!--        android:background="?attr/colorPrimary">-->
 <!--    </androidx.appcompat.widget.Toolbar>-->
 
+
+    <Button
+        android:id="@+id/userlogout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="#2FD6D6"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:paddingEnd="50dp"
+        android:paddingStart="50dp"
+        android:layout_marginBottom="20dp"
+        ></Button>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
