@@ -11,11 +11,6 @@ import android.view.ViewGroup;
 
 import com.example.donogear.R;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
 
 /**
  * A simple {@link Fragment} subclass.

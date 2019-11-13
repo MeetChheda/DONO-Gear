@@ -116,7 +116,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             @Override
             public void onFinish() {
                 itemHolder.endTimeText.setText("TIME UP");
-                //itemHolder.timeHolder.setVisibility(View.GONE);
+
             }
         }.start();
     }

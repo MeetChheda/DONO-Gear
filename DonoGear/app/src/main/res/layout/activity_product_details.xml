@@ -15,21 +15,25 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <HorizontalScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:orientation="horizontal"
+                android:id="@+id/hori">
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/horizontal_scroll"
-                android:fillViewport="true"
                 android:scrollbars="none">
 
                 <LinearLayout
                     android:id="@+id/inner_layout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"/>
 
             </HorizontalScrollView>
+            </LinearLayout>
 
             <ImageButton
                 android:layout_width="50dp"
@@ -43,7 +47,7 @@
                 android:id="@+id/time_remaining"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/horizontal_scroll"
+                android:layout_below="@+id/hori"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="-30dp"
                 android:background="@drawable/time_outline"
@@ -52,17 +56,6 @@
                 android:textSize="20sp"
                 android:padding="7dp"
                 android:text="Time remaining"/>
-
-        <!--    <TextView-->
-        <!--        android:id="@+id/time_holder"-->
-        <!--        android:layout_width="wrap_content"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:layout_below="@+id/time_remaining"-->
-        <!--        android:layout_centerHorizontal="true"-->
-        <!--        android:textColor="#000"-->
-        <!--        android:textSize="10sp"-->
-        <!--        android:padding="7dp"-->
-        <!--        android:text="  D  :  H  :  M  :  S "/>-->
 
             <TextView
                 android:id="@+id/title"

@@ -20,7 +20,6 @@ import com.example.donogear.utils.ItemAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.tabs.TabLayout;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -77,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void getFilters() {
         ParseQuery<ParseObject> tagsQuery = ParseQuery.getQuery(TAGS);
-        //Toast.makeText(context, tagsQuery.hasCachedResult() + "", Toast.LENGTH_SHORT).show();
-        //tagsQuery.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
         tagsQuery.findInBackground((items, e) -> {
             if (e == null) {
                 for (ParseObject item : items) {
@@ -103,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void readData() {
         ParseQuery<ParseObject> collectibleQuery = ParseQuery.getQuery(COLLECTIBLES);
-        //collectibleQuery.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
         collectibleQuery.findInBackground((items, e) -> {
             if (e == null) {
                 for (ParseObject item : items) {
@@ -238,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements
         selectedItemsId = new HashSet<>();
         tagsSelected = new ArrayList<>(topics);
         tagsSelected.addAll(causes);
-        System.out.println(tagsSelected);
+//        System.out.println(tagsSelected);
         for (String str: tagsSelected) {
             if (tagsToItems.containsKey(str)) {
                 selectedItemsId.addAll(tagsToItems.get(str));
@@ -253,8 +249,8 @@ public class MainActivity extends AppCompatActivity implements
                     .collect(Collectors.toList());
         }
 
-        System.out.println(selectedItemsId);
-        System.out.println(listOfItems.size());
+//        System.out.println(selectedItemsId);
+//        System.out.println(listOfItems.size());
         itemAdapter.setItemList(listOfItems);
         itemAdapter.notifyDataSetChanged();
         loadFragment(new SearchPageFragment(), category);
@@ -266,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements
      * @param category - category selected
      */
     private void filterItemsByCategory(String category) {
-        System.out.println("Filtering by " + category);
+//        System.out.println("Filtering by " + category);
         listOfItems = superCopyList.stream()
                 .filter(item -> item.category.equals(category))
                 .collect(Collectors.toList());

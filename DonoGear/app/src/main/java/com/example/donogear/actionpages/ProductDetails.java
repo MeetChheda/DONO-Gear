@@ -20,8 +20,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.example.donogear.R;
 import com.example.donogear.interfaces.TickTime;
@@ -74,7 +72,7 @@ public class ProductDetails extends AppCompatActivity {
                     displayVideo(itemVideosUrl, itemVideosLayout);
                 }
                 else {
-                    System.out.println("Video? : " + hasVideos);
+//                    System.out.println("Video? : " + hasVideos);
                     handler.postDelayed(this, 1000);
                 }
             }
@@ -124,11 +122,6 @@ public class ProductDetails extends AppCompatActivity {
         if (videoList == null || videoList.size() == 0) {
             return;
         }
-//        videoView.setVisibility(View.VISIBLE);
-//        MediaController mediaController = new MediaController(context);
-//        mediaController.setAnchorView(videoView);
-//        mediaController.setMediaPlayer(videoView);
-//        videoView.setMediaController(mediaController);
         for (int i = 0; i < videoList.size(); i += 3) {
             LinearLayout newLayout = new LinearLayout(getBaseContext());
             newLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -204,8 +197,8 @@ public class ProductDetails extends AppCompatActivity {
      * reuses the methods to displayImages and Videos for the proceeds
      */
     private void displayProceedsDetails() {
-        System.out.println(proceedsDetails.printProceeds());
-        System.out.println(proceedsDetails.printProceeds());
+//        System.out.println(proceedsDetails.printProceeds());
+//        System.out.println(proceedsDetails.printProceeds());
         TextView proceedsTitle = findViewById(R.id.proceeds_title);
         proceedsTitle.setText(proceedsDetails.title);
 
@@ -248,7 +241,6 @@ public class ProductDetails extends AppCompatActivity {
     private List<String> getItemVideos() {
         itemVideosQuery = ParseQuery.getQuery(COLLECTIBLE_VIDEOS);
         itemVideosQuery.whereEqualTo("collectibleId", itemId);
-        System.out.println(itemId);
         final List<String> allVideos = new ArrayList<>();
         itemVideosQuery.getFirstInBackground((object, e) -> {
             if (e == null) {
@@ -256,7 +248,7 @@ public class ProductDetails extends AppCompatActivity {
                     if (object.has("video" + i)) {
                         if (object.getString("video" + i) != null) {
                             String videoUrl = object.getString("video" + i);
-                            System.out.println(videoUrl);
+//                            System.out.println(videoUrl);
                             allVideos.add(videoUrl);
                         }
                     }
@@ -277,9 +269,9 @@ public class ProductDetails extends AppCompatActivity {
         itemProceedsQuery.getFirstInBackground((object, e) -> {
             if (e == null) {
                 final String proceedTitle = object.getString("proceedTitle");
-                System.out.println("Title " + proceedTitle);
+//                System.out.println("Title " + proceedTitle);
                 final String proceedDescription = object.getString("proceedDescription");
-                System.out.println("Desc " + proceedDescription);
+//                System.out.println("Desc " + proceedDescription);
                 final List<File> proceedsImages = new ArrayList<>();
                 final List<String> proceedVideo = new ArrayList<>();
                 for (int i = 1; i < 3; i++) {
@@ -287,7 +279,7 @@ public class ProductDetails extends AppCompatActivity {
                         try {
                             if (object.getParseFile("proceedImage" + i).getFile() != null) {
                                 File image = object.getParseFile("proceedImage" + i).getFile();
-                                System.out.println("Added image " + i);
+//                                System.out.println("Added image " + i);
                                 proceedsImages.add(image);
                             }
                         } catch (ParseException ex) {
@@ -299,7 +291,7 @@ public class ProductDetails extends AppCompatActivity {
                     if (object.has("proceedVideo" + i)) {
                         if (object.getString("proceedVideo" + i) != null) {
                             String videoUrl = object.getString("proceedVideo" + i);
-                            System.out.println("Added video " + i);
+//                            System.out.println("Added video " + i);
                             proceedVideo.add(videoUrl);
                         }
                     }

@@ -81,7 +81,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
                     displayData();
                 }
                 else {
-                    System.out.println("Getting data");
+//                    System.out.println("Getting data");
                     handler.postDelayed(this, 100);
                 }
             }
@@ -171,7 +171,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     @Override
     public void onItemClick(View view, int position) {
         ItemDetails item = listOfItems.get(position);
-        System.out.println(item.itemName);
+//        System.out.println(item.itemName);
         Intent intent = new Intent(activity, ProductDetails.class);
         intent.putExtra("item_details", item);
         intent.putExtra("typeOfSearch", typeOfSearch);
