@@ -15,8 +15,10 @@ import android.widget.Toast;
 import com.example.donogear.R;
 import com.example.donogear.interfaces.myOnBackPressed;
 import com.example.donogear.interfaces.onSavePressed;
+import com.example.donogear.models.CausesDetails;
 import com.example.donogear.models.DonorDetails;
 import com.example.donogear.models.ItemDetails;
+import com.example.donogear.utils.CausesAdapter;
 import com.example.donogear.utils.DonorAdapter;
 import com.example.donogear.utils.ItemAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -43,6 +45,7 @@ import static com.example.donogear.utils.Constants.COLLECTIBLE_IMAGES;
 import static com.example.donogear.utils.Constants.DONOR;
 import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
+import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TAGS;
 
@@ -55,9 +58,11 @@ public class MainActivity extends AppCompatActivity implements
     public List<String> tagsSelected;
     public Set<String> selectedItemsId;
     public List<ItemDetails> listOfItems, copyList, superCopyList;
-    public List<DonorDetails> donorList;
+    public List<DonorDetails> donorDetailsList;
+    public List<CausesDetails> causesDetailsList;
     public Context context;
     public ItemAdapter itemAdapter;
+    public CausesAdapter causesAdapter;
     public DonorAdapter donorAdapter;
     public Map<String, List<String>> tagsToItems;
     public BottomNavigationView mainNavigation;
@@ -77,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements
         readData();
         getFilters();
         itemAdapter = new ItemAdapter(context, listOfItems);
-        donorAdapter = new DonorAdapter(context, donorList);
+        donorAdapter = new DonorAdapter(context, donorDetailsList);
+        causesAdapter = new CausesAdapter(context, causesDetailsList);
     }
 
     /**
@@ -149,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements
                     final String donorName = donor.getString("name");
                     final String category = donor.getString("category");
                     DonorDetails donorObject = new DonorDetails(donorId, donorName, category, donorImageList);
-                    donorList.add(donorObject);
+                    donorDetailsList.add(donorObject);
                     donorAdapter.notifyDataSetChanged();
                 }
             } else {
@@ -158,6 +164,49 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("Error", e.toString());
             }
         });
+
+
+        ParseQuery<ParseObject> causesQuery = ParseQuery.getQuery(PROCEEDS);
+        causesQuery.findInBackground((causes, e) -> {
+            if (e == null) {
+                for (ParseObject cause: causes) {
+                    String causeId = cause.getObjectId();
+                    final List<File> causeImageList = getImageForCause(causeId);
+                    final String causeTitle = cause.getString("proceedTitle");
+                    final String category = cause.getString("category");
+                    final String websiteUrl = cause.getString("websiteUrl");
+                    CausesDetails causeObject = new CausesDetails(causeId, causeTitle, category, causeImageList, websiteUrl);
+                    causesDetailsList.add(causeObject);
+                    causesAdapter.notifyDataSetChanged();
+                }
+            } else {
+                // Something is wrong
+                Toast.makeText(MainActivity.this, "Error: " + e, Toast.LENGTH_SHORT).show();
+                Log.e("Error", e.toString());
+            }
+        });
+    }
+
+    private List<File> getImageForCause(String causeId) {
+        ParseQuery<ParseObject> causeImageQuery = ParseQuery.getQuery(PROCEEDS);
+        List<File> imageFileList = new ArrayList<>();
+        causeImageQuery.whereEqualTo("objectId", causeId);
+        causeImageQuery.getFirstInBackground((object, e) -> {
+            if (e == null) {
+                if (object.getParseFile("proceedImage1") != null) {
+                    try {
+                        if (object.getParseFile("proceedImage1").getFile() != null) {
+                            File imageFile = object.getParseFile("proceedImage1").getFile();
+                            imageFileList.add(imageFile);
+                            donorAdapter.notifyDataSetChanged();
+                        }
+                    } catch (ParseException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        return imageFileList;
     }
 
     private List<File> getImageForDonor(String donorId) {
@@ -171,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements
                         if (object.getParseFile("image").getFile() != null) {
                             File imageFile = object.getParseFile("image").getFile();
                             imageFileList.add(imageFile);
-                            donorAdapter.notifyDataSetChanged();
+                            causesAdapter.notifyDataSetChanged();
                         }
                     } catch (ParseException ex) {
                         ex.printStackTrace();
@@ -222,7 +271,8 @@ public class MainActivity extends AppCompatActivity implements
         context = getBaseContext();
         listOfItems = new ArrayList<>();
         copyList = new ArrayList<>();
-        donorList = new ArrayList<>();
+        donorDetailsList = new ArrayList<>();
+        causesDetailsList = new ArrayList<>();
         superCopyList = new ArrayList<>();
         tags = new ArrayList[2];
         tags[0] = new ArrayList<>();
@@ -393,30 +443,36 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         Fragment currentFragment = null;
+        String tab = new String();
         switch (menuItem.getItemId()) {
             case R.id.navigation_home:
                 innerTabs.setVisibility(View.GONE);
                 innerBrowseTabs.setVisibility(View.GONE);
                 currentFragment = new HomePageFragment();
+                tab = "Home";
                 break;
             case R.id.navigation_browse:
                 innerTabs.setVisibility(View.GONE);
                 innerBrowseTabs.setVisibility(View.VISIBLE);
+                tab = DONOR_IDENTIFIER;
                 currentFragment = new BrowsePageFragment();
                 break;
             case R.id.navigation_search:
                 innerTabs.setVisibility(View.VISIBLE);
                 innerBrowseTabs.setVisibility(View.GONE);
                 currentFragment = new SearchPageFragment();
+                tab = AUCTION_IDENTIFIER;
                 break;
 
             case R.id.navigation_profile:
                 innerTabs.setVisibility(View.GONE);
                 innerBrowseTabs.setVisibility(View.GONE);
                 currentFragment = new UserProfileFragment();
+                tab = "Profile";
                 break;
         }
-        return loadFragment(currentFragment, AUCTION_IDENTIFIER);
+
+        return loadFragment(currentFragment, tab);
     }
 
     @Override
