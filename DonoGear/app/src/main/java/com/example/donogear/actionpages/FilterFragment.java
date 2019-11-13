@@ -94,6 +94,11 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
         return view;
     }
 
+    /**
+     * Add buttons for filter tags to the layout
+     * @param tags - all tags
+     * @param tagButtons - buttons for all tags
+     */
     private void addButtons(List<String> tags, List<Button> tagButtons) {
         for (int j = 0; j <= tags.size(); j += 3) {
             LinearLayout newLayout = new LinearLayout(getContext());
@@ -129,6 +134,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
         }
     }
 
+    /**
+     * Toggle button (selected / deselected)
+     * @param button - button which is clicked
+     */
     private void toggleButton(Button button) {
         int color = button.getTextColors().getDefaultColor();
         if (color == AQUA) {
@@ -138,6 +147,12 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
         }
     }
 
+    /**
+     * Defines layout for a button, such as color, position, size etc
+     * @param button - a single button
+     * @param borderColor - color for the border
+     * @param bgColor - background color, for the button
+     */
     private void setButtonLayout(Button button, int borderColor, int bgColor) {
         button.setTextColor(borderColor);
         float[] outerRadii = new float[]{75,75,75,75,75,75,75,75};

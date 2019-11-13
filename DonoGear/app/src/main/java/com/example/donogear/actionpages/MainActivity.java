@@ -228,6 +228,8 @@ public class MainActivity extends AppCompatActivity implements
      * are then sent to SearchFragment again to adjust items based on those filters only
      * @param topics - selected topic filters
      * @param causes - selected causes filters
+     * @param category - selected category amongst the three types (raffles, auctions, drops)
+     *                 It also tells us about the active tab (fragment) open
      */
     @Override
     public void passData(List<String> topics, List<String> causes, String category) {

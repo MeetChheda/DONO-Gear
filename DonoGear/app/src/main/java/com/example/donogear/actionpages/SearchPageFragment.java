@@ -95,7 +95,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
      * Initialises all the layout basics (views, buttons etc) Also extracts all the displayable
      * data from the MainActivity.
      *
-     * TO-DO: Cleaner logic for passing data from Activity to Fragment
+     * TODO: Cleaner logic for passing data from Activity to Fragment
      */
     private void initializeLayout() {
         recyclerView = view.findViewById(R.id.card_view_recycler_list);
@@ -204,7 +204,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     }
 
     /**
-     * Helper function to define behaviour of button clicks
+     * Helper function to initialise buttons and define behaviour of the clicks
      */
     private void initButtonClicks() {
         filterButton.setOnClickListener(view ->

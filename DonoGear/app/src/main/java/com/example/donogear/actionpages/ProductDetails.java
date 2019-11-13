@@ -93,6 +93,9 @@ public class ProductDetails extends AppCompatActivity {
         handler.post(proceedsRunnable);
     }
 
+    /**
+     * Initialized variables and layout views
+     */
     private void initData() {
         handler = new Handler();
         context = getBaseContext();

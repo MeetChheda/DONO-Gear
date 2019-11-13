@@ -9,6 +9,7 @@ import android.view.View;
 import com.example.donogear.actionpages.MainActivity;
 import com.example.donogear.R;
 import com.parse.Parse;
+import com.parse.ParseUser;
 import com.parse.facebook.ParseFacebookUtils;
 
 public class LauncherActivity extends AppCompatActivity {
@@ -24,7 +25,7 @@ public class LauncherActivity extends AppCompatActivity {
                 .server(getString(R.string.back4app_server_url))
                 .build()
         );
-
+        ParseUser.logOut();
         ParseFacebookUtils.initialize(this);
     }
 
