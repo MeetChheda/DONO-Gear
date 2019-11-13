@@ -43,6 +43,10 @@ public class UserProfileFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Function added for logging out
+     *
+     */
     private void initializeLayout() {
 
         logout = view.findViewById(R.id.userlogout_btn);
