@@ -10,5 +10,8 @@ public class Constants {
     public static final String AUCTION_IDENTIFIER = "auction";
     public static final String RAFFLE_IDENTIFIER = "raffle";
     public static final String DROP_IDENTIFIER = "drop";
+    public static final String DONOR_IDENTIFIER = "donor";
+    public static final String CAUSES_IDENTIFIER = "causes";
+    public static final String DONOR = "Donor";
 
 }

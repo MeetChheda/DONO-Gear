@@ -15,7 +15,9 @@ import android.widget.Toast;
 import com.example.donogear.R;
 import com.example.donogear.interfaces.myOnBackPressed;
 import com.example.donogear.interfaces.onSavePressed;
+import com.example.donogear.models.DonorDetails;
 import com.example.donogear.models.ItemDetails;
+import com.example.donogear.utils.DonorAdapter;
 import com.example.donogear.utils.ItemAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
@@ -35,8 +37,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
+import static com.example.donogear.utils.Constants.CAUSES_IDENTIFIER;
 import static com.example.donogear.utils.Constants.COLLECTIBLES;
 import static com.example.donogear.utils.Constants.COLLECTIBLE_IMAGES;
+import static com.example.donogear.utils.Constants.DONOR;
+import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TAGS;
@@ -50,12 +55,14 @@ public class MainActivity extends AppCompatActivity implements
     public List<String> tagsSelected;
     public Set<String> selectedItemsId;
     public List<ItemDetails> listOfItems, copyList, superCopyList;
+    public List<DonorDetails> donorList;
     public Context context;
     public ItemAdapter itemAdapter;
+    public DonorAdapter donorAdapter;
     public Map<String, List<String>> tagsToItems;
     public BottomNavigationView mainNavigation;
     public TabLayout innerTabs;
-
+    public TabLayout innerBrowseTabs;
     public boolean hasAllData, hasAllImages;
 
     @Override
@@ -65,10 +72,12 @@ public class MainActivity extends AppCompatActivity implements
         ParseQuery.clearAllCachedResults();
         // Initialize basic layout specifics and Adapter
         manageInnerTabs();
+        manageInnerBrowseTabs();
         initializeLayout();
         readData();
         getFilters();
         itemAdapter = new ItemAdapter(context, listOfItems);
+        donorAdapter = new DonorAdapter(context, donorList);
     }
 
     /**
@@ -129,6 +138,48 @@ public class MainActivity extends AppCompatActivity implements
             superCopyList.addAll(listOfItems);
             hasAllData = true;
         });
+
+
+        ParseQuery<ParseObject> donorQuery = ParseQuery.getQuery(DONOR);
+        donorQuery.findInBackground((donors, e) -> {
+            if (e == null) {
+                for (ParseObject donor: donors) {
+                    String donorId = donor.getObjectId();
+                    final List<File> donorImageList = getImageForDonor(donorId);
+                    final String donorName = donor.getString("name");
+                    final String category = donor.getString("category");
+                    DonorDetails donorObject = new DonorDetails(donorId, donorName, category, donorImageList);
+                    donorList.add(donorObject);
+                    donorAdapter.notifyDataSetChanged();
+                }
+            } else {
+                // Something is wrong
+                Toast.makeText(MainActivity.this, "Error: " + e, Toast.LENGTH_SHORT).show();
+                Log.e("Error", e.toString());
+            }
+        });
+    }
+
+    private List<File> getImageForDonor(String donorId) {
+        ParseQuery<ParseObject> donorImageQuery = ParseQuery.getQuery(DONOR);
+        List<File> imageFileList = new ArrayList<>();
+        donorImageQuery.whereEqualTo("objectId", donorId);
+        donorImageQuery.getFirstInBackground((object, e) -> {
+            if (e == null) {
+                if (object.getParseFile("image") != null) {
+                    try {
+                        if (object.getParseFile("image").getFile() != null) {
+                            File imageFile = object.getParseFile("image").getFile();
+                            imageFileList.add(imageFile);
+                            donorAdapter.notifyDataSetChanged();
+                        }
+                    } catch (ParseException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        return imageFileList;
     }
 
     /**
@@ -171,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements
         context = getBaseContext();
         listOfItems = new ArrayList<>();
         copyList = new ArrayList<>();
+        donorList = new ArrayList<>();
         superCopyList = new ArrayList<>();
         tags = new ArrayList[2];
         tags[0] = new ArrayList<>();
@@ -190,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements
      * Facilitates inner tab-switching (i.e. Raffles, Auction, Drops)
      */
     private void manageInnerTabs() {
-        innerTabs = findViewById(R.id.innertabs);
+        innerTabs = findViewById(R.id.innerSearchtabs);
         innerTabs.getTabAt(1).select();
         innerTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -209,6 +261,37 @@ public class MainActivity extends AppCompatActivity implements
                         break;
                 }
                 itemAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
+
+
+    private void manageInnerBrowseTabs() {
+        innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
+        innerBrowseTabs.getTabAt(0).select();
+        innerBrowseTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+//                listOfItems = new ArrayList<>(superCopyList);
+//                copyList = new ArrayList<>(superCopyList);
+                switch (tab.getPosition()) {
+                    case 0:
+                        loadFragment(new BrowsePageFragment(), DONOR_IDENTIFIER);
+                        break;
+                    case 1:
+                        loadFragment(new BrowsePageFragment(), CAUSES_IDENTIFIER);
+                        break;
+
+                }
+//                itemAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -313,16 +396,23 @@ public class MainActivity extends AppCompatActivity implements
         switch (menuItem.getItemId()) {
             case R.id.navigation_home:
                 innerTabs.setVisibility(View.GONE);
+                innerBrowseTabs.setVisibility(View.GONE);
                 currentFragment = new HomePageFragment();
                 break;
-
+            case R.id.navigation_browse:
+                innerTabs.setVisibility(View.GONE);
+                innerBrowseTabs.setVisibility(View.VISIBLE);
+                currentFragment = new BrowsePageFragment();
+                break;
             case R.id.navigation_search:
                 innerTabs.setVisibility(View.VISIBLE);
+                innerBrowseTabs.setVisibility(View.GONE);
                 currentFragment = new SearchPageFragment();
                 break;
 
             case R.id.navigation_profile:
                 innerTabs.setVisibility(View.GONE);
+                innerBrowseTabs.setVisibility(View.GONE);
                 currentFragment = new UserProfileFragment();
                 break;
         }
