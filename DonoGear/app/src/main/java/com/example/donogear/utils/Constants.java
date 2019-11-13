@@ -14,6 +14,6 @@ public class Constants {
     public static final String DROP_IDENTIFIER = "drop";
 
     public static final int PRIMARY_COLOR = Color.parseColor("#2fd6d6");
-    public static final int PRIMARY_LIGHT = Color.parseColor("#000");
+    public static final int PRIMARY_LIGHT = Color.parseColor("#00ffff");
 
 }

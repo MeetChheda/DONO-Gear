@@ -417,4 +417,15 @@ public class ProductDetails extends AppCompatActivity {
 
         button.setBackground(layerDrawable);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (flag) {
+            flag = false;
+            full_layout.setVisibility(View.VISIBLE);
+            raffle_buttons.setVisibility(View.GONE);
+            return;
+        }
+        super.onBackPressed();
+    }
 }
