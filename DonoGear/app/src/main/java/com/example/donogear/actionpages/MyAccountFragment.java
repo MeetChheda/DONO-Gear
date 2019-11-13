@@ -1,4 +1,4 @@
-package com.example.donogear;
+package com.example.donogear.actionpages;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.donogear.R;
 import com.parse.ParseUser;
 
 public class MyAccountFragment extends Fragment {

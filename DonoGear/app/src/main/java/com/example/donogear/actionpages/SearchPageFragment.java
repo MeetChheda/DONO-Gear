@@ -1,15 +1,15 @@
-package com.example.donogear;
-
+package com.example.donogear.actionpages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,12 +20,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.donogear.R;
+import com.example.donogear.interfaces.ItemClickListener;
+import com.example.donogear.interfaces.myOnBackPressed;
+import com.example.donogear.models.ItemDetails;
+import com.example.donogear.utils.ItemAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,16 +38,12 @@ import java.util.stream.Collectors;
  */
 public class SearchPageFragment extends Fragment implements ItemClickListener, myOnBackPressed {
 
-    public static final int GET_FILTER_TAG = 1;
     private boolean searchFlag;
 
     private List<String> searchArray;
-    public static List<String>[] tags;
     private List<String> tagsSelected;
     private RecyclerView recyclerView;
     private List<ItemDetails> listOfItems, copyList;
-    private Context context;
-    private BottomNavigationView home_navigation;
     private ItemAdapter itemAdapter;
     private FloatingActionButton filterButton;
     private AutoCompleteTextView actv;
@@ -54,6 +52,8 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     private View view;
     private MainActivity activity;
     private ImageView search;
+    private String typeOfSearch;
+    private Handler handler;
 
     public SearchPageFragment() {
         // Required empty public constructor
@@ -66,10 +66,28 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_search_page, container, false);
         activity = (MainActivity) getActivity();
+        if (getArguments() != null) {
+            typeOfSearch = getArguments().getString("type");
+        }
         setHasOptionsMenu(true);
-        initializeLayout();
-        searchBox();
-        displayData();
+        handler = new Handler();
+        Runnable proceedsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(activity.hasAllImages && activity.hasAllData) {
+                    initializeLayout();
+                    initButtonClicks();
+                    searchBox();
+                    displayData();
+                }
+                else {
+//                    System.out.println("Getting data");
+                    handler.postDelayed(this, 100);
+                }
+            }
+        };
+        handler.post(proceedsRunnable);
+
         return view;
     }
 
@@ -77,12 +95,9 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
      * Initialises all the layout basics (views, buttons etc) Also extracts all the displayable
      * data from the MainActivity.
      *
-     * TO-DO: Cleaner logic for passing data from Activity to Fragment
+     * TODO: Cleaner logic for passing data from Activity to Fragment
      */
     private void initializeLayout() {
-//        Toolbar toolbar = view.findViewById(R.id.toolbar);
-//        activity.setSupportActionBar(toolbar);
-
         recyclerView = view.findViewById(R.id.card_view_recycler_list);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
@@ -90,55 +105,53 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         filterButton = view.findViewById(R.id.filter_button);
         actv = view.findViewById(R.id.autoCompleteTextView);
         search = view.findViewById(R.id.search_img);
-        context = getContext();
+
         listOfItems = activity.listOfItems;
-
-        home_navigation = view.findViewById(R.id.home_navigation);
-        tags = MainActivity.tags;
-        tagsSelected = activity.tagsSelected;
-        searchArray = activity.searchArray;
         copyList = activity.copyList;
+        searchArray = activity.searchArray;
+        filterDataByCategory();
+        tagsSelected = activity.tagsSelected;
+
         itemAdapter = activity.itemAdapter;
+        itemAdapter.setItemList(listOfItems);
         recyclerView.setAdapter(itemAdapter);
-
-
         searchFlag = false;
 
         itemAdapter.setClickListener(this);
         itemAdapter.notifyDataSetChanged();
         Bundle bundle = new Bundle();
         bundle.putSerializable("tagsSelected", new ArrayList<>(tagsSelected));
+        bundle.putString("category", typeOfSearch);
         fragment = new FilterFragment();
-        fragment.setTargetFragment(SearchPageFragment.this, GET_FILTER_TAG);
         fragment.setArguments(bundle);
-
-        filterButton.setOnClickListener(view -> {
-            fragment.show(activity.getSupportFragmentManager(), fragment.getTag());
-        });
-
-        cross.setOnClickListener(view -> {
-            actv.setText("");
-            listOfItems = copyList;
-            itemAdapter.setItemList(listOfItems);
-            itemAdapter.notifyDataSetChanged();
-            itemAdapter.setClickListener(this);
-        });
-
-        search.setOnClickListener(view -> {
-            if (!searchFlag) {
-                searchFlag = true;
-                cross.setVisibility(View.VISIBLE);
-                actv.setVisibility(View.VISIBLE);
-            } else {
-                searchFlag = false;
-                cross.setVisibility(View.GONE);
-                actv.setVisibility(View.GONE);
-            }
-        });
     }
 
     /**
-     * The MainAcitivty is responsible for filtering and passing the queried data.
+     * Filters from the collective list of all items to only display the items with the selected
+     * category
+     */
+    private void filterDataByCategory() {
+        listOfItems = activity.listOfItems.stream()
+                .filter(item -> item.category.matches(typeOfSearch))
+                .collect(Collectors.toList());
+        copyList = activity.copyList.stream()
+                .filter(item -> item.category.matches(typeOfSearch))
+                .collect(Collectors.toList());
+        searchArray = listOfItems.stream()
+                .map(item -> item.itemName)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Restores list of items back to it's original state; pre-search or pre-filter
+     */
+    private void restoreListOfItems() {
+        listOfItems = new ArrayList<>(copyList);
+        searchArray = listOfItems.stream().map(item -> item.itemName).collect(Collectors.toList());
+    }
+
+    /**
+     * The MainActivity is responsible for filtering and passing the queried data.
      * This function checks for no result found
      */
     private void displayData() {
@@ -158,8 +171,11 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     @Override
     public void onItemClick(View view, int position) {
         ItemDetails item = listOfItems.get(position);
-        System.out.println(item.itemName);
-        Toast.makeText(context, item.itemName, Toast.LENGTH_SHORT).show();
+//        System.out.println(item.itemName);
+        Intent intent = new Intent(activity, ProductDetails.class);
+        intent.putExtra("item_details", item);
+        intent.putExtra("typeOfSearch", typeOfSearch);
+        startActivity(intent);
     }
 
     /**
@@ -168,7 +184,8 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
      */
     private void searchBox() {
         // Search auto - complete
-        ArrayAdapter<String> adapter = new ArrayAdapter<> (context, android.R.layout.select_dialog_item, searchArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<> (getContext(),
+                android.R.layout.select_dialog_item, searchArray);
         //Getting the instance of AutoCompleteTextView
         actv.setThreshold(1);//will start working from first character
         actv.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
@@ -187,6 +204,36 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     }
 
     /**
+     * Helper function to initialise buttons and define behaviour of the clicks
+     */
+    private void initButtonClicks() {
+        filterButton.setOnClickListener(view ->
+                fragment.show(activity.getSupportFragmentManager(), fragment.getTag())
+        );
+
+        cross.setOnClickListener(view -> {
+            actv.setText("");
+            restoreListOfItems();
+            itemAdapter.setItemList(listOfItems);
+            itemAdapter.notifyDataSetChanged();
+        });
+
+        search.setOnClickListener(view -> {
+            if (!searchFlag) {
+                searchFlag = true;
+                cross.setVisibility(View.VISIBLE);
+                actv.setVisibility(View.VISIBLE);
+                actv.requestFocus();
+            } else {
+                searchFlag = false;
+                cross.setVisibility(View.GONE);
+                actv.setVisibility(View.GONE);
+                cross.performClick();
+            }
+        });
+    }
+
+    /**
      * The original behaviour is present in the parent activity (MainActivity - onBackPressed)
      * To ensure correct behavior - onBackPressed will always go to Home fragment unless the user
      * is deep into one search. If yes, then backPress just takes him to previous view which is all
@@ -197,7 +244,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     public boolean onBackPressed() {
         if (searchFlag) {
             searchFlag = false;
-            listOfItems = copyList;
+            restoreListOfItems();
             itemAdapter.setItemList(listOfItems);
             itemAdapter.notifyDataSetChanged();
             actv.setText("");
@@ -208,12 +255,6 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         }
         return false;
     }
-
-//    public void searchClicked(View view) {
-//        searchFlag = true;
-//        cross.setVisibility(View.VISIBLE);
-//        actv.setVisibility(View.VISIBLE);
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

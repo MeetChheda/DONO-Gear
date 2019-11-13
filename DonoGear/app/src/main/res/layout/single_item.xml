@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+
  <androidx.cardview.widget.CardView
     android:id="@+id/cardview"
-
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="0dp"
+    app:cardElevation="3dp"
     app:cardUseCompatPadding="true">
 
         <RelativeLayout
@@ -79,8 +79,11 @@
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
-<View
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    style="@style/Divider"></View>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Divider">
+
+    </View>
 </LinearLayout>

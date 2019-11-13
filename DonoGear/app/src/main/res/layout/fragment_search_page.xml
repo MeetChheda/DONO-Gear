@@ -1,51 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/AppTheme"
-    android:fitsSystemWindows="true"
-    >
+    android:fitsSystemWindows="true">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:theme="@style/AppTheme"
-        android:fitsSystemWindows="true">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragment_home_container"
+        android:background="#FFF"/>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/fragment_home_container"
-            android:background="#FFF"/>
-        <ImageView
-            android:id="@+id/search_img"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/search_icon"
-            android:layout_marginTop="20dp"
-
-            ></ImageView>
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/home_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:menu="@menu/top_navigation"
-            android:background="#FFFFFF"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
-            app:elevation="0dp"
-            app:itemTextAppearanceActive="@style/BottomNavigationText"
-            app:itemTextColor="@drawable/selected_nav_item" />
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            ></ImageView>
-    </RelativeLayout>
-
+    <ImageView
+        android:id="@+id/search_img"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="10dp"
+        android:src="@mipmap/search_icon"
+        android:contentDescription="Search button"
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:id="@+id/no_records"
@@ -96,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/autoCompleteTextView"
-                    android:layout_marginBottom="40dp"/>
+                    android:layout_marginBottom="50dp"/>
 
             </RelativeLayout>
         </ScrollView>
@@ -115,4 +90,4 @@
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
     </RelativeLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.donogear;
+package com.example.donogear.actionpages;
 
 
 import android.content.Context;
@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.example.donogear.R;
+import com.example.donogear.interfaces.onSavePressed;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -36,9 +38,9 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     private List<String> topicsTags, causesTags;
     private List<Button> topicButtons, causesButtons;
     private Button save, reset, cancel;
-    onSavePressed savePressedListener;
+    private onSavePressed savePressedListener;
     private static int AQUA = Color.parseColor("#2fd6d6");
-
+    private String category;
     private List<String> topicsSelected, causesSelected;
     private List<String> savedTags;
     public FilterFragment() {
@@ -64,7 +66,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
 
         View view = inflater.inflate(R.layout.fragment_filter, container,
                 false);
-        savedTags = getArguments().getStringArrayList("tagsSelected");
+        if (getArguments() != null) {
+            savedTags = getArguments().getStringArrayList("tagsSelected");
+            category = getArguments().getString("category");
+        }
         System.out.println("\n\n\n" + savedTags);
         save = view.findViewById(R.id.save);
         reset = view.findViewById(R.id.reset);
@@ -89,6 +94,11 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
         return view;
     }
 
+    /**
+     * Add buttons for filter tags to the layout
+     * @param tags - all tags
+     * @param tagButtons - buttons for all tags
+     */
     private void addButtons(List<String> tags, List<Button> tagButtons) {
         for (int j = 0; j <= tags.size(); j += 3) {
             LinearLayout newLayout = new LinearLayout(getContext());
@@ -124,6 +134,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
         }
     }
 
+    /**
+     * Toggle button (selected / deselected)
+     * @param button - button which is clicked
+     */
     private void toggleButton(Button button) {
         int color = button.getTextColors().getDefaultColor();
         if (color == AQUA) {
@@ -133,6 +147,12 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
         }
     }
 
+    /**
+     * Defines layout for a button, such as color, position, size etc
+     * @param button - a single button
+     * @param borderColor - color for the border
+     * @param bgColor - background color, for the button
+     */
     private void setButtonLayout(Button button, int borderColor, int bgColor) {
         button.setTextColor(borderColor);
         float[] outerRadii = new float[]{75,75,75,75,75,75,75,75};
@@ -194,7 +214,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                     }
                 }
                 System.out.println("Sending result -----------");
-                savePressedListener.passData(topicsSelected, causesSelected);
+                savePressedListener.passData(topicsSelected, causesSelected, category);
                 SearchPageFragment.fragment.dismiss();
                 break;
         }
