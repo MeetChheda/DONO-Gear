@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.donogear.R;
 import com.example.donogear.actionpages.MainActivity;
-import com.google.android.material.tabs.TabItem;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -24,8 +23,6 @@ import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 import com.parse.facebook.ParseFacebookUtils;
 
 import org.json.JSONException;
@@ -237,8 +234,6 @@ public class LoginPageActivity extends AppCompatActivity {
         pattern = Pattern.compile(EMAIL_PATTERN);
         matcher = pattern.matcher(email);
         return matcher.matches();
-
-
     }
 
     public void loginBtnClicked(View view) {
