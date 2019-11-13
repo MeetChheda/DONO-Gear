@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             } else {
                 // Something is wrong
-                Toast.makeText(MainActivity.this, "Error: " + e, Toast.LENGTH_SHORT).show();
                 Log.e("Error", e.toString());
             }
         });
@@ -110,12 +109,13 @@ public class MainActivity extends AppCompatActivity implements
                     final int currentBid = item.getInt("currentBid");
                     final String itemName = item.getString("itemName");
                     final String itemDescription = item.getString("description");
-                    final String highestBidder = item.getString("highestBidder") != null ?
-                            item.getString("highestBidder") : "Be the first one to bid!";
+                    final String highestBidder = item.getString("highestBidder");
                     final String category = item.getString("category");
                     final Date endDate = item.getDate("auctionEndDate");
-                    ItemDetails itemDetails = new ItemDetails(itemId, itemName, itemDescription, buyNowPrice,
-                            currentBid, highestBidder, category, endDate, itemImages);
+                    final int costPerEntry = item.getInt("costPerEntry");
+                    ItemDetails itemDetails = new ItemDetails(itemId, itemName, itemDescription,
+                            startBid, buyNowPrice, currentBid, highestBidder, category, endDate,
+                            costPerEntry, itemImages);
                     searchArray.add(itemName);
                     listOfItems.add(itemDetails);
                     itemAdapter.notifyDataSetChanged();

@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.example.donogear.registeration.LauncherActivity;
 import com.example.donogear.registeration.LoginPageActivity;
 import com.facebook.login.LoginManager;
 import com.parse.ParseUser;
@@ -49,7 +51,7 @@ public class UserProfileFragment extends Fragment {
             System.out.println("LOGOUT");
             LoginManager.getInstance().logOut();
             ParseUser.logOut();
-            Intent intent = new Intent(activity, LoginPageActivity.class);
+            Intent intent = new Intent(activity, LauncherActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
 

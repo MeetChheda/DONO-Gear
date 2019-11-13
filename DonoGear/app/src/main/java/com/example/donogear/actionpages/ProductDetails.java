@@ -41,7 +41,7 @@ import static com.example.donogear.utils.Constants.PROCEEDS;
 public class ProductDetails extends AppCompatActivity {
 
     private String itemId, itemName, itemDescription, itemHighestBidder;
-    private int itemBidAmount;
+    private int itemBidAmount, startBid;
     private Date itemTime;
     private List<File> itemImages;
     private List<String> itemVideosUrl;
@@ -109,6 +109,7 @@ public class ProductDetails extends AppCompatActivity {
         itemTime = itemDetails.endDate;
         itemHighestBidder = itemDetails.highestBidder;
         itemBidAmount = itemDetails.currentPrice;
+        startBid = itemDetails.startBid;
 
         ImageButton back =  findViewById(R.id.backbtn);
         back.setOnClickListener(view -> finish());
@@ -160,17 +161,20 @@ public class ProductDetails extends AppCompatActivity {
         TextView descriptionText = findViewById(R.id.description);
         descriptionText.setText(itemDescription);
         TextView bidderText = findViewById(R.id.bidder);
-        if (itemHighestBidder.equals("Null")) {
+        if (itemHighestBidder == null) {
             bidderText.setVisibility(View.VISIBLE);
             bidderText.setText("No current bids. Be the first one to bid!");
         }
         TextView bidAmount = findViewById(R.id.bid_holder);
+        String text = bidAmount.getText().toString();
         if (itemBidAmount > 0) {
-            String text = bidAmount.getText().toString();
             text += "<font color='#2fd6d6'>" + itemBidAmount + "</font>";
-            bidAmount.setText(Html.fromHtml(text));
-            bidAmount.setVisibility(View.VISIBLE);
+        } else {
+            text = "Starting Bid: ";
+            text += "<font color='#2fd6d6'>" + startBid + "</font>";
         }
+        bidAmount.setText(Html.fromHtml(text));
+
     }
 
     /**
