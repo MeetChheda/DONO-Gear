@@ -87,10 +87,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             itemHolder.timer.cancel();
         }
         if (!curItem.category.equals(DROP_IDENTIFIER)) {
-            tickTime(endTime, itemHolder, i);
             itemHolder.titleText.setTextColor(textColor);
             itemHolder.timeHolder.setTextColor(timeColor);
             itemHolder.endTimeText.setTextColor(timeColor);
+            tickTime(endTime, itemHolder, i);
         }
         if (curItem.category.equals(DROP_IDENTIFIER)) {
             itemHolder.timeHolder.setVisibility(View.GONE);
@@ -124,7 +124,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             @Override
             public void onFinish() {
                 itemHolder.endTimeText.setText("TIME UP");
-
+                itemHolder.endTimeText.setTextColor(Color.RED);
             }
         }.start();
     }

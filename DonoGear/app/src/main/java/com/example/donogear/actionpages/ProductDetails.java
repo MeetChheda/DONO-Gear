@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.donogear.R;
+import com.example.donogear.interfaces.ButtonDesign;
 import com.example.donogear.interfaces.TickTime;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
@@ -48,7 +49,7 @@ import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 
-public class ProductDetails extends AppCompatActivity {
+public class ProductDetails extends AppCompatActivity implements ButtonDesign {
 
     private String itemId, itemName, itemDescription, itemHighestBidder, category;
     private int itemBidAmount, startBid, costPerEntry;
@@ -84,6 +85,10 @@ public class ProductDetails extends AppCompatActivity {
             displayBidDetails();
         }
 
+        /**
+         * Delay timers (2) to facilitate populating of layout only after background tasks of fetching
+         * the item-specific videos and proceeds details have been finished
+         */
         Runnable videoRunnable = new Runnable() {
             @Override
             public void run() {
@@ -112,6 +117,10 @@ public class ProductDetails extends AppCompatActivity {
         handler.post(proceedsRunnable);
     }
 
+    /**
+     * Displays the different denominations of buying raffle-tickets as buttons. Clicking on this
+     * will take the user directly to the payment page
+     */
     private void displayRaffleButtons() {
         List<Integer> ticketDenominations = Arrays.asList(
                 100, 250, 500, 1000, 2500, 5000, 10000, 25000
@@ -131,7 +140,8 @@ public class ProductDetails extends AppCompatActivity {
                 button.setTextColor(Color.BLACK);
                 String price = "$" + (1.0 * ticketDenominations.get(i + j) / costPerEntry);
                 price += "\n" + ticketDenominations.get(i + j) + " Entries";
-                setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+                ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+//                setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 button.setText(price);
 
                 newLayout.addView(button);
@@ -143,7 +153,7 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     /**
-     * Initialized variables and layout views
+     * Initialized variables and layout views along with behaviour for buttons
      */
     private void initData() {
         handler = new Handler();
@@ -166,17 +176,14 @@ public class ProductDetails extends AppCompatActivity {
         raffle_buttons = findViewById(R.id.raffle_buttons);
         ImageButton back =  findViewById(R.id.backbtn);
         back.setOnClickListener(view -> {
-            if (flag) {
-                flag = false;
-                full_layout.setVisibility(View.VISIBLE);
-                raffle_buttons.setVisibility(View.GONE);
-                return;
+            if (!checkButtonPressed()) {
+                finish();
             }
-            finish();
         });
 
         button = findViewById(R.id.enter);
         button.setOnClickListener(view -> {
+            button.setVisibility(View.GONE);
             full_layout.setVisibility(View.GONE);
             flag = true;
             raffle_buttons.setVisibility(View.VISIBLE);
@@ -230,6 +237,9 @@ public class ProductDetails extends AppCompatActivity {
         descriptionText.setText(itemDescription);
     }
 
+    /**
+     * Displays the bid details for auction items ONLY
+     */
     private void displayBidDetails() {
         TextView bidderText = findViewById(R.id.bidder);
         if (itemHighestBidder == null) {
@@ -379,53 +389,26 @@ public class ProductDetails extends AppCompatActivity {
 
     }
 
-
-
     /**
-     * Defines layout for a button, such as color, position, size etc
-     * @param button - a single button
-     * @param borderColor - color for the border
-     * @param bgColor - background color, for the button
+     * Check if 'Enter' button is pressed for raffles. This method is used to tweak back button
+     * pressed behaviour based on the current view
+     * @return
      */
-    private void setButtonLayout(Button button, int borderColor, int bgColor) {
-        button.setTextColor(borderColor);
-        float[] outerRadii = new float[]{75,75,75,75,75,75,75,75};
-        float[] innerRadii = new float[]{75,75,75,75,75,75,75,75};
-        ShapeDrawable borderDrawable = new ShapeDrawable(new RoundRectShape(
-                outerRadii,
-                null,
-                innerRadii
-        ));
-        borderDrawable.getPaint().setColor(borderColor);
-        borderDrawable.getPaint().setStyle(Paint.Style.FILL);
-        // Define the border width
-        borderDrawable.setPadding(5,5,5,5);
-        // Set the shape background
-        ShapeDrawable backgroundShape = new ShapeDrawable(new RoundRectShape(
-                outerRadii,
-                null,
-                innerRadii
-        ));
-        backgroundShape.getPaint().setColor(bgColor); // background color
-        backgroundShape.getPaint().setStyle(Paint.Style.FILL); // Define background
-        backgroundShape.getPaint().setAntiAlias(true);
-
-        // Initialize an array of drawables
-        Drawable[] drawables = new Drawable[]{ borderDrawable, backgroundShape };
-        backgroundShape.setPadding(10,10,10,10);
-        LayerDrawable layerDrawable = new LayerDrawable(drawables);
-
-        button.setBackground(layerDrawable);
+    private boolean checkButtonPressed() {
+        if (flag) {
+            flag = false;
+            button.setVisibility(View.VISIBLE);
+            full_layout.setVisibility(View.VISIBLE);
+            raffle_buttons.setVisibility(View.GONE);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void onBackPressed() {
-        if (flag) {
-            flag = false;
-            full_layout.setVisibility(View.VISIBLE);
-            raffle_buttons.setVisibility(View.GONE);
-            return;
+        if (!checkButtonPressed()) {
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 }

@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.example.donogear.R;
+import com.example.donogear.interfaces.ButtonDesign;
 import com.example.donogear.interfaces.onSavePressed;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -119,7 +120,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                 if (split.length > 1) {
                     fin = split[0] + " &\n" + split[1];
                 }
-                setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+                ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 button.setText(fin);
                 if (savedTags != null && savedTags.size() > 0) {
                     if (savedTags.stream().anyMatch(str -> str.startsWith(split[0]))) {
@@ -142,47 +143,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     private void toggleButton(Button button) {
         int color = button.getTextColors().getDefaultColor();
         if (color == PRIMARY_COLOR) {
-            setButtonLayout(button, Color.WHITE, PRIMARY_COLOR);
+            ButtonDesign.setButtonLayout(button, Color.WHITE, PRIMARY_COLOR);
         } else {
-            setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+            ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
         }
-    }
-
-    /**
-     * Defines layout for a button, such as color, position, size etc
-     * @param button - a single button
-     * @param borderColor - color for the border
-     * @param bgColor - background color, for the button
-     */
-    private void setButtonLayout(Button button, int borderColor, int bgColor) {
-        button.setTextColor(borderColor);
-        float[] outerRadii = new float[]{75,75,75,75,75,75,75,75};
-        float[] innerRadii = new float[]{75,75,75,75,75,75,75,75};
-        ShapeDrawable borderDrawable = new ShapeDrawable(new RoundRectShape(
-                outerRadii,
-                null,
-                innerRadii
-        ));
-        borderDrawable.getPaint().setColor(borderColor);
-        borderDrawable.getPaint().setStyle(Paint.Style.FILL);
-        // Define the border width
-        borderDrawable.setPadding(5,5,5,5);
-        // Set the shape background
-        ShapeDrawable backgroundShape = new ShapeDrawable(new RoundRectShape(
-                outerRadii,
-                null,
-                innerRadii
-        ));
-        backgroundShape.getPaint().setColor(bgColor); // background color
-        backgroundShape.getPaint().setStyle(Paint.Style.FILL); // Define background
-        backgroundShape.getPaint().setAntiAlias(true);
-
-        // Initialize an array of drawables
-        Drawable[] drawables = new Drawable[]{ borderDrawable, backgroundShape };
-        backgroundShape.setPadding(10,10,10,10);
-        LayerDrawable layerDrawable = new LayerDrawable(drawables);
-
-        button.setBackground(layerDrawable);
     }
 
     @Override
@@ -192,10 +156,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                 topicsSelected = new ArrayList<>();
                 causesSelected = new ArrayList<>();
                 for (Button button: topicButtons) {
-                    setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+                    ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 }
                 for (Button button: causesButtons) {
-                    setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+                    ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 }
                 break;
             case R.id.cancel:
