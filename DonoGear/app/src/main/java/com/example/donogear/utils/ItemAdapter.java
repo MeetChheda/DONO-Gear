@@ -23,6 +23,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
+
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     private Context mContext;
@@ -84,10 +86,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         if (itemHolder.timer != null) {
             itemHolder.timer.cancel();
         }
-        tickTime(endTime, itemHolder, i);
-        itemHolder.titleText.setTextColor(textColor);
-        itemHolder.timeHolder.setTextColor(timeColor);
-        itemHolder.endTimeText.setTextColor(timeColor);
+        if (!curItem.category.equals(DROP_IDENTIFIER)) {
+            tickTime(endTime, itemHolder, i);
+            itemHolder.titleText.setTextColor(textColor);
+            itemHolder.timeHolder.setTextColor(timeColor);
+            itemHolder.endTimeText.setTextColor(timeColor);
+        }
+        if (curItem.category.equals(DROP_IDENTIFIER)) {
+            itemHolder.timeHolder.setVisibility(View.GONE);
+            itemHolder.endTimeText.setVisibility(View.GONE);
+        }
     }
 
     private int getFavourableTextColor(Bitmap bitmap) {

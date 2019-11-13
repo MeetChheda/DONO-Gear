@@ -59,135 +59,155 @@
                 android:padding="7dp"
                 android:text="Time remaining"/>
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/time_remaining"
-                android:layout_centerHorizontal="true"
-                android:textColor="#000"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:padding="7dp" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="8dp"
-                android:maxLines="5"
-                android:textStyle="italic"
-                android:paddingHorizontal="5dp"
-                android:lineSpacingExtra="3dp"
-                android:textColor="#000"
-                android:textSize="17sp"
-                android:padding="7dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/bidder"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/description"
-                android:textSize="20sp"
-                android:textStyle="italic"
-                android:visibility="gone"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/bid_holder"
-                android:text="Current Bid : "
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/bidder"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/videoButtons"
-                android:layout_below="@id/bid_holder"/>
-
-            <VideoView
-                android:id="@+id/videoView"
-                android:layout_width="350dp"
-                android:layout_height="150dp"
-                android:layout_below="@+id/videoButtons"
-                android:layout_marginTop="15dp"
-                android:layout_centerHorizontal="true"
-                android:visibility="gone"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#000"
-                android:layout_below="@id/videoView"
-                android:layout_marginTop="15dp"/>
-
-            <TextView
-                android:id="@+id/proceedsDummy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/videoView"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/time_outline"
-                android:textColor="#000"
-                android:layout_marginTop="30dp"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:padding="10dp"
-                android:text="PROCEEDS"/>
-
-            <TextView
-                android:id="@+id/proceeds_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/proceedsDummy"
-                android:layout_centerHorizontal="true"
-                android:textColor="#000"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:padding="7dp" />
-
-            <TextView
-                android:id="@+id/proceeds_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/proceeds_title"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="8dp"
-                android:maxLines="5"
-                android:textStyle="italic"
-                android:paddingHorizontal="5dp"
-                android:lineSpacingExtra="3dp"
-                android:textColor="#000"
-                android:textSize="17sp"
-                android:padding="7dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/proceeds_images"
                 android:orientation="vertical"
-                android:layout_below="@id/proceeds_description"/>
+                android:id="@+id/raffle_buttons"
+                android:layout_below="@id/time_remaining"
+                android:visibility="gone"/>
 
-            <LinearLayout
+
+            <RelativeLayout
+                android:layout_below="@id/time_remaining"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/proceed_video_buttons"
-                android:layout_below="@id/proceeds_images"/>
+                android:orientation="vertical"
+                android:id="@+id/full_item_layout">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:padding="7dp" />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="8dp"
+                    android:maxLines="5"
+                    android:textStyle="italic"
+                    android:paddingHorizontal="5dp"
+                    android:lineSpacingExtra="3dp"
+                    android:textColor="#000"
+                    android:textSize="17sp"
+                    android:padding="7dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bidder"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/description"
+                    android:textSize="20sp"
+                    android:textStyle="italic"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bid_holder"
+                    android:text="Current Bid : "
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/bidder"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/videoButtons"
+                    android:layout_below="@id/bid_holder"/>
+
+                <VideoView
+                    android:id="@+id/videoView"
+                    android:layout_width="350dp"
+                    android:layout_height="150dp"
+                    android:layout_below="@+id/videoButtons"
+                    android:layout_marginTop="15dp"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="gone"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_below="@id/videoView"
+                    android:layout_marginTop="15dp"/>
+
+
+                <TextView
+                    android:id="@+id/proceedsDummy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/videoView"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/time_outline"
+                    android:textColor="#000"
+                    android:layout_marginTop="30dp"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:padding="10dp"
+                    android:text="PROCEEDS"/>
+
+                <TextView
+                    android:id="@+id/proceeds_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/proceedsDummy"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:padding="7dp" />
+
+                <TextView
+                    android:id="@+id/proceeds_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/proceeds_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="8dp"
+                    android:maxLines="5"
+                    android:textStyle="italic"
+                    android:paddingHorizontal="5dp"
+                    android:lineSpacingExtra="3dp"
+                    android:textColor="#000"
+                    android:textSize="17sp"
+                    android:padding="7dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/proceeds_images"
+                    android:orientation="vertical"
+                    android:layout_below="@id/proceeds_description"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/proceed_video_buttons"
+                    android:layout_below="@id/proceeds_images"/>
+            </RelativeLayout>
+
 
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
+        android:id="@+id/enter"
         android:text="Place  Bid"
         android:textSize="18sp"
         android:textColor="#fff"

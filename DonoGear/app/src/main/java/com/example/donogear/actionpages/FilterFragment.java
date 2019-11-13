@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
+
 public class FilterFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private LinearLayout linearLayout;
@@ -39,7 +41,6 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     private List<Button> topicButtons, causesButtons;
     private Button save, reset, cancel;
     private onSavePressed savePressedListener;
-    private static int AQUA = Color.parseColor("#2fd6d6");
     private String category;
     private List<String> topicsSelected, causesSelected;
     private List<String> savedTags;
@@ -118,7 +119,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                 if (split.length > 1) {
                     fin = split[0] + " &\n" + split[1];
                 }
-                setButtonLayout(button, AQUA, Color.WHITE);
+                setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 button.setText(fin);
                 if (savedTags != null && savedTags.size() > 0) {
                     if (savedTags.stream().anyMatch(str -> str.startsWith(split[0]))) {
@@ -140,10 +141,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
      */
     private void toggleButton(Button button) {
         int color = button.getTextColors().getDefaultColor();
-        if (color == AQUA) {
-            setButtonLayout(button, Color.WHITE, AQUA);
+        if (color == PRIMARY_COLOR) {
+            setButtonLayout(button, Color.WHITE, PRIMARY_COLOR);
         } else {
-            setButtonLayout(button, AQUA, Color.WHITE);
+            setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
         }
     }
 
@@ -191,10 +192,10 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                 topicsSelected = new ArrayList<>();
                 causesSelected = new ArrayList<>();
                 for (Button button: topicButtons) {
-                    setButtonLayout(button, AQUA, Color.WHITE);
+                    setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 }
                 for (Button button: causesButtons) {
-                    setButtonLayout(button, AQUA, Color.WHITE);
+                    setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 }
                 break;
             case R.id.cancel:

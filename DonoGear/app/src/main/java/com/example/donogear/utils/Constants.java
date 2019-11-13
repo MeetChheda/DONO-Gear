@@ -1,5 +1,7 @@
 package com.example.donogear.utils;
 
+import android.graphics.Color;
+
 public class Constants {
 
     public static final String COLLECTIBLES = "Collectible";
@@ -10,5 +12,8 @@ public class Constants {
     public static final String AUCTION_IDENTIFIER = "auction";
     public static final String RAFFLE_IDENTIFIER = "raffle";
     public static final String DROP_IDENTIFIER = "drop";
+
+    public static final int PRIMARY_COLOR = Color.parseColor("#2fd6d6");
+    public static final int PRIMARY_LIGHT = Color.parseColor("#000");
 
 }

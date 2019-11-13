@@ -7,6 +7,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -19,7 +24,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.donogear.R;
 import com.example.donogear.interfaces.TickTime;
@@ -31,26 +38,31 @@ import com.parse.ParseQuery;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
+import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
+import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 
 public class ProductDetails extends AppCompatActivity {
 
-    private String itemId, itemName, itemDescription, itemHighestBidder;
-    private int itemBidAmount, startBid;
+    private String itemId, itemName, itemDescription, itemHighestBidder, category;
+    private int itemBidAmount, startBid, costPerEntry;
     private Date itemTime;
     private List<File> itemImages;
     private List<String> itemVideosUrl;
     private ItemProceedsDetails proceedsDetails;
-    private ParseQuery<ParseObject> itemVideosQuery, itemProceedsQuery;
     private Handler handler;
     private Context context;
-
+    private Button button;
+    private boolean flag = false;
     private boolean hasVideos, hasProceeds;
+    private LinearLayout raffle_buttons;
+    private RelativeLayout full_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +77,13 @@ public class ProductDetails extends AppCompatActivity {
         displayImages(itemImages, horizontalScrollViewContainer);
         displayRemainingTime();
         displayItemDetails();
+        if (category.equals(RAFFLE_IDENTIFIER)) {
+            displayRaffleButtons();
+            button.setText("Enter");
+        } else {
+            displayBidDetails();
+        }
+
         Runnable videoRunnable = new Runnable() {
             @Override
             public void run() {
@@ -93,6 +112,36 @@ public class ProductDetails extends AppCompatActivity {
         handler.post(proceedsRunnable);
     }
 
+    private void displayRaffleButtons() {
+        List<Integer> ticketDenominations = Arrays.asList(
+                100, 250, 500, 1000, 2500, 5000, 10000, 25000
+        );
+        for (int j = 0; j <= ticketDenominations.size(); j += 2) {
+            LinearLayout newLayout = new LinearLayout(this);
+            newLayout.setOrientation(LinearLayout.HORIZONTAL);
+            newLayout.setBaselineAligned(false);
+            for (int i = 0; i < 2 && j + i < ticketDenominations.size(); i++) {
+                final Button button = new Button(this);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        400, 200
+                );
+                layoutParams.setMargins(70, 30, 50, 0);
+                layoutParams.gravity = Gravity.TOP;
+                button.setLayoutParams(layoutParams);
+                button.setTextColor(Color.BLACK);
+                String price = "$" + (1.0 * ticketDenominations.get(i + j) / costPerEntry);
+                price += "\n" + ticketDenominations.get(i + j) + " Entries";
+                setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+                button.setText(price);
+
+                newLayout.addView(button);
+                button.setOnClickListener(v -> Toast.makeText(context,
+                        button.getText(), Toast.LENGTH_SHORT).show());
+            }
+            raffle_buttons.addView(newLayout);
+        }
+    }
+
     /**
      * Initialized variables and layout views
      */
@@ -102,6 +151,7 @@ public class ProductDetails extends AppCompatActivity {
 
         Intent intent = getIntent();
         ItemDetails itemDetails = (ItemDetails) intent.getSerializableExtra("item_details");
+        category = intent.getStringExtra("typeOfSearch");
         itemId = itemDetails.id;
         itemName = itemDetails.itemName;
         itemDescription = itemDetails.itemDescription;
@@ -110,9 +160,27 @@ public class ProductDetails extends AppCompatActivity {
         itemHighestBidder = itemDetails.highestBidder;
         itemBidAmount = itemDetails.currentPrice;
         startBid = itemDetails.startBid;
+        costPerEntry = itemDetails.costPerEntry;
 
+        full_layout = findViewById(R.id.full_item_layout);
+        raffle_buttons = findViewById(R.id.raffle_buttons);
         ImageButton back =  findViewById(R.id.backbtn);
-        back.setOnClickListener(view -> finish());
+        back.setOnClickListener(view -> {
+            if (flag) {
+                flag = false;
+                full_layout.setVisibility(View.VISIBLE);
+                raffle_buttons.setVisibility(View.GONE);
+                return;
+            }
+            finish();
+        });
+
+        button = findViewById(R.id.enter);
+        button.setOnClickListener(view -> {
+            full_layout.setVisibility(View.GONE);
+            flag = true;
+            raffle_buttons.setVisibility(View.VISIBLE);
+        });
         hasProceeds = false;
         hasVideos = false;
     }
@@ -160,6 +228,9 @@ public class ProductDetails extends AppCompatActivity {
         titleText.setText(itemName);
         TextView descriptionText = findViewById(R.id.description);
         descriptionText.setText(itemDescription);
+    }
+
+    private void displayBidDetails() {
         TextView bidderText = findViewById(R.id.bidder);
         if (itemHighestBidder == null) {
             bidderText.setVisibility(View.VISIBLE);
@@ -168,13 +239,12 @@ public class ProductDetails extends AppCompatActivity {
         TextView bidAmount = findViewById(R.id.bid_holder);
         String text = bidAmount.getText().toString();
         if (itemBidAmount > 0) {
-            text += "<font color='#2fd6d6'>" + itemBidAmount + "</font>";
+            text += "<font color='#2fd6d6'>$" + itemBidAmount + "</font>";
         } else {
             text = "Starting Bid: ";
-            text += "<font color='#2fd6d6'>" + startBid + "</font>";
+            text += "<font color='#2fd6d6'>$" + startBid + "</font>";
         }
         bidAmount.setText(Html.fromHtml(text));
-
     }
 
     /**
@@ -204,8 +274,6 @@ public class ProductDetails extends AppCompatActivity {
      * reuses the methods to displayImages and Videos for the proceeds
      */
     private void displayProceedsDetails() {
-//        System.out.println(proceedsDetails.printProceeds());
-//        System.out.println(proceedsDetails.printProceeds());
         TextView proceedsTitle = findViewById(R.id.proceeds_title);
         proceedsTitle.setText(proceedsDetails.title);
 
@@ -228,7 +296,7 @@ public class ProductDetails extends AppCompatActivity {
         for (File image: imagesList) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
+                    850
             );
             params.gravity = Gravity.CENTER;
             params.setMargins(5, 5, 5, 5);
@@ -246,7 +314,7 @@ public class ProductDetails extends AppCompatActivity {
      * @return - list of URL's of all videos for items
      */
     private List<String> getItemVideos() {
-        itemVideosQuery = ParseQuery.getQuery(COLLECTIBLE_VIDEOS);
+        ParseQuery<ParseObject> itemVideosQuery = ParseQuery.getQuery(COLLECTIBLE_VIDEOS);
         itemVideosQuery.whereEqualTo("collectibleId", itemId);
         final List<String> allVideos = new ArrayList<>();
         itemVideosQuery.getFirstInBackground((object, e) -> {
@@ -271,7 +339,7 @@ public class ProductDetails extends AppCompatActivity {
      */
     private void getItemProceedsDetails() {
         proceedsDetails = new ItemProceedsDetails();
-        itemProceedsQuery = ParseQuery.getQuery(PROCEEDS);
+        ParseQuery<ParseObject> itemProceedsQuery = ParseQuery.getQuery(PROCEEDS);
         itemProceedsQuery.whereEqualTo("collectibleId", itemId);
         itemProceedsQuery.getFirstInBackground((object, e) -> {
             if (e == null) {
@@ -309,5 +377,44 @@ public class ProductDetails extends AppCompatActivity {
             hasProceeds = true;
         });
 
+    }
+
+
+
+    /**
+     * Defines layout for a button, such as color, position, size etc
+     * @param button - a single button
+     * @param borderColor - color for the border
+     * @param bgColor - background color, for the button
+     */
+    private void setButtonLayout(Button button, int borderColor, int bgColor) {
+        button.setTextColor(borderColor);
+        float[] outerRadii = new float[]{75,75,75,75,75,75,75,75};
+        float[] innerRadii = new float[]{75,75,75,75,75,75,75,75};
+        ShapeDrawable borderDrawable = new ShapeDrawable(new RoundRectShape(
+                outerRadii,
+                null,
+                innerRadii
+        ));
+        borderDrawable.getPaint().setColor(borderColor);
+        borderDrawable.getPaint().setStyle(Paint.Style.FILL);
+        // Define the border width
+        borderDrawable.setPadding(5,5,5,5);
+        // Set the shape background
+        ShapeDrawable backgroundShape = new ShapeDrawable(new RoundRectShape(
+                outerRadii,
+                null,
+                innerRadii
+        ));
+        backgroundShape.getPaint().setColor(bgColor); // background color
+        backgroundShape.getPaint().setStyle(Paint.Style.FILL); // Define background
+        backgroundShape.getPaint().setAntiAlias(true);
+
+        // Initialize an array of drawables
+        Drawable[] drawables = new Drawable[]{ borderDrawable, backgroundShape };
+        backgroundShape.setPadding(10,10,10,10);
+        LayerDrawable layerDrawable = new LayerDrawable(drawables);
+
+        button.setBackground(layerDrawable);
     }
 }
