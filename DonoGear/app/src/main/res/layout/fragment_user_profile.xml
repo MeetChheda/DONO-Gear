@@ -1,8 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
     android:fitsSystemWindows="true">
+
+
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:minHeight="?attr/actionBarSize"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:titleTextColor="@android:color/white"-->
+<!--        android:background="?attr/colorPrimary">-->
+<!--    </androidx.appcompat.widget.Toolbar>-->
+
+
+    <Button
+        android:id="@+id/userlogout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="#2FD6D6"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:paddingEnd="50dp"
+        android:paddingStart="50dp"
+        android:layout_marginBottom="20dp"
+        android:layout_centerInParent="true"
+        ></Button>
 
 </RelativeLayout>

@@ -64,13 +64,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ParseQuery.clearAllCachedResults();
-        // Initialize Parse Credentials
-        Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId(getString(R.string.back4app_app_id))
-                .clientKey(getString(R.string.back4app_client_key))
-                .server(getString(R.string.back4app_server_url))
-                .build()
-        );
         // Initialize basic layout specifics and Adapter
         manageInnerTabs();
         initializeLayout();

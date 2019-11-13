@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.example.donogear.actionpages.MainActivity;
 import com.example.donogear.R;
+import com.parse.Parse;
+import com.parse.facebook.ParseFacebookUtils;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -15,6 +17,15 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+
+        Parse.initialize(new Parse.Configuration.Builder(this)
+                .applicationId(getString(R.string.back4app_app_id))
+                .clientKey(getString(R.string.back4app_client_key))
+                .server(getString(R.string.back4app_server_url))
+                .build()
+        );
+
+        ParseFacebookUtils.initialize(this);
     }
 
     public void loginClicked(View view) {
