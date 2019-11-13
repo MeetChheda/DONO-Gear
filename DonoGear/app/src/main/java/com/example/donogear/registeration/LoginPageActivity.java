@@ -1,4 +1,4 @@
-package com.example.donogear;
+package com.example.donogear.registeration;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.donogear.R;
+import com.example.donogear.actionpages.MainActivity;
+import com.google.android.material.tabs.TabItem;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -63,16 +66,16 @@ public class LoginPageActivity extends AppCompatActivity {
         );
 
 //        boolean finish = getIntent().getBooleanExtra("finish", false);
-        pgsBar = (ProgressBar)findViewById(R.id.pBar);
+        pgsBar = findViewById(R.id.pBar);
         invalid = findViewById(R.id.invalid);
         tabs = findViewById(R.id.tabs);
         login_layout = findViewById(R.id.login_layout);
         createAccount_layout = findViewById(R.id.createAccount_layout);
-        usernameEditTextSignup = (EditText) findViewById(R.id.usernameCreateAccount_editText);
-        emailEditTextSignUp = (EditText)findViewById(R.id.emailCreateAccount_editText);
-        passwordEditTextSignup = (EditText)findViewById(R.id.passwordCreateAccount_editText);
-        usernameEditTextLogin = (EditText)findViewById(R.id.username_editText);
-        passwordEditTextLogin = (EditText)findViewById(R.id.password_editText);
+        usernameEditTextSignup = findViewById(R.id.usernameCreateAccount_editText);
+        emailEditTextSignUp = findViewById(R.id.emailCreateAccount_editText);
+        passwordEditTextSignup = findViewById(R.id.passwordCreateAccount_editText);
+        usernameEditTextLogin = findViewById(R.id.username_editText);
+        passwordEditTextLogin = findViewById(R.id.password_editText);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -102,34 +105,32 @@ public class LoginPageActivity extends AppCompatActivity {
             }
         });
 
-        ImageView loginButton = (ImageView) findViewById(R.id.facebook_icon);
+        ImageView loginButton =  findViewById(R.id.facebook_icon);
 
-        loginButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view) {
-                // TODO request more user permissions when determining what is needed
-                Collection<String> permissions = Arrays.asList("public_profile", "email");
-                ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginPageActivity.this, permissions, new LogInCallback() {
-                    @Override
-                    public void done(ParseUser user, ParseException err) {
-                        if (err != null) {
-                            ParseUser.logOut();
-                            Log.e(TAG, "An error occurred", err);
-                        }
-
-                        if (user == null) {
-                            ParseUser.logOut();
-                            Log.d(TAG, "The user cancelled the Facebook login.");
-                        } else if (user.isNew()) {
-                            Log.d(TAG, "Successfully logged in new user via Facebook");
-                            getUserDetailFromFB();
-                        } else {
-                            Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "Successfully logged in existing user via Facebook");
-                            directSuccessfulUserLogin();
-                        }
+        loginButton.setOnClickListener(view -> {
+            // TODO request more user permissions when determining what is needed
+            Collection<String> permissions = Arrays.asList("public_profile", "email");
+            ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginPageActivity.this, permissions, new LogInCallback() {
+                @Override
+                public void done(ParseUser user, ParseException err) {
+                    if (err != null) {
+                        ParseUser.logOut();
+                        Log.e(TAG, "An error occurred", err);
                     }
-                });
-            }
+
+                    if (user == null) {
+                        ParseUser.logOut();
+                        Log.d(TAG, "The user cancelled the Facebook login.");
+                    } else if (user.isNew()) {
+                        Log.d(TAG, "Successfully logged in new user via Facebook");
+                        getUserDetailFromFB();
+                    } else {
+                        Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "Successfully logged in existing user via Facebook");
+                        directSuccessfulUserLogin();
+                    }
+                }
+            });
         });
     }
 
@@ -150,13 +151,10 @@ public class LoginPageActivity extends AppCompatActivity {
                 }
 
                 // Add user to Back4App registry
-                user.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        Log.d(TAG, "Successfully added user to App user registry");
-                        Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
-                        directSuccessfulUserLogin();
-                    }
+                user.saveInBackground(e -> {
+                    Log.d(TAG, "Successfully added user to App user registry");
+                    Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
+                    directSuccessfulUserLogin();
                 });
             }
         });
@@ -209,27 +207,24 @@ public class LoginPageActivity extends AppCompatActivity {
             user.setPassword(password);
 
 
-            user.signUpInBackground(new SignUpCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
+            user.signUpInBackground(e -> {
+                if (e == null) {
 //                    alertDisplayer("Sucessful Sign Up!","Welcome " + username + "!");
-                        Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
-                        System.out.println("Signup finish");
+                    Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
+                    System.out.println("Signup finish");
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    } else {
-                        System.out.println(e.getMessage());
-                        if (e.getMessage().equals("Account already exists for this email address.")) {
-                            emailEditTextSignUp.setError("Please enter different email");
-                        }
-                        else {
-                            usernameEditTextSignup.setError("Please enter different username");
-                        }
-                        System.out.println("Signup error");
-                        ParseUser.logOut();
-//                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    startActivity(intent);
+                } else {
+                    System.out.println(e.getMessage());
+                    if (e.getMessage().equals("Account already exists for this email address.")) {
+                        emailEditTextSignUp.setError("Please enter different email");
                     }
+                    else {
+                        usernameEditTextSignup.setError("Please enter different username");
+                    }
+                    System.out.println("Signup error");
+                    ParseUser.logOut();
+//                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -260,21 +255,18 @@ public class LoginPageActivity extends AppCompatActivity {
             passwordEditTextLogin.setError("Please enter password");
         }
 
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser parseUser, ParseException e) {
-                if (parseUser != null) {
-                    Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
+        ParseUser.logInInBackground(username, password, (parseUser, e) -> {
+            if (parseUser != null) {
+                Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
 //                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                } else {
-                    invalid.setVisibility(View.VISIBLE);
-                    usernameEditTextLogin.setText("");
-                    passwordEditTextLogin.setText("");
-                    System.out.println(e.getMessage());
-                    ParseUser.logOut();
-                    
-                }
+                startActivity(intent);
+            } else {
+                invalid.setVisibility(View.VISIBLE);
+                usernameEditTextLogin.setText("");
+                passwordEditTextLogin.setText("");
+                System.out.println(e.getMessage());
+                ParseUser.logOut();
+
             }
         });
     }
