@@ -14,8 +14,9 @@ public class Constants {
     public static final String DROP_IDENTIFIER = "drop";
 
     public static final int PRIMARY_COLOR = Color.parseColor("#2fd6d6");
-    public static final int PRIMARY_LIGHT = Color.parseColor("#00ffff");
 
     public static final String TIME_UP = "TIME UP";
+    public static final String DEFAULT_BID_MESSAGE = "No current bids. Be the first one!";
+
 
 }

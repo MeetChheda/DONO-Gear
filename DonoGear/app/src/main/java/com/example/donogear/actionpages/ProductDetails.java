@@ -7,21 +7,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -43,15 +36,19 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
+import static android.view.View.GONE;
+import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
+import static com.example.donogear.utils.Constants.DEFAULT_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TIME_UP;
 
-public class ProductDetails extends AppCompatActivity implements ButtonDesign {
+public class ProductDetails extends AppCompatActivity implements ButtonDesign, View.OnClickListener {
 
     private String itemId, itemName, itemDescription, itemHighestBidder, category;
     private int itemBidAmount, startBid, costPerEntry;
@@ -61,11 +58,13 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
     private ItemProceedsDetails proceedsDetails;
     private Handler handler;
     private Context context;
-    private Button button;
     private boolean flag = false;
     private boolean hasVideos, hasProceeds;
     private LinearLayout raffle_buttons;
     private RelativeLayout full_layout;
+    private Button raffle;
+    private Button auction;
+    private Button drop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +79,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
         displayImages(itemImages, horizontalScrollViewContainer);
         displayRemainingTime();
         displayItemDetails();
-        if (category.equals(RAFFLE_IDENTIFIER)) {
-            displayRaffleButtons();
-            button.setText("Enter");
-        } else {
-            displayBidDetails();
-        }
+        checkCategory(category);
 
         /**
          * Delay timers (2) to facilitate populating of layout only after background tasks of fetching
@@ -117,6 +111,35 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
             }
         };
         handler.post(proceedsRunnable);
+    }
+
+    /**
+     * Checks whoch item was clicked on the previous search / home page. Behaviour of buttons and
+     * layouts is changed accordingly
+     * @param category - thr category of the selected item
+     */
+    private void checkCategory(String category) {
+        switch (category) {
+            case RAFFLE_IDENTIFIER:
+                drop.setVisibility(GONE);
+                auction.setVisibility(GONE);
+                displayRaffleButtons();
+                break;
+
+            case AUCTION_IDENTIFIER:
+                drop.setVisibility(GONE);
+                raffle.setVisibility(GONE);
+                displayBidDetails();
+                break;
+
+            case DROP_IDENTIFIER:
+                auction.setVisibility(GONE);
+                raffle.setVisibility(GONE);
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**
@@ -176,20 +199,14 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
 
         full_layout = findViewById(R.id.full_item_layout);
         raffle_buttons = findViewById(R.id.raffle_buttons);
-        ImageButton back =  findViewById(R.id.backbtn);
-        back.setOnClickListener(view -> {
-            if (!checkButtonPressed()) {
-                finish();
-            }
-        });
+        raffle = findViewById(R.id.enter);
+        auction = findViewById(R.id.bid);
+        drop = findViewById(R.id.buy);
 
-        button = findViewById(R.id.enter);
-        button.setOnClickListener(view -> {
-            button.setVisibility(View.GONE);
-            full_layout.setVisibility(View.GONE);
-            flag = true;
-            raffle_buttons.setVisibility(View.VISIBLE);
-        });
+        raffle.setOnClickListener(this);
+        auction.setOnClickListener(this);
+        drop.setOnClickListener(this);
+        findViewById(R.id.backbtn).setOnClickListener(this);
         hasProceeds = false;
         hasVideos = false;
     }
@@ -242,20 +259,20 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
      * Displays the bid details for auction items ONLY
      */
     private void displayBidDetails() {
-        TextView bidderText = findViewById(R.id.bidder);
-        if (itemHighestBidder == null) {
+        findViewById(R.id.bidLayout).setVisibility(View.VISIBLE);
+        TextView startBidAmount = findViewById(R.id.start_bid_amount);
+        startBidAmount.setText("$" + startBid);
+
+        TextView currentBidAmount = findViewById(R.id.current_bid_amount);
+        currentBidAmount.setText("$" + itemBidAmount);
+
+        TextView bidderText = findViewById(R.id.no_current_bids);
+        if (itemBidAmount == 0) {
             bidderText.setVisibility(View.VISIBLE);
-            bidderText.setText("No current bids. Be the first one to bid!");
+            bidderText.setText(DEFAULT_BID_MESSAGE);
+            currentBidAmount.setVisibility(GONE);
+            findViewById(R.id.current_bid_holder).setVisibility(GONE);
         }
-        TextView bidAmount = findViewById(R.id.bid_holder);
-        String text = bidAmount.getText().toString();
-        if (itemBidAmount > 0) {
-            text += "<font color='#2fd6d6'>$" + itemBidAmount + "</font>";
-        } else {
-            text = "Starting Bid: ";
-            text += "<font color='#2fd6d6'>$" + startBid + "</font>";
-        }
-        bidAmount.setText(Html.fromHtml(text));
     }
 
     /**
@@ -402,9 +419,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
     private boolean checkButtonPressed() {
         if (flag) {
             flag = false;
-            button.setVisibility(View.VISIBLE);
             full_layout.setVisibility(View.VISIBLE);
-            raffle_buttons.setVisibility(View.GONE);
+            raffle_buttons.setVisibility(GONE);
+            raffle.setVisibility(View.VISIBLE);
             return true;
         }
         return false;
@@ -414,6 +431,37 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
     public void onBackPressed() {
         if (!checkButtonPressed()) {
             super.onBackPressed();
+        }
+    }
+
+    //TODO - Implement functionality for place bid button
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.backbtn:
+                if (!checkButtonPressed()) {
+                    finish();
+                }
+                break;
+
+            case R.id.enter:
+                flag = true;
+                raffle_buttons.setVisibility(View.VISIBLE);
+                full_layout.setVisibility(GONE);
+                raffle.setVisibility(GONE);
+                break;
+
+            case R.id.buy:
+                Toast.makeText(context, "Will buy", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.bid:
+                Toast.makeText(context, "Will bid", Toast.LENGTH_SHORT).show();
+                break;
+
+            default:
+                break;
+
         }
     }
 }
