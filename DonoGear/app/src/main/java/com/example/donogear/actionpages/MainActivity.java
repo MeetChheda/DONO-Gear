@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public boolean hasAllData, hasAllImages;
 
+    //TODO - Mapping for better storing and querying of list of items
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

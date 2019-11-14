@@ -26,6 +26,8 @@ import com.example.donogear.interfaces.ButtonDesign;
 import com.example.donogear.interfaces.TickTime;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -65,6 +67,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
     private Button raffle;
     private Button auction;
     private Button drop;
+
+    private BottomSheetDialogFragment dialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,35 +115,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
             }
         };
         handler.post(proceedsRunnable);
-    }
-
-    /**
-     * Checks whoch item was clicked on the previous search / home page. Behaviour of buttons and
-     * layouts is changed accordingly
-     * @param category - thr category of the selected item
-     */
-    private void checkCategory(String category) {
-        switch (category) {
-            case RAFFLE_IDENTIFIER:
-                drop.setVisibility(GONE);
-                auction.setVisibility(GONE);
-                displayRaffleButtons();
-                break;
-
-            case AUCTION_IDENTIFIER:
-                drop.setVisibility(GONE);
-                raffle.setVisibility(GONE);
-                displayBidDetails();
-                break;
-
-            case DROP_IDENTIFIER:
-                auction.setVisibility(GONE);
-                raffle.setVisibility(GONE);
-                break;
-
-            default:
-                break;
-        }
     }
 
     /**
@@ -342,6 +317,35 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
     }
 
     /**
+     * Checks whoch item was clicked on the previous search / home page. Behaviour of buttons and
+     * layouts is changed accordingly
+     * @param category - thr category of the selected item
+     */
+    private void checkCategory(String category) {
+        switch (category) {
+            case RAFFLE_IDENTIFIER:
+                drop.setVisibility(GONE);
+                auction.setVisibility(GONE);
+                displayRaffleButtons();
+                break;
+
+            case AUCTION_IDENTIFIER:
+                drop.setVisibility(GONE);
+                raffle.setVisibility(GONE);
+                displayBidDetails();
+                break;
+
+            case DROP_IDENTIFIER:
+                auction.setVisibility(GONE);
+                raffle.setVisibility(GONE);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
      * Queries the database to get videos for the selected item
      * @return - list of URL's of all videos for items
      */
@@ -427,11 +431,20 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
         return false;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!checkButtonPressed()) {
-            super.onBackPressed();
-        }
+    private void bottomSheetForItem() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("currentBid", itemBidAmount);
+        bundle.putInt("startBid", startBid);
+        dialogFragment = new ItemBidFragment();
+        dialogFragment.setArguments(bundle);
+        dialogFragment.show(getSupportFragmentManager(), dialogFragment.getTag());
+
+
+        final View bottomSheetLayout = getLayoutInflater().inflate(R.layout.item_bottom_sheet, null);
+        (bottomSheetLayout.findViewById(R.id.cancel)).setOnClickListener(view ->
+                dialogFragment.dismiss());
+        (bottomSheetLayout.findViewById(R.id.done)).setOnClickListener(v ->
+                Toast.makeText(getApplicationContext(), "Ok button clicked", Toast.LENGTH_SHORT).show());
     }
 
     //TODO - Implement functionality for place bid button
@@ -456,12 +469,19 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
                 break;
 
             case R.id.bid:
-                Toast.makeText(context, "Will bid", Toast.LENGTH_SHORT).show();
+                bottomSheetForItem();
                 break;
 
             default:
                 break;
 
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!checkButtonPressed()) {
+            super.onBackPressed();
         }
     }
 }

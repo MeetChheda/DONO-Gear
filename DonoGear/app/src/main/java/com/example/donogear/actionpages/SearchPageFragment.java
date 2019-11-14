@@ -41,8 +41,6 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     private boolean searchFlag;
 
     private List<String> searchArray;
-    private List<String> tagsSelected;
-    private RecyclerView recyclerView;
     private List<ItemDetails> listOfItems, copyList;
     private ItemAdapter itemAdapter;
     private FloatingActionButton filterButton;
@@ -98,7 +96,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
      * TODO: Cleaner logic for passing data from Activity to Fragment
      */
     private void initializeLayout() {
-        recyclerView = view.findViewById(R.id.card_view_recycler_list);
+        RecyclerView recyclerView = view.findViewById(R.id.card_view_recycler_list);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
         cross = view.findViewById(R.id.cross);
@@ -110,7 +108,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         copyList = activity.copyList;
         searchArray = activity.searchArray;
         filterDataByCategory();
-        tagsSelected = activity.tagsSelected;
+        List<String> tagsSelected = activity.tagsSelected;
 
         itemAdapter = activity.itemAdapter;
         itemAdapter.setItemList(listOfItems);

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.example.donogear.R;
@@ -40,7 +41,8 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     private LinearLayout linearLayout;
     private List<String> topicsTags, causesTags;
     private List<Button> topicButtons, causesButtons;
-    private Button save, reset, cancel;
+    private Button save, reset;
+    private ImageButton cancel;
     private onSavePressed savePressedListener;
     private String category;
     private List<String> topicsSelected, causesSelected;
@@ -163,7 +165,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                 }
                 break;
             case R.id.cancel:
-                SearchPageFragment.fragment.dismiss();
+                dismiss();
                 break;
             case R.id.save:
                 for (Button button: topicButtons) {
