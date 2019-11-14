@@ -45,9 +45,11 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
+import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
+import static com.example.donogear.utils.Constants.TIME_UP;
 
 public class ProductDetails extends AppCompatActivity implements ButtonDesign {
 
@@ -198,9 +200,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
      */
     private void displayVideo(List<String> videoList, LinearLayout videoContainer) {
 //        final VideoView videoView = findViewById(R.id.videoView);
-        if (videoList == null || videoList.size() == 0) {
+        if (videoList == null || videoList.size() == 0)
             return;
-        }
         for (int i = 0; i < videoList.size(); i += 3) {
             LinearLayout newLayout = new LinearLayout(getBaseContext());
             newLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -261,6 +262,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
      * Uses TickTime interface to display time left for the current auction / raffle to finish
      */
     private void displayRemainingTime() {
+        if (category.equals(DROP_IDENTIFIER))
+            return;
         TextView time_remaining = findViewById(R.id.time_remaining);
         long timeInMilliSec = itemTime.getTime() - Calendar.getInstance().getTimeInMillis();
         new CountDownTimer(timeInMilliSec, 1000) {
@@ -272,7 +275,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
 
             @Override
             public void onFinish() {
-                time_remaining.setText("TIME UP");
+                time_remaining.setText(TIME_UP);
                 time_remaining.setTextColor(Color.RED);
                 //itemHolder.timeHolder.setVisibility(View.GONE);
             }
@@ -303,10 +306,12 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
      *       (for item) and one with normal vertical layout (for proceeds)
      */
     private void displayImages(List<File> imagesList, LinearLayout layout) {
+        if (imagesList == null)
+            return;
         for (File image: imagesList) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    850
+                    759
             );
             params.gravity = Gravity.CENTER;
             params.setMargins(5, 5, 5, 5);
@@ -392,7 +397,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign {
     /**
      * Check if 'Enter' button is pressed for raffles. This method is used to tweak back button
      * pressed behaviour based on the current view
-     * @return
+     * @return - whether the back button should return to previous activity or not
      */
     private boolean checkButtonPressed() {
         if (flag) {

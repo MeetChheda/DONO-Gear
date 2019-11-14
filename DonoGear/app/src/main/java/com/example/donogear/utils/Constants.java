@@ -16,4 +16,6 @@ public class Constants {
     public static final int PRIMARY_COLOR = Color.parseColor("#2fd6d6");
     public static final int PRIMARY_LIGHT = Color.parseColor("#00ffff");
 
+    public static final String TIME_UP = "TIME UP";
+
 }

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
+import static com.example.donogear.utils.Constants.TIME_UP;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
@@ -123,7 +124,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
             @Override
             public void onFinish() {
-                itemHolder.endTimeText.setText("TIME UP");
+                itemHolder.endTimeText.setText(TIME_UP);
                 itemHolder.endTimeText.setTextColor(Color.RED);
             }
         }.start();
