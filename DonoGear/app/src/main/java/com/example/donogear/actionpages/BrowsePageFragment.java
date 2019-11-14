@@ -63,15 +63,7 @@ public class BrowsePageFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_browse_page, container, false);
         activity = (MainActivity) getActivity();
-//        if (getArguments() != null) {
-//            typeOfSearch = getArguments().getString("type");
-//            if (typeOfSearch.equals(DONOR_IDENTIFIER)) {
-//                displayDonor();
-//            }
-//            else {
-//                displayCauses();
-//            }
-//        }
+
         setHasOptionsMenu(true);
         handler = new Handler();
         Runnable proceedsRunnable = new Runnable() {
@@ -83,7 +75,6 @@ public class BrowsePageFragment extends Fragment {
 
                 }
                 else {
-//                    System.out.println("Getting data");
                     handler.postDelayed(this, 100);
                 }
             }
@@ -92,19 +83,19 @@ public class BrowsePageFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Initialises all the layout basics which includes initialising recycler view
+     */
     private void initializeLayout() {
         recyclerView = view.findViewById(R.id.card_view_browse_recycler_list);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        System.out.println(manager);
         recyclerView.setLayoutManager(manager);
-//        listOfDonors = activity.donorDetailsList;
-//        System.out.println("Size " + listOfDonors.size());
-//        donorAdapter = activity.donorAdapter;
-//        donorAdapter.setDonorList(listOfDonors);
-//        recyclerView.setAdapter(donorAdapter);
-//        donorAdapter.notifyDataSetChanged();
-
     }
+
+    /**
+     * Gets the type of fragment clicked and accordingly displays the fragment
+     * type variable can contain donor or cause type
+     */
 
     public void getType() {
         if (getArguments() != null) {
@@ -118,6 +109,10 @@ public class BrowsePageFragment extends Fragment {
         }
     }
 
+    /**
+     * display donor fragment by setting appropriate adapter in recycler view
+     */
+
     public void displayDonor() {
 
         listOfDonors = activity.donorDetailsList;
@@ -128,6 +123,9 @@ public class BrowsePageFragment extends Fragment {
         donorAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * display causes fragment by setting appropriate adapter in recycler view
+     */
     public void displayCauses() {
 
         listOfCauses = activity.causesDetailsList;

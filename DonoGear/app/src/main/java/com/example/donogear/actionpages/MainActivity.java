@@ -112,8 +112,14 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Queries all the collectible-data from the database
+     * Queries all the donors-data from the database
+     * Queries all the causes/proceeds data from the database
      */
     private void readData() {
+
+        /**
+         * Querying collectible-item data
+         */
         ParseQuery<ParseObject> collectibleQuery = ParseQuery.getQuery(COLLECTIBLES);
         collectibleQuery.findInBackground((items, e) -> {
             if (e == null) {
@@ -146,6 +152,9 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
+        /**
+         * Querying donor data
+         */
         ParseQuery<ParseObject> donorQuery = ParseQuery.getQuery(DONOR);
         donorQuery.findInBackground((donors, e) -> {
             if (e == null) {
@@ -166,6 +175,9 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
+        /**
+         * Querying causes data
+         */
         ParseQuery<ParseObject> causesQuery = ParseQuery.getQuery(PROCEEDS);
         causesQuery.findInBackground((causes, e) -> {
             if (e == null) {
@@ -187,6 +199,11 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    /**
+     * Gets images for each cause
+     * @param causeId - ID of single cause
+     * @return list of all images present in the Proceeds table
+     */
     private List<File> getImageForCause(String causeId) {
         ParseQuery<ParseObject> causeImageQuery = ParseQuery.getQuery(PROCEEDS);
         List<File> imageFileList = new ArrayList<>();
@@ -209,6 +226,11 @@ public class MainActivity extends AppCompatActivity implements
         return imageFileList;
     }
 
+    /**
+     * Gets images for each donor
+     * @param donorId - ID of single donor
+     * @return list of all images present in the Donor table
+     */
     private List<File> getImageForDonor(String donorId) {
         ParseQuery<ParseObject> donorImageQuery = ParseQuery.getQuery(DONOR);
         List<File> imageFileList = new ArrayList<>();
@@ -289,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Facilitates inner tab-switching (i.e. Raffles, Auction, Drops)
+     * Facilitates inner tab-switching in Search fragment (i.e. Raffles, Auction, Drops)
      */
     private void manageInnerTabs() {
         innerTabs = findViewById(R.id.innerSearchtabs);
@@ -324,14 +346,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    /**
+     * Facilitates inner tab-switching in Browse fragment(i.e. Donor, Causes)
+     */
     private void manageInnerBrowseTabs() {
         innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
         innerBrowseTabs.getTabAt(0).select();
         innerBrowseTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-//                listOfItems = new ArrayList<>(superCopyList);
-//                copyList = new ArrayList<>(superCopyList);
+
                 switch (tab.getPosition()) {
                     case 0:
                         loadFragment(new BrowsePageFragment(), DONOR_IDENTIFIER);
@@ -341,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements
                         break;
 
                 }
-//                itemAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -369,7 +392,6 @@ public class MainActivity extends AppCompatActivity implements
         selectedItemsId = new HashSet<>();
         tagsSelected = new ArrayList<>(topics);
         tagsSelected.addAll(causes);
-//        System.out.println(tagsSelected);
         for (String str: tagsSelected) {
             if (tagsToItems.containsKey(str)) {
                 selectedItemsId.addAll(tagsToItems.get(str));
@@ -384,8 +406,6 @@ public class MainActivity extends AppCompatActivity implements
                     .collect(Collectors.toList());
         }
 
-//        System.out.println(selectedItemsId);
-//        System.out.println(listOfItems.size());
         itemAdapter.setItemList(listOfItems);
         itemAdapter.notifyDataSetChanged();
         loadFragment(new SearchPageFragment(), category);
@@ -397,7 +417,6 @@ public class MainActivity extends AppCompatActivity implements
      * @param category - category selected
      */
     private void filterItemsByCategory(String category) {
-//        System.out.println("Filtering by " + category);
         listOfItems = superCopyList.stream()
                 .filter(item -> item.category.equals(category))
                 .collect(Collectors.toList());
