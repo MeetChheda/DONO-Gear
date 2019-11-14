@@ -53,6 +53,8 @@ public class UserProfileFragment extends Fragment {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
 
+            System.out.println("Test print");
+
         });
     }
 }
