@@ -24,7 +24,7 @@
         app:itemTextColor="@drawable/selected_nav_item" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/innertabs"
+        android:id="@+id/innerSearchtabs"
         android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,6 +59,39 @@
             android:text="Drops"
             app:tabBackground="@drawable/tabselector"
             android:background="#2FD6D6" />
+    </com.google.android.material.tabs.TabLayout>
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/innerBrowsetabs"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="40dp"
+        app:tabMode= "fixed"
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
+        app:tabInlineLabel="true"
+        app:tabIndicatorColor="#000">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/donors_tab"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:text="Donors"
+            app:tabBackground="@drawable/tabselector"
+            android:background="#2FD6D6" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/proceeds_tab"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:text="Causes"
+            app:tabBackground="@drawable/tabselector"
+            android:background="#2FD6D6" />
+
+
     </com.google.android.material.tabs.TabLayout>
 
 </RelativeLayout>
