@@ -57,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements
     public static List<String>[] tags;
     public List<String> tagsSelected;
     public Set<String> selectedItemsId;
-    public List<ItemDetails> listOfItems, copyList, superCopyList;
+    public List<ItemDetails> listOfItems;
+    public List<ItemDetails> copyList;
+    public List<ItemDetails> superCopyList;
     public List<DonorDetails> donorDetailsList;
     public List<CausesDetails> causesDetailsList;
     public Context context;
@@ -111,9 +113,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Queries all the collectible-data from the database
-     * Queries all the donors-data from the database
-     * Queries all the causes/proceeds data from the database
+     * Queries all the collectible-data, donors-data and causes/proceeds data from the database
      */
     private void readData() {
 
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements
                             donorAdapter.notifyDataSetChanged();
                         }
                     } catch (ParseException ex) {
-                        ex.printStackTrace();
+                        Log.e("Error", e.toString());
                     }
                 }
             }
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements
                             causesAdapter.notifyDataSetChanged();
                         }
                     } catch (ParseException ex) {
-                        ex.printStackTrace();
+                        Log.e("Error", e.toString());
                     }
                 }
             }
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements
                                 itemAdapter.notifyDataSetChanged();
                             }
                         } catch (ParseException ex) {
-                            ex.printStackTrace();
+                            Log.e("Error", e.toString());
                         }
                     }
                 }
@@ -296,6 +296,8 @@ public class MainActivity extends AppCompatActivity implements
         donorDetailsList = new ArrayList<>();
         causesDetailsList = new ArrayList<>();
         superCopyList = new ArrayList<>();
+
+        // We have two types/categories of tags i.e. Topics and Causes
         tags = new ArrayList[2];
         tags[0] = new ArrayList<>();
         tags[1] = new ArrayList<>();
@@ -315,6 +317,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void manageInnerTabs() {
         innerTabs = findViewById(R.id.innerSearchtabs);
+
+        // Load the tab at index 1 which is Auction
         innerTabs.getTabAt(1).select();
         innerTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -351,6 +355,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void manageInnerBrowseTabs() {
         innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
+
+        // Load the tab at index 0 which is Donor
         innerBrowseTabs.getTabAt(0).select();
         innerBrowseTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

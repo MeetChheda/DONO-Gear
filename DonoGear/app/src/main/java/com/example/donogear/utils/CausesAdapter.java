@@ -18,17 +18,30 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+/**
+ * TODO: Set on click listener for all items and create Java doc for ViewHolder
+ */
 public class CausesAdapter extends RecyclerView.Adapter<CausesAdapter.ViewHolder>{
 
     private Context mContext;
     private List<CausesDetails> causesDetailsList;
 //    private ItemClickListener itemClickListener;
 
+    /**
+     * Default constructor for causes adapter
+     * @param context - Reference of Main activity
+     * @param list - list of all causes
+     */
     public CausesAdapter(Context context, List<CausesDetails> list) {
         mContext = context;
         causesDetailsList = list;
     }
 
+    /**
+     * Set cause list
+     * @param newList - if list is updated, set new list of all causes
+     */
     public void setCausesList(List<CausesDetails> newList) {
         causesDetailsList = newList;
     }
@@ -81,6 +94,11 @@ public class CausesAdapter extends RecyclerView.Adapter<CausesAdapter.ViewHolder
         causeHolder.causeCategory.setTextColor(textColor);
     }
 
+    /**
+     * Checks the color of the image
+     * @param bitmap - Decoding image into string
+     * @return  - favourable text color required
+     */
     private int getFavourableTextColor(Bitmap bitmap) {
         int pixel = bitmap.getPixel(0, bitmap.getHeight() - 1);
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));

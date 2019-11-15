@@ -72,7 +72,6 @@ public class BrowsePageFragment extends Fragment {
                 if(activity.hasAllImages && activity.hasAllData) {
                     initializeLayout();
                     getType();
-
                 }
                 else {
                     handler.postDelayed(this, 100);
@@ -96,7 +95,6 @@ public class BrowsePageFragment extends Fragment {
      * Gets the type of fragment clicked and accordingly displays the fragment
      * type variable can contain donor or cause type
      */
-
     public void getType() {
         if (getArguments() != null) {
             typeOfSearch = getArguments().getString("type");
@@ -112,9 +110,7 @@ public class BrowsePageFragment extends Fragment {
     /**
      * display donor fragment by setting appropriate adapter in recycler view
      */
-
     public void displayDonor() {
-
         listOfDonors = activity.donorDetailsList;
         System.out.println("Size " + listOfDonors.size());
         donorAdapter = activity.donorAdapter;
@@ -127,7 +123,6 @@ public class BrowsePageFragment extends Fragment {
      * display causes fragment by setting appropriate adapter in recycler view
      */
     public void displayCauses() {
-
         listOfCauses = activity.causesDetailsList;
         System.out.println("Size " + listOfCauses.size());
         causesAdapter = activity.causesAdapter;

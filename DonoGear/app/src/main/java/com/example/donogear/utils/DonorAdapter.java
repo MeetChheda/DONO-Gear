@@ -4,35 +4,42 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.donogear.R;
-import com.example.donogear.interfaces.ItemClickListener;
 import com.example.donogear.models.DonorDetails;
-import com.example.donogear.models.ItemDetails;
-
-import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+/**
+ * TODO: Set on click listener for all items
+ */
 public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.ViewHolder>{
 
     private Context mContext;
     private List<DonorDetails> donorDetailsList;
 //    private ItemClickListener itemClickListener;
 
+    /**
+     * Default constructor for donor adapter
+     * @param context - Reference of Main activity
+     * @param list - list of all donors
+     */
     public DonorAdapter(Context context, List<DonorDetails> list) {
         mContext = context;
         donorDetailsList = list;
     }
 
+    /**
+     * Set cause list
+     * @param newList - if list is updated, set new list of all causes
+     */
     public void setDonorList(List<DonorDetails> newList) {
         donorDetailsList = newList;
     }
@@ -85,6 +92,11 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.ViewHolder>{
         donorHolder.donorCategory.setTextColor(textColor);
     }
 
+    /**
+     * Checks the color of the image
+     * @param bitmap - Decoding image into string
+     * @return  - favourable text color required
+     */
     private int getFavourableTextColor(Bitmap bitmap) {
         int pixel = bitmap.getPixel(0, bitmap.getHeight() - 1);
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
