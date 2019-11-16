@@ -57,6 +57,7 @@ public class ItemDetails implements Serializable {
     public String printData() {
         return "Name: " + this.itemName + " category: " + this.category + " costPerEntry: " +
                 this.costPerEntry + " startBid: " + this.startBid + " highest bidder: " +
-                this.highestBidder;
+                this.highestBidder + " with images: " + this.listOfImages.size() + " and endtime: "
+                + (this.endDate == null ? "N/A" : this.endDate);
     }
 }

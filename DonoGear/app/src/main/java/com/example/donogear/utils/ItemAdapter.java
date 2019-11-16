@@ -76,7 +76,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             timeColor = getFavourableTimeColor(bitmap);
             itemHolder.imageView.setImageBitmap(bitmap);
         }
-
         String title = curItem.itemName;
         if(title.length() > 30) {
             title = title.substring(0, 30);

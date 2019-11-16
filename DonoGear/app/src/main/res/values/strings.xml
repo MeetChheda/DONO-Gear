@@ -1,13 +1,12 @@
 <resources>
     <string name="app_name">Dono Gear</string>
-    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
     <string name="disclaimer">By signing up you acknowledge that you agree to our terms and conditions and privacy policy.</string>
     <!-- Change the following strings as required -->
     <string name="back4app_app_id">IpangEUsJfcaSTAQkSkFHKKwvJcR9aLsrlQmnxCc</string>
     <string name="back4app_client_key">dk82weKDbTYnidTCcBxId3L54bcbYs4UmXhYJ8Hm</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="facebook_app_id">529865084467101</string>
     <string name="fb_login_protocol_scheme">fb529865084467101</string>
 </resources>

@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public boolean searchFlag;
     public List<String> searchArray;
-    public static List<String>[] tags;
+    public static ArrayList[] tags;
     public List<String> tagsSelected;
     public Set<String> selectedItemsId;
     public List<ItemDetails> listOfItems;
@@ -272,13 +272,13 @@ public class MainActivity extends AppCompatActivity implements
                             if (object.getParseFile("image" + i).getFile() != null) {
                                 File image = object.getParseFile("image" + i).getFile();
                                 allImages.add(image);
-                                itemAdapter.notifyDataSetChanged();
                             }
                         } catch (ParseException ex) {
                             Log.e("Error", e.toString());
                         }
                     }
                 }
+                itemAdapter.notifyDataSetChanged();
             }
         });
         hasAllImages = true;
