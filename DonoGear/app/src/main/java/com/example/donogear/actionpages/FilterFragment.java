@@ -30,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -181,7 +182,11 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                     }
                 }
                 System.out.println("Sending result -----------");
-                savePressedListener.passData(topicsSelected, causesSelected, category);
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("topics", new ArrayList<>(topicsSelected));
+                bundle.putStringArrayList("causes", new ArrayList<>(causesSelected));
+                bundle.putString("category", category);
+                savePressedListener.passData(bundle);
                 SearchPageFragment.fragment.dismiss();
                 break;
         }

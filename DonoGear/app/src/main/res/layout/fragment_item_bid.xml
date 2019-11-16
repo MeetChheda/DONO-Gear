@@ -111,6 +111,7 @@
         android:layout_below="@id/header2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
+        android:inputType="number"
         android:hint="Enter"
         android:layout_marginBottom="50dp"/>
 

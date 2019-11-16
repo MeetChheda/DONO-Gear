@@ -390,13 +390,14 @@ public class MainActivity extends AppCompatActivity implements
      * Implementing interface onSavePressed's method to pass data from Activity to fragment and back
      * This function receives data from the FilterFragment after the filters have been set. They
      * are then sent to SearchFragment again to adjust items based on those filters only
-     * @param topics - selected topic filters
-     * @param causes - selected causes filters
-     * @param category - selected category amongst the three types (raffles, auctions, drops)
-     *                 It also tells us about the active tab (fragment) open
+     * @param bundle - has a list of selected topic filters, causes filters and the current active
+     *               category
      */
     @Override
-    public void passData(List<String> topics, List<String> causes, String category) {
+    public void passData(Bundle bundle) {
+        List<String> topics = bundle.getStringArrayList("topics");
+        List<String> causes = bundle.getStringArrayList("causes");
+        String category = bundle.getString("category");
         selectedItemsId = new HashSet<>();
         tagsSelected = new ArrayList<>(topics);
         tagsSelected.addAll(causes);

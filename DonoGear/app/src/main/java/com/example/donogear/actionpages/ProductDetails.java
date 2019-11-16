@@ -24,9 +24,9 @@ import android.widget.Toast;
 import com.example.donogear.R;
 import com.example.donogear.interfaces.ButtonDesign;
 import com.example.donogear.interfaces.TickTime;
+import com.example.donogear.interfaces.onSavePressed;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
@@ -50,7 +49,8 @@ import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TIME_UP;
 
-public class ProductDetails extends AppCompatActivity implements ButtonDesign, View.OnClickListener {
+public class ProductDetails extends AppCompatActivity implements ButtonDesign,
+        View.OnClickListener, onSavePressed {
 
     private String itemId, itemName, itemDescription, itemHighestBidder, category;
     private int itemBidAmount, startBid, costPerEntry;
@@ -67,6 +67,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
     private Button raffle;
     private Button auction;
     private Button drop;
+    private TextView startBidAmount;
+    private TextView currentBidAmount;
+    private TextView bidderText;
 
     private BottomSheetDialogFragment dialogFragment;
 
@@ -174,6 +177,10 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
 
         full_layout = findViewById(R.id.full_item_layout);
         raffle_buttons = findViewById(R.id.raffle_buttons);
+        startBidAmount = findViewById(R.id.start_bid_amount);
+        currentBidAmount = findViewById(R.id.current_bid_amount);
+        bidderText = findViewById(R.id.no_current_bids);
+
         raffle = findViewById(R.id.enter);
         auction = findViewById(R.id.bid);
         drop = findViewById(R.id.buy);
@@ -235,13 +242,10 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
      */
     private void displayBidDetails() {
         findViewById(R.id.bidLayout).setVisibility(View.VISIBLE);
-        TextView startBidAmount = findViewById(R.id.start_bid_amount);
         startBidAmount.setText("$" + startBid);
-
-        TextView currentBidAmount = findViewById(R.id.current_bid_amount);
         currentBidAmount.setText("$" + itemBidAmount);
 
-        TextView bidderText = findViewById(R.id.no_current_bids);
+        bidderText = findViewById(R.id.no_current_bids);
         if (itemBidAmount == 0) {
             bidderText.setVisibility(View.VISIBLE);
             bidderText.setText(DEFAULT_BID_MESSAGE);
@@ -380,9 +384,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
         itemProceedsQuery.getFirstInBackground((object, e) -> {
             if (e == null) {
                 final String proceedTitle = object.getString("proceedTitle");
-//                System.out.println("Title " + proceedTitle);
                 final String proceedDescription = object.getString("proceedDescription");
-//                System.out.println("Desc " + proceedDescription);
                 final List<File> proceedsImages = new ArrayList<>();
                 final List<String> proceedVideo = new ArrayList<>();
                 for (int i = 1; i < 3; i++) {
@@ -435,6 +437,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
         Bundle bundle = new Bundle();
         bundle.putInt("currentBid", itemBidAmount);
         bundle.putInt("startBid", startBid);
+        bundle.putString("highestBidder", itemHighestBidder);
         dialogFragment = new ItemBidFragment();
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), dialogFragment.getTag());
@@ -465,7 +468,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
                 break;
 
             case R.id.buy:
-                Toast.makeText(context, "Will buy", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.bid:
@@ -483,5 +485,18 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign, V
         if (!checkButtonPressed()) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void passData(Bundle bundle) {
+        int newBidAmount = bundle.getInt("userBid");
+        Toast.makeText(context, "New value is " + itemBidAmount, Toast.LENGTH_SHORT).show();
+        bidderText.setVisibility(GONE);
+        currentBidAmount.setText("$" + newBidAmount);
+        if (itemBidAmount == 0) {
+            currentBidAmount.setVisibility(View.VISIBLE);
+            findViewById(R.id.current_bid_holder).setVisibility(View.VISIBLE);
+        }
+        itemBidAmount = newBidAmount;
     }
 }
