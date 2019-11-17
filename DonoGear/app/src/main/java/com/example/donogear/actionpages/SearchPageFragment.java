@@ -50,7 +50,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     private View view;
     private MainActivity activity;
     private ImageView search;
-    private String typeOfSearch;
+    private String category;
     private Handler handler;
 
     public SearchPageFragment() {
@@ -65,7 +65,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         view = inflater.inflate(R.layout.fragment_search_page, container, false);
         activity = (MainActivity) getActivity();
         if (getArguments() != null) {
-            typeOfSearch = getArguments().getString("type");
+            category = getArguments().getString("type");
         }
         setHasOptionsMenu(true);
         handler = new Handler();
@@ -79,7 +79,6 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
                     displayData();
                 }
                 else {
-//                    System.out.println("Getting data");
                     handler.postDelayed(this, 100);
                 }
             }
@@ -119,7 +118,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         itemAdapter.notifyDataSetChanged();
         Bundle bundle = new Bundle();
         bundle.putSerializable("tagsSelected", new ArrayList<>(tagsSelected));
-        bundle.putString("category", typeOfSearch);
+        bundle.putString("category", category);
         fragment = new FilterFragment();
         fragment.setArguments(bundle);
     }
@@ -130,10 +129,10 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
      */
     private void filterDataByCategory() {
         listOfItems = activity.listOfItems.stream()
-                .filter(item -> item.category.matches(typeOfSearch))
+                .filter(item -> item.category.matches(category))
                 .collect(Collectors.toList());
         copyList = activity.copyList.stream()
-                .filter(item -> item.category.matches(typeOfSearch))
+                .filter(item -> item.category.matches(category))
                 .collect(Collectors.toList());
         searchArray = listOfItems.stream()
                 .map(item -> item.itemName)
@@ -172,7 +171,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
 //        System.out.println(item.itemName);
         Intent intent = new Intent(activity, ProductDetails.class);
         intent.putExtra("item_details", item);
-        intent.putExtra("typeOfSearch", typeOfSearch);
+        intent.putExtra("category", category);
         startActivity(intent);
     }
 

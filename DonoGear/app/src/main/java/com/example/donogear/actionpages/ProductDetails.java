@@ -164,7 +164,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
         Intent intent = getIntent();
         ItemDetails itemDetails = (ItemDetails) intent.getSerializableExtra("item_details");
-        category = intent.getStringExtra("typeOfSearch");
+        category = intent.getStringExtra("category");
         itemId = itemDetails.id;
         itemName = itemDetails.itemName;
         itemDescription = itemDetails.itemDescription;
@@ -468,6 +468,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 break;
 
             case R.id.buy:
+                //TODO - button for drops
                 break;
 
             case R.id.bid:

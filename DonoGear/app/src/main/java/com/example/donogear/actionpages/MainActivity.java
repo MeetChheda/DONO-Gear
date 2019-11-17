@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements
     public List<String> searchArray;
     public static ArrayList[] tags;
     public List<String> tagsSelected;
-    public Set<String> selectedItemsId;
     public List<ItemDetails> listOfItems;
     public List<ItemDetails> copyList;
     public List<ItemDetails> superCopyList;
@@ -72,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements
     public TabLayout innerBrowseTabs;
     public boolean hasAllData, hasAllImages;
 
+    private List<String> selectedCauses;
+    private List<String> selectedTopics;
+
+
     //TODO - Mapping for better storing and querying of list of items
 
     @Override
@@ -80,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ParseQuery.clearAllCachedResults();
         // Initialize basic layout specifics and Adapter
+        initializeLayout();
         manageInnerTabs();
         manageInnerBrowseTabs();
-        initializeLayout();
         readData();
         getFilters();
         itemAdapter = new ItemAdapter(context, listOfItems);
@@ -286,18 +289,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initializeLayout() {
-        mainNavigation = findViewById(R.id.navigation);
-        mainNavigation.setOnNavigationItemSelectedListener(this);
-        mainNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
-        mainNavigation.setSelectedItemId(R.id.navigation_search);
-        mainNavigation.setItemIconSize(120);
-
         context = getBaseContext();
         listOfItems = new ArrayList<>();
         copyList = new ArrayList<>();
         donorDetailsList = new ArrayList<>();
         causesDetailsList = new ArrayList<>();
         superCopyList = new ArrayList<>();
+        selectedTopics = new ArrayList<>();
+        selectedCauses = new ArrayList<>();
 
         // We have two types/categories of tags i.e. Topics and Causes
         tags = new ArrayList[2];
@@ -305,11 +304,18 @@ public class MainActivity extends AppCompatActivity implements
         tags[1] = new ArrayList<>();
         tagsSelected = new ArrayList<>();
         searchArray = new ArrayList<>();
-        selectedItemsId = new HashSet<>();
         tagsToItems = new HashMap<>();
         searchFlag = false;
         hasAllData = false;
         hasAllImages = true;
+
+        innerTabs = findViewById(R.id.innerSearchtabs);
+        innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
+        mainNavigation = findViewById(R.id.navigation);
+        mainNavigation.setOnNavigationItemSelectedListener(this);
+        mainNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
+        mainNavigation.setSelectedItemId(R.id.navigation_search);
+        mainNavigation.setItemIconSize(120);
 
         loadFragment(new SearchPageFragment(), AUCTION_IDENTIFIER);
     }
@@ -318,15 +324,11 @@ public class MainActivity extends AppCompatActivity implements
      * Facilitates inner tab-switching in Search fragment (i.e. Raffles, Auction, Drops)
      */
     private void manageInnerTabs() {
-        innerTabs = findViewById(R.id.innerSearchtabs);
-
         // Load the tab at index 1 which is Auction
         innerTabs.getTabAt(1).select();
         innerTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                listOfItems = new ArrayList<>(superCopyList);
-                copyList = new ArrayList<>(superCopyList);
                 switch (tab.getPosition()) {
                     case 0:
                         loadFragment(new SearchPageFragment(), RAFFLE_IDENTIFIER);
@@ -356,8 +358,6 @@ public class MainActivity extends AppCompatActivity implements
      * Facilitates inner tab-switching in Browse fragment(i.e. Donor, Causes)
      */
     private void manageInnerBrowseTabs() {
-        innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
-
         // Load the tab at index 0 which is Donor
         innerBrowseTabs.getTabAt(0).select();
         innerBrowseTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -395,29 +395,45 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void passData(Bundle bundle) {
-        List<String> topics = bundle.getStringArrayList("topics");
-        List<String> causes = bundle.getStringArrayList("causes");
+        selectedTopics = bundle.getStringArrayList("topics");
+        selectedCauses = bundle.getStringArrayList("causes");
         String category = bundle.getString("category");
-        selectedItemsId = new HashSet<>();
-        tagsSelected = new ArrayList<>(topics);
-        tagsSelected.addAll(causes);
+        listOfItems = filterItemsByCategory(superCopyList, category);
+        listOfItems = filterItemsBySelectedTags(selectedTopics, selectedCauses,
+                listOfItems, tagsToItems);
+        itemAdapter.setItemList(listOfItems);
+        itemAdapter.notifyDataSetChanged();
+        loadFragment(new SearchPageFragment(), category);
+    }
+
+    /**
+     * Filters amongst all the items based on the selected tags. If none of the tags are selected,
+     * all items will be returned. By default, the list will always be sorted based on the current
+     * active category (drops, auction, raffles)
+     * @param topics - list of selected topics
+     * @param causes - list of selected causes
+     * @return list of items after filtering
+     */
+    public List<ItemDetails> filterItemsBySelectedTags(List<String> topics, List<String> causes,
+                                List<ItemDetails> items, Map<String, List<String>> tagsToItems) {
+        selectedTopics = topics;
+        selectedCauses = causes;
+
+        HashSet<String> selectedItemsId = new HashSet<>();
+        tagsSelected = new ArrayList<>(selectedTopics);
+        tagsSelected.addAll(selectedCauses);
         for (String str: tagsSelected) {
             if (tagsToItems.containsKey(str)) {
                 selectedItemsId.addAll(tagsToItems.get(str));
             }
         }
-        filterItemsByCategory(category);
-        if (topics.size() == 0 &&  causes.size() == 0) {
-            listOfItems = copyList;
-        } else {
-            listOfItems = copyList.stream()
-                    .filter(item -> selectedItemsId.contains(item.id))
-                    .collect(Collectors.toList());
+        if (topics.size() == 0 && causes.size() == 0) {
+            return items;
         }
-
-        itemAdapter.setItemList(listOfItems);
-        itemAdapter.notifyDataSetChanged();
-        loadFragment(new SearchPageFragment(), category);
+        List<ItemDetails> newList = items.stream()
+                .filter(item -> selectedItemsId.contains(item.id))
+                .collect(Collectors.toList());
+        return newList;
     }
 
     /**
@@ -425,13 +441,14 @@ public class MainActivity extends AppCompatActivity implements
      * are also applied only on the items pertaining to the current chosen category
      * @param category - category selected
      */
-    private void filterItemsByCategory(String category) {
-        listOfItems = superCopyList.stream()
+    public List<ItemDetails> filterItemsByCategory(List<ItemDetails> list, String category) {
+        List<ItemDetails> newList = list.stream()
                 .filter(item -> item.category.equals(category))
                 .collect(Collectors.toList());
-        copyList = superCopyList.stream()
+        copyList = list.stream()
                 .filter(item -> item.category.equals(category))
                 .collect(Collectors.toList());
+        return newList;
     }
 
     /**
@@ -449,8 +466,20 @@ public class MainActivity extends AppCompatActivity implements
                     .replace(R.id.fragment_container, currentFragment)
                     .addToBackStack(null)
                     .commit();
+
+            listOfItems = new ArrayList<>(superCopyList);
+            copyList = new ArrayList<>(superCopyList);
+            System.out.println(type);
+            listOfItems.forEach(item -> System.out.println(item.printData()));
+
+            listOfItems = filterItemsByCategory(listOfItems, type);
+            listOfItems = filterItemsBySelectedTags(selectedTopics, selectedCauses,
+                    listOfItems, tagsToItems);
+            copyList = new ArrayList<>(listOfItems);
+            listOfItems.forEach(item -> System.out.println(item.printData()));
             return true;
         }
+        System.out.println("Else");
         return false;
     }
 
@@ -471,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         Fragment currentFragment = null;
-        String tab = new String();
+        String tab = "";
         switch (menuItem.getItemId()) {
             case R.id.navigation_home:
                 innerTabs.setVisibility(View.GONE);
