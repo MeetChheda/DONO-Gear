@@ -15,6 +15,10 @@ import static com.example.donogear.utils.Constants.SUBTRACT_FROM_BID;
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 
+/**
+ * Tests to validate if the bid amount is correctly updated or not. This class runs using
+ * RobolectricTestRunner and mocks a method as would be actually implemented in the app.
+ */
 public class ValidateBidTest {
 
     private int startBid;
@@ -28,6 +32,9 @@ public class ValidateBidTest {
         itemBidFragment = new ItemBidFragment();
     }
 
+    /**
+     * Test to check if a the bid amount updates correctly when increased
+     */
     @Test
     public void addingToBidTest() {
         startBid = 2000;
@@ -39,6 +46,10 @@ public class ValidateBidTest {
         Assert.assertEquals(2100, newAmount);
     }
 
+    /**
+     * Test to check if a the bid amount updates correctly when decreased and is within bounds
+     * (higher than the current bid)
+     */
     @Test
     public void subtractingFromBidLegallyTest() {
         startBid = 2000;
@@ -50,6 +61,10 @@ public class ValidateBidTest {
         Assert.assertEquals(2300, newAmount);
     }
 
+    /**
+     * Test to check if a the bid amount remains unchanged when a user tries to bid lower than the
+     * current bid. Instead, a toast is displayed appropriately to bid higher; mocked.
+     */
     @Test
     public void subtractingFromBidIllegallyTest() {
         startBid = 2000;

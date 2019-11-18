@@ -15,11 +15,17 @@ import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 
+/**
+ * Tests to check if the list of items are filtered correctly based on the current category
+ */
 public class FilterByCategoryTest {
 
     private List<ItemDetails> itemDetailsList;
     private MainActivity mainActivity;
 
+    /**
+     * Initializing data
+     */
     @Before
     public void initData() {
         InitializeItems initializeItems = new InitializeItems();
@@ -28,6 +34,9 @@ public class FilterByCategoryTest {
         mainActivity = new MainActivity();
     }
 
+    /**
+     * Test to check when the item list is empty
+     */
     @Test
     public void filterButEmptyListTest() {
         List<ItemDetails> myList = mainActivity.filterItemsByCategory(new ArrayList<>(),
@@ -35,6 +44,9 @@ public class FilterByCategoryTest {
         Assert.assertEquals(0, myList.size());
     }
 
+    /**
+     * Test to filter the list only for auction items (returns 3 items correctly, of 5)
+     */
     @Test
     public void filterForAuctionTest() {
         List<ItemDetails> myList = mainActivity.filterItemsByCategory(itemDetailsList, AUCTION_IDENTIFIER);
@@ -47,6 +59,9 @@ public class FilterByCategoryTest {
         Assert.assertTrue(possibleNames.contains(myList.get(2).itemName));
     }
 
+    /**
+     * Test to filter the list only for raffle items (returns 1 item correctly, of 5)
+     */
     @Test
     public void filterForRafflesTest() {
         List<ItemDetails> myList = mainActivity.filterItemsByCategory(itemDetailsList, RAFFLE_IDENTIFIER);
@@ -54,6 +69,9 @@ public class FilterByCategoryTest {
         Assert.assertEquals("item3", myList.get(0).itemName);
     }
 
+    /**
+     * Test to filter the list only for drops-items (returns 1 item correctly, of 5)
+     */
     @Test
     public void filterForDropsTest() {
         List<ItemDetails> myList = mainActivity.filterItemsByCategory(itemDetailsList, DROP_IDENTIFIER);

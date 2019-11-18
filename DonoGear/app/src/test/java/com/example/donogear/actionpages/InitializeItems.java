@@ -1,6 +1,5 @@
 package com.example.donogear.actionpages;
 
-import com.example.donogear.actionpages.MainActivity;
 import com.example.donogear.models.ItemDetails;
 
 import org.junit.Before;
@@ -10,8 +9,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This activity is used to initialize basic variables which can facilitate testing. it generates a
+ * list of 5 items with different tags, name, price and other attributes. This class consists of
+ * helper methods
+ */
 public class InitializeItems {
 
+    //TODO - Make variables public-final-static in the future as they need to be initialized once
+    // and are used across the test package
     private String id;
     private String itemName;
     private String itemDescription;

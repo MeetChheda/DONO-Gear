@@ -15,13 +15,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Tests to check if the list of items are filtered correctly based on the tags used for filtering
+ */
 public class FilterByTagsTest {
 
     private List<ItemDetails> itemDetailsList;
     private MainActivity mainActivity;
     private Map<String, List<String>> tagsMap;
 
+    /**
+     * Initializing data
+     */
     @Before
     public void initData() {
         InitializeItems initializeItems = new InitializeItems();
@@ -32,6 +37,9 @@ public class FilterByTagsTest {
         fillTags();
     }
 
+    /**
+     * Test to check whether all items are displayed when no filters are selected (or reset filters)
+     */
     @Test
     public void checkForNoFilterTest() {
         List<String> selectedTags = new ArrayList<>();;
@@ -41,8 +49,12 @@ public class FilterByTagsTest {
         Assert.assertEquals(5, filteredList.size());
     }
 
+    /**
+     * Test to filter items based on three tags (returned list is an OR query, i.w. returns items
+     * which belong to ANY ONE or more tags)
+     */
     @Test
-    public void checkForTwoTagsTest() {
+    public void checkForThreeTagsTest() {
         List<String> selectedTags = Arrays.asList("sports", "art");
         List<String> selectedCauses = Collections.singletonList("education");
         List<ItemDetails> filteredList = mainActivity.filterItemsBySelectedTags(selectedTags,
@@ -50,6 +62,9 @@ public class FilterByTagsTest {
         Assert.assertEquals(2, filteredList.size());
     }
 
+    /**
+     * Test to filter items based on only one single tag
+     */
     @Test
     public void checkForOneTagTest() {
         List<String> selectedTags = Collections.singletonList("music");
@@ -59,6 +74,10 @@ public class FilterByTagsTest {
         Assert.assertEquals(1, filteredList.size());
     }
 
+    /**
+     * Test to filter items based on tags which have no items currently in the database. An
+     * appropriate message is displayed and the no items are found
+     */
     @Test
     public void checkForNoEligibleFilterTest() {
         List<String> selectedTags = Collections.singletonList("art");
@@ -68,6 +87,9 @@ public class FilterByTagsTest {
         Assert.assertEquals(0, filteredList.size());
     }
 
+    /**
+     * Initializing tags to items mapping
+     */
     private void fillTags() {
         List<String> sportItems = Arrays.asList("01", "03");
         tagsMap.put("sports", sportItems);
