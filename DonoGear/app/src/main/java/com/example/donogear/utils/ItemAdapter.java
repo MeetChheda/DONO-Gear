@@ -32,6 +32,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private List<ItemDetails> itemDetailsList;
     private ItemClickListener itemClickListener;
 
+    public ItemAdapter(){}
     public ItemAdapter(Context context, List<ItemDetails> list) {
         mContext = context;
         itemDetailsList = list;
@@ -98,7 +99,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         }
     }
 
-    private int getFavourableTextColor(Bitmap bitmap) {
+    public int getFavourableTextColor(Bitmap bitmap) {
         int pixel = bitmap.getPixel(0, bitmap.getHeight() - 1);
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
