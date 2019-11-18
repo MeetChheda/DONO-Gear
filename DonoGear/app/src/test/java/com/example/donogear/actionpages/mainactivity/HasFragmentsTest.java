@@ -22,10 +22,9 @@ public class HasFragmentsTest {
 
     /**
      * Create a mock of the main activity
-     * @throws Exception - if any
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mainActivity = Robolectric.buildActivity(MainActivity.class)
                 .create()
                 .get();

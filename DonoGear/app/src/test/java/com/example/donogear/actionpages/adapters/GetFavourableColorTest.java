@@ -1,12 +1,10 @@
 package com.example.donogear.actionpages.adapters;
 
-import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.example.donogear.actionpages.MainActivity;
 import com.example.donogear.utils.ItemAdapter;
 
 import org.junit.Assert;
@@ -16,23 +14,17 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.LooperMode;
 
-import androidx.test.core.app.ApplicationProvider;
-
 import static org.robolectric.annotation.LooperMode.Mode.PAUSED;
 
 @RunWith(RobolectricTestRunner.class)
 @LooperMode(PAUSED)
 public class GetFavourableColorTest {
-    MainActivity mainActivity;
-    ItemAdapter itemAdapter;
 
-    private Application context;
+    private ItemAdapter itemAdapter;
 
     @Before
     public void initData() {
         itemAdapter = new ItemAdapter();
-        context = ApplicationProvider.getApplicationContext();
-
     }
 
     @Test
@@ -49,7 +41,7 @@ public class GetFavourableColorTest {
         Assert.assertEquals(Color.BLACK, textColor);
     }
 
-    public static Bitmap createImage(int width, int height, int color) {
+    private static Bitmap createImage(int width, int height, int color) {
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(color);
         Canvas canvas = new Canvas(bitmap);

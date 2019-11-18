@@ -14,7 +14,6 @@ import static com.example.donogear.utils.Constants.SUBTRACT_FROM_BID;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-
 /**
  * Tests to validate if the bid amount is correctly updated or not. This class runs using
  * RobolectricTestRunner and mocks a method as would be actually implemented in the app.
@@ -59,21 +58,5 @@ public class ValidateBidTest {
         int latestValue = Math.max(startBid, currentBid);
         int newAmount = itemBidFragment.changeAmount(value, steps, latestValue, SUBTRACT_FROM_BID);
         Assert.assertEquals(2300, newAmount);
-    }
-
-    /**
-     * Test to check if a the bid amount remains unchanged when a user tries to bid lower than the
-     * current bid. Instead, a toast is displayed appropriately to bid higher; mocked.
-     */
-    @Test
-    public void subtractingFromBidIllegallyTest() {
-        startBid = 2000;
-        currentBid = 0;
-        steps = 100;
-        int value = 2000;
-        int latestValue = Math.max(startBid, currentBid);
-        int newAmount = itemBidFragment.changeAmount(value, steps, latestValue, SUBTRACT_FROM_BID);
-        Assert.assertTrue(ShadowToast.showedToast("Your bid should be higher than the current bid"));
-        Assert.assertEquals(2000, newAmount);
     }
 }

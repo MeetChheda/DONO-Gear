@@ -34,6 +34,7 @@ android {
                 events "passed", "failed", "standardError"
                 showCauses true
                 showExceptions true
+                outputs.upToDateWhen { false }
             }
         }
     }

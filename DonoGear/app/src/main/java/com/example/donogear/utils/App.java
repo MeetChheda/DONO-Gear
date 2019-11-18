@@ -1,6 +1,7 @@
 package com.example.donogear.utils;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.example.donogear.R;
 import com.parse.Parse;
@@ -15,6 +16,10 @@ public class App extends Application {
                 .server(getString(R.string.back4app_server_url))
                 .build()
         );
-        ParseFacebookUtils.initialize(this);
+        try {
+            ParseFacebookUtils.initialize(this);
+        } catch (IllegalStateException e) {
+            Log.d("DONO-Gear", "Facebook is already initialized");
+        }
     }
 }

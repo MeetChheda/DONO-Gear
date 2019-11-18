@@ -422,8 +422,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
      * pressed behaviour based on the current view
      * @return - whether the back button should return to previous activity or not
      */
-    private boolean checkButtonPressed() {
-        if (flag) {
+    private boolean checkButtonPressed(boolean check) {
+        if (check) {
             flag = false;
             full_layout.setVisibility(View.VISIBLE);
             raffle_buttons.setVisibility(GONE);
@@ -455,7 +455,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.backbtn:
-                if (!checkButtonPressed()) {
+                if (!checkButtonPressed(flag)) {
                     finish();
                 }
                 break;
@@ -483,7 +483,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
     @Override
     public void onBackPressed() {
-        if (!checkButtonPressed()) {
+        if (!checkButtonPressed(flag)) {
             super.onBackPressed();
         }
     }
