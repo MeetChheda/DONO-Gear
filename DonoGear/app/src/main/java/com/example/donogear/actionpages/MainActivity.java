@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
@@ -69,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements
     public BottomNavigationView mainNavigation;
     public TabLayout innerTabs;
     public TabLayout innerBrowseTabs;
-    public boolean hasAllData, hasAllImages;
+    public boolean hasAllData;
+    public boolean hasAllImages;
 
     private List<String> selectedCauses;
     private List<String> selectedTopics;
@@ -430,10 +430,9 @@ public class MainActivity extends AppCompatActivity implements
         if (topics.size() == 0 && causes.size() == 0) {
             return items;
         }
-        List<ItemDetails> newList = items.stream()
+        return items.stream()
                 .filter(item -> selectedItemsId.contains(item.id))
                 .collect(Collectors.toList());
-        return newList;
     }
 
     /**
@@ -469,17 +468,13 @@ public class MainActivity extends AppCompatActivity implements
 
             listOfItems = new ArrayList<>(superCopyList);
             copyList = new ArrayList<>(superCopyList);
-            System.out.println(type);
-            listOfItems.forEach(item -> System.out.println(item.printData()));
 
             listOfItems = filterItemsByCategory(listOfItems, type);
             listOfItems = filterItemsBySelectedTags(selectedTopics, selectedCauses,
                     listOfItems, tagsToItems);
             copyList = new ArrayList<>(listOfItems);
-            listOfItems.forEach(item -> System.out.println(item.printData()));
             return true;
         }
-        System.out.println("Else");
         return false;
     }
 
@@ -528,7 +523,6 @@ public class MainActivity extends AppCompatActivity implements
                 tab = "Profile";
                 break;
         }
-
         return loadFragment(currentFragment, tab);
     }
 

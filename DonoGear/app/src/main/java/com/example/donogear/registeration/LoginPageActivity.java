@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.donogear.R;
 import com.example.donogear.actionpages.MainActivity;
+
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -32,6 +33,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
 
 
 public class LoginPageActivity extends AppCompatActivity {
@@ -114,7 +117,6 @@ public class LoginPageActivity extends AppCompatActivity {
                         ParseUser.logOut();
                         Log.e(TAG, "An error occurred", err);
                     }
-
                     if (user == null) {
                         ParseUser.logOut();
                         Log.d(TAG, "The user cancelled the Facebook login.");
@@ -179,7 +181,6 @@ public class LoginPageActivity extends AppCompatActivity {
     }
 
     public void createAccountBtnClicked(View view) {
-
         username = usernameEditTextSignup.getText().toString();
         email = emailEditTextSignUp.getText().toString();
         password = passwordEditTextSignup.getText().toString();
@@ -208,7 +209,7 @@ public class LoginPageActivity extends AppCompatActivity {
                 if (e == null) {
 //                    alertDisplayer("Sucessful Sign Up!","Welcome " + username + "!");
                     Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
-                    System.out.println("Signup finish");
+                    System.out.println("Sign up finish");
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
@@ -230,7 +231,6 @@ public class LoginPageActivity extends AppCompatActivity {
     public boolean emailValidator(String email) {
         Pattern pattern;
         Matcher matcher;
-        final String EMAIL_PATTERN = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         pattern = Pattern.compile(EMAIL_PATTERN);
         matcher = pattern.matcher(email);
         return matcher.matches();
@@ -253,7 +253,7 @@ public class LoginPageActivity extends AppCompatActivity {
         ParseUser.logInInBackground(username, password, (parseUser, e) -> {
             if (parseUser != null) {
                 Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } else {
                 invalid.setVisibility(View.VISIBLE);
@@ -261,7 +261,6 @@ public class LoginPageActivity extends AppCompatActivity {
                 passwordEditTextLogin.setText("");
                 System.out.println(e.getMessage());
                 ParseUser.logOut();
-
             }
         });
     }

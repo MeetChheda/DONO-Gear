@@ -491,7 +491,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     @Override
     public void passData(Bundle bundle) {
         int newBidAmount = bundle.getInt("userBid");
-        Toast.makeText(context, "New value is " + itemBidAmount, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "New value is " + newBidAmount, Toast.LENGTH_SHORT).show();
         bidderText.setVisibility(GONE);
         currentBidAmount.setText("$" + newBidAmount);
         if (itemBidAmount == 0) {

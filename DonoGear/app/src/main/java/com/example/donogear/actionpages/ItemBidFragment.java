@@ -26,20 +26,24 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Objects;
 
+import static com.example.donogear.utils.Constants.ADD_TO_BID;
+import static com.example.donogear.utils.Constants.SUBTRACT_FROM_BID;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ItemBidFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
-    private int startBid;
+    private int startPrice;
     private int currentBid;
+    private int latestBidValue;
     private String highestBidder;
     private Button plus;
     private Button minus;
     private TextView setPrice;
     private TextView currentPrice;
     private EditText edit_price;
-    private int multiple;
+    private int steps;
     private onSavePressed savePressedListener;
 
     public ItemBidFragment() {
@@ -54,7 +58,7 @@ public class ItemBidFragment extends BottomSheetDialogFragment implements View.O
 
         View view = inflater.inflate(R.layout.fragment_item_bid, container, false);
         if (getArguments() != null) {
-            startBid = getArguments().getInt("startBid");
+            startPrice = getArguments().getInt("startBid");
             currentBid = getArguments().getInt("currentBid");
             highestBidder = getArguments().getString("highestBidder");
         }
@@ -74,20 +78,17 @@ public class ItemBidFragment extends BottomSheetDialogFragment implements View.O
 
     private void initializeData() {
         String textPrice = "";
-        if (currentBid == 0) {
-            textPrice += startBid;
-        } else {
-            textPrice += currentBid;
-        }
-        multiple = Math.max(0, (int) (Math.pow(10, (textPrice.length() - 2))));
+        latestBidValue = Math.max(startPrice, currentBid);
+        textPrice += latestBidValue;
+        steps = Math.max(0, (int) (Math.pow(10, (textPrice.length() - 2))));
         textPrice = "$" + (Integer.parseInt(textPrice));
         currentPrice.setText(textPrice);
         setPrice.setText(textPrice);
         edit_price.setText(textPrice.substring(1));
 
-        String text = "- $" + multiple;
+        String text = "- $" + steps;
         minus.setText(text);
-        text = "+ $" + multiple;
+        text = "+ $" + steps;
         plus.setText(text);
     }
 
@@ -117,7 +118,8 @@ public class ItemBidFragment extends BottomSheetDialogFragment implements View.O
                 break;
 
             case R.id.done:
-                if(!validationBid())
+                String currentText = edit_price.getText().toString();
+                if(!validationBid(currentText, latestBidValue))
                     return;
                 Bundle bundle = new Bundle();
                 bundle.putInt("userBid", currentBid);
@@ -129,34 +131,42 @@ public class ItemBidFragment extends BottomSheetDialogFragment implements View.O
             case R.id.plus:
                 amount = setPrice.getText().toString().substring(1);
                 value = Integer.parseInt(amount);
-                value += multiple;
+                value = changeAmount(value, steps, latestBidValue, ADD_TO_BID);
                 amount = "$" + value;
-                setPrice.setText(amount);
-                edit_price.setText(amount.substring(1));
+                setAmount(amount);
                 break;
 
             case R.id.minus:
                 amount = setPrice.getText().toString().substring(1);
                 value = Integer.parseInt(amount);
-                if (value - multiple < Math.max(currentBid, startBid)) {
-                    Toast.makeText(getContext(), "Bid should be higher than the current bid",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                value -= multiple;
+                value = changeAmount(value, steps, latestBidValue, SUBTRACT_FROM_BID);
                 amount = "$" + value;
-                setPrice.setText(amount);
-                edit_price.setText(amount.substring(1));
+                setAmount(amount);
                 break;
-
 
             default:
                 break;
         }
     }
 
-    private boolean validationBid() {
-        String text = edit_price.getText().toString();
+    public int changeAmount(int value, int multiple, int latestValue, int operation) {
+        int newAmount = value + (multiple * operation);
+        if (operation == ADD_TO_BID)
+            return newAmount;
+        if (newAmount < latestValue) {
+            Toast.makeText(getContext(), "Your bid should be higher than the current bid",
+                    Toast.LENGTH_SHORT).show();
+            return value;
+        }
+        return newAmount;
+    }
+
+    public void setAmount(String amount) {
+        setPrice.setText(amount);
+        edit_price.setText(amount.substring(1));
+    }
+
+    private boolean validationBid(String text, int latestBidValue) {
         for (char ch: text.toCharArray()) {
             if (!Character.isDigit(ch)) {
                 Toast.makeText(getContext(), "Enter a number", Toast.LENGTH_SHORT).show();
@@ -164,7 +174,7 @@ public class ItemBidFragment extends BottomSheetDialogFragment implements View.O
             }
         }
         int value = Integer.parseInt(text);
-        if (value <= currentBid) {
+        if (value <= latestBidValue) {
             Toast.makeText(getContext(), "Your bid has to be higher than the current bid",
                     Toast.LENGTH_SHORT).show();
             return false;
