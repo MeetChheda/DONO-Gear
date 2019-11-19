@@ -26,8 +26,7 @@
         android:layout_height="wrap_content"
         android:text="Welcome to DONO"
         android:textColor="@android:color/black"
-        android:textSize="20dp"
-        ></TextView>
+        android:textSize="20dp" />
 
 
     <Button
@@ -41,8 +40,8 @@
         android:paddingRight="10dp"
         android:background="#2FD6D6"
         android:textAllCaps="false"
-        android:onClick="loginClicked"
-        ></Button>
+        />
+
     <Button
         android:id="@+id/guest_btn"
         android:layout_width="wrap_content"
@@ -55,7 +54,6 @@
         android:background="@android:color/transparent"
         style="?android:attr/borderlessButtonStyle"
         android:textAllCaps="false"
-        android:onClick="guestAccess"
-        ></Button>
+        />
 
 </LinearLayout>

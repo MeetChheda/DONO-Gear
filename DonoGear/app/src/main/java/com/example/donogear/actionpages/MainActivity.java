@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
@@ -54,9 +53,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public boolean searchFlag;
     public List<String> searchArray;
-    public static List<String>[] tags;
+    public static ArrayList[] tags;
     public List<String> tagsSelected;
-    public Set<String> selectedItemsId;
     public List<ItemDetails> listOfItems;
     public List<ItemDetails> copyList;
     public List<ItemDetails> superCopyList;
@@ -70,7 +68,14 @@ public class MainActivity extends AppCompatActivity implements
     public BottomNavigationView mainNavigation;
     public TabLayout innerTabs;
     public TabLayout innerBrowseTabs;
-    public boolean hasAllData, hasAllImages;
+    public boolean hasAllData;
+    public boolean hasAllImages;
+
+    private List<String> selectedCauses;
+    private List<String> selectedTopics;
+
+
+    //TODO - Mapping for better storing and querying of list of items
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ParseQuery.clearAllCachedResults();
         // Initialize basic layout specifics and Adapter
+        initializeLayout();
         manageInnerTabs();
         manageInnerBrowseTabs();
-        initializeLayout();
         readData();
         getFilters();
         itemAdapter = new ItemAdapter(context, listOfItems);
@@ -106,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             } else {
                 // Something is wrong
-                Toast.makeText(MainActivity.this, "Error: " + e, Toast.LENGTH_SHORT).show();
                 Log.e("Error", e.toString());
             }
         });
@@ -131,12 +135,13 @@ public class MainActivity extends AppCompatActivity implements
                     final int currentBid = item.getInt("currentBid");
                     final String itemName = item.getString("itemName");
                     final String itemDescription = item.getString("description");
-                    final String highestBidder = item.getString("highestBidder") != null ?
-                            item.getString("highestBidder") : "Be the first one to bid!";
+                    final String highestBidder = item.getString("highestBidder");
                     final String category = item.getString("category");
                     final Date endDate = item.getDate("auctionEndDate");
-                    ItemDetails itemDetails = new ItemDetails(itemId, itemName, itemDescription, buyNowPrice,
-                            currentBid, highestBidder, category, endDate, itemImages);
+                    final int costPerEntry = item.getInt("costPerEntry");
+                    ItemDetails itemDetails = new ItemDetails(itemId, itemName, itemDescription,
+                            startBid, buyNowPrice, currentBid, highestBidder, category, endDate,
+                            costPerEntry, itemImages);
                     searchArray.add(itemName);
                     listOfItems.add(itemDetails);
                     itemAdapter.notifyDataSetChanged();
@@ -270,13 +275,13 @@ public class MainActivity extends AppCompatActivity implements
                             if (object.getParseFile("image" + i).getFile() != null) {
                                 File image = object.getParseFile("image" + i).getFile();
                                 allImages.add(image);
-                                itemAdapter.notifyDataSetChanged();
                             }
                         } catch (ParseException ex) {
                             Log.e("Error", e.toString());
                         }
                     }
                 }
+                itemAdapter.notifyDataSetChanged();
             }
         });
         hasAllImages = true;
@@ -284,18 +289,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initializeLayout() {
-        mainNavigation = findViewById(R.id.navigation);
-        mainNavigation.setOnNavigationItemSelectedListener(this);
-        mainNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
-        mainNavigation.setSelectedItemId(R.id.navigation_search);
-        mainNavigation.setItemIconSize(120);
-
         context = getBaseContext();
         listOfItems = new ArrayList<>();
         copyList = new ArrayList<>();
         donorDetailsList = new ArrayList<>();
         causesDetailsList = new ArrayList<>();
         superCopyList = new ArrayList<>();
+        selectedTopics = new ArrayList<>();
+        selectedCauses = new ArrayList<>();
 
         // We have two types/categories of tags i.e. Topics and Causes
         tags = new ArrayList[2];
@@ -303,11 +304,18 @@ public class MainActivity extends AppCompatActivity implements
         tags[1] = new ArrayList<>();
         tagsSelected = new ArrayList<>();
         searchArray = new ArrayList<>();
-        selectedItemsId = new HashSet<>();
         tagsToItems = new HashMap<>();
         searchFlag = false;
         hasAllData = false;
         hasAllImages = true;
+
+        innerTabs = findViewById(R.id.innerSearchtabs);
+        innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
+        mainNavigation = findViewById(R.id.navigation);
+        mainNavigation.setOnNavigationItemSelectedListener(this);
+        mainNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
+        mainNavigation.setSelectedItemId(R.id.navigation_search);
+        mainNavigation.setItemIconSize(120);
 
         loadFragment(new SearchPageFragment(), AUCTION_IDENTIFIER);
     }
@@ -316,15 +324,11 @@ public class MainActivity extends AppCompatActivity implements
      * Facilitates inner tab-switching in Search fragment (i.e. Raffles, Auction, Drops)
      */
     private void manageInnerTabs() {
-        innerTabs = findViewById(R.id.innerSearchtabs);
-
         // Load the tab at index 1 which is Auction
         innerTabs.getTabAt(1).select();
         innerTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                listOfItems = new ArrayList<>(superCopyList);
-                copyList = new ArrayList<>(superCopyList);
                 switch (tab.getPosition()) {
                     case 0:
                         loadFragment(new SearchPageFragment(), RAFFLE_IDENTIFIER);
@@ -354,8 +358,6 @@ public class MainActivity extends AppCompatActivity implements
      * Facilitates inner tab-switching in Browse fragment(i.e. Donor, Causes)
      */
     private void manageInnerBrowseTabs() {
-        innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
-
         // Load the tab at index 0 which is Donor
         innerBrowseTabs.getTabAt(0).select();
         innerBrowseTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -388,33 +390,49 @@ public class MainActivity extends AppCompatActivity implements
      * Implementing interface onSavePressed's method to pass data from Activity to fragment and back
      * This function receives data from the FilterFragment after the filters have been set. They
      * are then sent to SearchFragment again to adjust items based on those filters only
-     * @param topics - selected topic filters
-     * @param causes - selected causes filters
-     * @param category - selected category amongst the three types (raffles, auctions, drops)
-     *                 It also tells us about the active tab (fragment) open
+     * @param bundle - has a list of selected topic filters, causes filters and the current active
+     *               category
      */
     @Override
-    public void passData(List<String> topics, List<String> causes, String category) {
-        selectedItemsId = new HashSet<>();
-        tagsSelected = new ArrayList<>(topics);
-        tagsSelected.addAll(causes);
+    public void passData(Bundle bundle) {
+        selectedTopics = bundle.getStringArrayList("topics");
+        selectedCauses = bundle.getStringArrayList("causes");
+        String category = bundle.getString("category");
+        listOfItems = filterItemsByCategory(superCopyList, category);
+        listOfItems = filterItemsBySelectedTags(selectedTopics, selectedCauses,
+                listOfItems, tagsToItems);
+        itemAdapter.setItemList(listOfItems);
+        itemAdapter.notifyDataSetChanged();
+        loadFragment(new SearchPageFragment(), category);
+    }
+
+    /**
+     * Filters amongst all the items based on the selected tags. If none of the tags are selected,
+     * all items will be returned. By default, the list will always be sorted based on the current
+     * active category (drops, auction, raffles)
+     * @param topics - list of selected topics
+     * @param causes - list of selected causes
+     * @return list of items after filtering
+     */
+    public List<ItemDetails> filterItemsBySelectedTags(List<String> topics, List<String> causes,
+                                List<ItemDetails> items, Map<String, List<String>> tagsToItems) {
+        selectedTopics = topics;
+        selectedCauses = causes;
+
+        HashSet<String> selectedItemsId = new HashSet<>();
+        tagsSelected = new ArrayList<>(selectedTopics);
+        tagsSelected.addAll(selectedCauses);
         for (String str: tagsSelected) {
             if (tagsToItems.containsKey(str)) {
                 selectedItemsId.addAll(tagsToItems.get(str));
             }
         }
-        filterItemsByCategory(category);
-        if (topics.size() == 0 &&  causes.size() == 0) {
-            listOfItems = copyList;
-        } else {
-            listOfItems = copyList.stream()
-                    .filter(item -> selectedItemsId.contains(item.id))
-                    .collect(Collectors.toList());
+        if (topics.size() == 0 && causes.size() == 0) {
+            return items;
         }
-
-        itemAdapter.setItemList(listOfItems);
-        itemAdapter.notifyDataSetChanged();
-        loadFragment(new SearchPageFragment(), category);
+        return items.stream()
+                .filter(item -> selectedItemsId.contains(item.id))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -422,13 +440,14 @@ public class MainActivity extends AppCompatActivity implements
      * are also applied only on the items pertaining to the current chosen category
      * @param category - category selected
      */
-    private void filterItemsByCategory(String category) {
-        listOfItems = superCopyList.stream()
+    public List<ItemDetails> filterItemsByCategory(List<ItemDetails> list, String category) {
+        List<ItemDetails> newList = list.stream()
                 .filter(item -> item.category.equals(category))
                 .collect(Collectors.toList());
-        copyList = superCopyList.stream()
+        copyList = list.stream()
                 .filter(item -> item.category.equals(category))
                 .collect(Collectors.toList());
+        return newList;
     }
 
     /**
@@ -446,6 +465,14 @@ public class MainActivity extends AppCompatActivity implements
                     .replace(R.id.fragment_container, currentFragment)
                     .addToBackStack(null)
                     .commit();
+
+            listOfItems = new ArrayList<>(superCopyList);
+            copyList = new ArrayList<>(superCopyList);
+
+            listOfItems = filterItemsByCategory(listOfItems, type);
+            listOfItems = filterItemsBySelectedTags(selectedTopics, selectedCauses,
+                    listOfItems, tagsToItems);
+            copyList = new ArrayList<>(listOfItems);
             return true;
         }
         return false;
@@ -468,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         Fragment currentFragment = null;
-        String tab = new String();
+        String tab = "";
         switch (menuItem.getItemId()) {
             case R.id.navigation_home:
                 innerTabs.setVisibility(View.GONE);
@@ -496,7 +523,6 @@ public class MainActivity extends AppCompatActivity implements
                 tab = "Profile";
                 break;
         }
-
         return loadFragment(currentFragment, tab);
     }
 

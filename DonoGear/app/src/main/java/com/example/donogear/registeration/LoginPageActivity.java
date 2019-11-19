@@ -1,6 +1,7 @@
 package com.example.donogear.registeration;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,26 +16,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.donogear.R;
 import com.example.donogear.actionpages.MainActivity;
-import com.google.android.material.tabs.TabItem;
+
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.google.android.material.tabs.TabLayout;
 import com.parse.LogInCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 import com.parse.facebook.ParseFacebookUtils;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
+import static com.example.donogear.utils.Constants.USER_DETAILS;
+import static com.example.donogear.utils.Constants.USER_NAME;
 
 
 public class LoginPageActivity extends AppCompatActivity {
@@ -52,20 +52,14 @@ public class LoginPageActivity extends AppCompatActivity {
     String password;
     String email;
     ProgressBar pgsBar;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-        Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId(getString(R.string.back4app_app_id))
-                .clientKey(getString(R.string.back4app_client_key))
-                .server(getString(R.string.back4app_server_url))
-                .build()
-        );
-
-//        boolean finish = getIntent().getBooleanExtra("finish", false);
         pgsBar = findViewById(R.id.pBar);
         invalid = findViewById(R.id.invalid);
         tabs = findViewById(R.id.tabs);
@@ -76,6 +70,8 @@ public class LoginPageActivity extends AppCompatActivity {
         passwordEditTextSignup = findViewById(R.id.passwordCreateAccount_editText);
         usernameEditTextLogin = findViewById(R.id.username_editText);
         passwordEditTextLogin = findViewById(R.id.password_editText);
+
+        checkSharedPreferences();
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -96,12 +92,10 @@ public class LoginPageActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
 
@@ -117,7 +111,6 @@ public class LoginPageActivity extends AppCompatActivity {
                         ParseUser.logOut();
                         Log.e(TAG, "An error occurred", err);
                     }
-
                     if (user == null) {
                         ParseUser.logOut();
                         Log.d(TAG, "The user cancelled the Facebook login.");
@@ -134,29 +127,36 @@ public class LoginPageActivity extends AppCompatActivity {
         });
     }
 
+    private void checkSharedPreferences() {
+        sharedPreferences = getSharedPreferences(USER_DETAILS, MODE_PRIVATE);
+        if (sharedPreferences.contains(USER_NAME)) {
+            String name = sharedPreferences.getString(USER_NAME, "");
+            Toast.makeText(this, "Logged in as: " + name, Toast.LENGTH_SHORT).show();
+            directSuccessfulUserLogin();
+        }
+    }
+
     /**
      * Retrieves user information from Facebook
      */
     void getUserDetailFromFB() {
-        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),new  GraphRequest.GraphJSONObjectCallback(){
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                ParseUser user = ParseUser.getCurrentUser();
-                try{
-                    // TODO store needed user data and route to main page for user account data
-                    user.setUsername(object.getString("name"));
-                    user.setEmail(object.getString("email"));
-                } catch(JSONException e){
-                    Log.e(TAG, "Error retrieving user data", e);
-                }
-
-                // Add user to Back4App registry
-                user.saveInBackground(e -> {
-                    Log.d(TAG, "Successfully added user to App user registry");
-                    Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
-                    directSuccessfulUserLogin();
-                });
+        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
+                (object, response) -> {
+            ParseUser user = ParseUser.getCurrentUser();
+            try{
+                // TODO store needed user data and route to main page for user account data
+                user.setUsername(object.getString("name"));
+                user.setEmail(object.getString("email"));
+            } catch(JSONException e){
+                Log.e(TAG, "Error retrieving user data", e);
             }
+
+            // Add user to Back4App registry
+            user.saveInBackground(e -> {
+                Log.d(TAG, "Successfully added user to App user registry");
+                Toast.makeText(this, "Login Successful", Toast.LENGTH_LONG).show();
+                directSuccessfulUserLogin();
+            });
         });
 
         Bundle parameters = new Bundle();
@@ -182,7 +182,6 @@ public class LoginPageActivity extends AppCompatActivity {
     }
 
     public void createAccountBtnClicked(View view) {
-
         username = usernameEditTextSignup.getText().toString();
         email = emailEditTextSignUp.getText().toString();
         password = passwordEditTextSignup.getText().toString();
@@ -197,7 +196,7 @@ public class LoginPageActivity extends AppCompatActivity {
             passwordEditTextSignup.setError("Password is required");
         }
         else if (password.length() < 8) {
-            passwordEditTextSignup.setError("Password length should be atleast 8 characters");
+            passwordEditTextSignup.setError("Password length should be at-least 8 characters");
         }
 
         else {
@@ -209,22 +208,18 @@ public class LoginPageActivity extends AppCompatActivity {
 
             user.signUpInBackground(e -> {
                 if (e == null) {
-//                    alertDisplayer("Sucessful Sign Up!","Welcome " + username + "!");
-                    Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
-                    System.out.println("Signup finish");
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Intent intent = new Intent(this, MainActivity.class);
+                    Log.d(TAG, "Sign up finish");
                     startActivity(intent);
                 } else {
-                    System.out.println(e.getMessage());
                     if (e.getMessage().equals("Account already exists for this email address.")) {
                         emailEditTextSignUp.setError("Please enter different email");
                     }
                     else {
                         usernameEditTextSignup.setError("Please enter different username");
                     }
-                    System.out.println("Signup error");
+                    Log.e(TAG, "Sign up error");
                     ParseUser.logOut();
-//                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -233,21 +228,16 @@ public class LoginPageActivity extends AppCompatActivity {
     public boolean emailValidator(String email) {
         Pattern pattern;
         Matcher matcher;
-        final String EMAIL_PATTERN = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         pattern = Pattern.compile(EMAIL_PATTERN);
         matcher = pattern.matcher(email);
         return matcher.matches();
-
-
     }
 
     public void loginBtnClicked(View view) {
 
         invalid.setVisibility(View.GONE);
         username = usernameEditTextLogin.getText().toString();
-        System.out.println(username);
         password = passwordEditTextLogin.getText().toString();
-        System.out.println(password);
         if (username.length() == 0) {
             usernameEditTextLogin.setError("Username cannot be empty");
         }
@@ -257,16 +247,22 @@ public class LoginPageActivity extends AppCompatActivity {
 
         ParseUser.logInInBackground(username, password, (parseUser, e) -> {
             if (parseUser != null) {
-                Intent intent = new Intent(LoginPageActivity.this, MainActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                sharedPreferences = getApplicationContext()
+                        .getSharedPreferences(USER_DETAILS, MODE_PRIVATE);
+                editor = sharedPreferences.edit();
+                editor.putString(USER_NAME, username);
+                editor.apply();
+                Log.d(TAG, "SAVED CURRENT USER: " + username);
+
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } else {
                 invalid.setVisibility(View.VISIBLE);
                 usernameEditTextLogin.setText("");
                 passwordEditTextLogin.setText("");
-                System.out.println(e.getMessage());
+                Log.e(TAG, e.getMessage());
                 ParseUser.logOut();
-
             }
         });
     }

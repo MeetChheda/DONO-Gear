@@ -11,46 +11,67 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.donogear.R;
+import com.example.donogear.interfaces.ButtonDesign;
 import com.example.donogear.interfaces.TickTime;
+import com.example.donogear.interfaces.onSavePressed;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static android.view.View.GONE;
+import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
+import static com.example.donogear.utils.Constants.DEFAULT_BID_MESSAGE;
+import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
+import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
+import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
+import static com.example.donogear.utils.Constants.TIME_UP;
 
-public class ProductDetails extends AppCompatActivity {
+public class ProductDetails extends AppCompatActivity implements ButtonDesign,
+        View.OnClickListener, onSavePressed {
 
-    private String itemId, itemName, itemDescription, itemHighestBidder;
-    private int itemBidAmount;
+    private String itemId, itemName, itemDescription, itemHighestBidder, category;
+    private int itemBidAmount, startBid, costPerEntry;
     private Date itemTime;
     private List<File> itemImages;
     private List<String> itemVideosUrl;
     private ItemProceedsDetails proceedsDetails;
-    private ParseQuery<ParseObject> itemVideosQuery, itemProceedsQuery;
     private Handler handler;
     private Context context;
-
+    private boolean flag = false;
     private boolean hasVideos, hasProceeds;
+    private LinearLayout raffle_buttons;
+    private RelativeLayout full_layout;
+    private Button raffle;
+    private Button auction;
+    private Button drop;
+    private TextView startBidAmount;
+    private TextView currentBidAmount;
+    private TextView bidderText;
+
+    private BottomSheetDialogFragment dialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +86,12 @@ public class ProductDetails extends AppCompatActivity {
         displayImages(itemImages, horizontalScrollViewContainer);
         displayRemainingTime();
         displayItemDetails();
+        checkCategory(category);
+
+        /**
+         * Delay timers (2) to facilitate populating of layout only after background tasks of fetching
+         * the item-specific videos and proceeds details have been finished
+         */
         Runnable videoRunnable = new Runnable() {
             @Override
             public void run() {
@@ -94,7 +121,42 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     /**
-     * Initialized variables and layout views
+     * Displays the different denominations of buying raffle-tickets as buttons. Clicking on this
+     * will take the user directly to the payment page
+     */
+    private void displayRaffleButtons() {
+        List<Integer> ticketDenominations = Arrays.asList(
+                100, 250, 500, 1000, 2500, 5000, 10000, 25000
+        );
+        for (int j = 0; j <= ticketDenominations.size(); j += 2) {
+            LinearLayout newLayout = new LinearLayout(this);
+            newLayout.setOrientation(LinearLayout.HORIZONTAL);
+            newLayout.setBaselineAligned(false);
+            for (int i = 0; i < 2 && j + i < ticketDenominations.size(); i++) {
+                final Button button = new Button(this);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        400, 200
+                );
+                layoutParams.setMargins(70, 30, 50, 0);
+                layoutParams.gravity = Gravity.TOP;
+                button.setLayoutParams(layoutParams);
+                button.setTextColor(Color.BLACK);
+                String price = "$" + (1.0 * ticketDenominations.get(i + j) / costPerEntry);
+                price += "\n" + ticketDenominations.get(i + j) + " Entries";
+                ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+//                setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
+                button.setText(price);
+
+                newLayout.addView(button);
+                button.setOnClickListener(v -> Toast.makeText(context,
+                        button.getText(), Toast.LENGTH_SHORT).show());
+            }
+            raffle_buttons.addView(newLayout);
+        }
+    }
+
+    /**
+     * Initialized variables and layout views along with behaviour for buttons
      */
     private void initData() {
         handler = new Handler();
@@ -102,6 +164,7 @@ public class ProductDetails extends AppCompatActivity {
 
         Intent intent = getIntent();
         ItemDetails itemDetails = (ItemDetails) intent.getSerializableExtra("item_details");
+        category = intent.getStringExtra("category");
         itemId = itemDetails.id;
         itemName = itemDetails.itemName;
         itemDescription = itemDetails.itemDescription;
@@ -109,9 +172,23 @@ public class ProductDetails extends AppCompatActivity {
         itemTime = itemDetails.endDate;
         itemHighestBidder = itemDetails.highestBidder;
         itemBidAmount = itemDetails.currentPrice;
+        startBid = itemDetails.startBid;
+        costPerEntry = itemDetails.costPerEntry;
 
-        ImageButton back =  findViewById(R.id.backbtn);
-        back.setOnClickListener(view -> finish());
+        full_layout = findViewById(R.id.full_item_layout);
+        raffle_buttons = findViewById(R.id.raffle_buttons);
+        startBidAmount = findViewById(R.id.start_bid_amount);
+        currentBidAmount = findViewById(R.id.current_bid_amount);
+        bidderText = findViewById(R.id.no_current_bids);
+
+        raffle = findViewById(R.id.enter);
+        auction = findViewById(R.id.bid);
+        drop = findViewById(R.id.buy);
+
+        raffle.setOnClickListener(this);
+        auction.setOnClickListener(this);
+        drop.setOnClickListener(this);
+        findViewById(R.id.backbtn).setOnClickListener(this);
         hasProceeds = false;
         hasVideos = false;
     }
@@ -121,10 +198,8 @@ public class ProductDetails extends AppCompatActivity {
      * TODO - Working code for snippet / better UI to show video display button
      */
     private void displayVideo(List<String> videoList, LinearLayout videoContainer) {
-//        final VideoView videoView = findViewById(R.id.videoView);
-        if (videoList == null || videoList.size() == 0) {
+        if (videoList == null || videoList.size() == 0)
             return;
-        }
         for (int i = 0; i < videoList.size(); i += 3) {
             LinearLayout newLayout = new LinearLayout(getBaseContext());
             newLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -159,17 +234,22 @@ public class ProductDetails extends AppCompatActivity {
         titleText.setText(itemName);
         TextView descriptionText = findViewById(R.id.description);
         descriptionText.setText(itemDescription);
-        TextView bidderText = findViewById(R.id.bidder);
-        if (itemHighestBidder.equals("Null")) {
+    }
+
+    /**
+     * Displays the bid details for auction items ONLY
+     */
+    private void displayBidDetails() {
+        findViewById(R.id.bidLayout).setVisibility(View.VISIBLE);
+        startBidAmount.setText("$" + startBid);
+        currentBidAmount.setText("$" + itemBidAmount);
+
+        bidderText = findViewById(R.id.no_current_bids);
+        if (itemBidAmount == 0) {
             bidderText.setVisibility(View.VISIBLE);
-            bidderText.setText("No current bids. Be the first one to bid!");
-        }
-        TextView bidAmount = findViewById(R.id.bid_holder);
-        if (itemBidAmount > 0) {
-            String text = bidAmount.getText().toString();
-            text += "<font color='#2fd6d6'>" + itemBidAmount + "</font>";
-            bidAmount.setText(Html.fromHtml(text));
-            bidAmount.setVisibility(View.VISIBLE);
+            bidderText.setText(DEFAULT_BID_MESSAGE);
+            currentBidAmount.setVisibility(GONE);
+            findViewById(R.id.current_bid_holder).setVisibility(GONE);
         }
     }
 
@@ -177,6 +257,8 @@ public class ProductDetails extends AppCompatActivity {
      * Uses TickTime interface to display time left for the current auction / raffle to finish
      */
     private void displayRemainingTime() {
+        if (category.equals(DROP_IDENTIFIER))
+            return;
         TextView time_remaining = findViewById(R.id.time_remaining);
         long timeInMilliSec = itemTime.getTime() - Calendar.getInstance().getTimeInMillis();
         new CountDownTimer(timeInMilliSec, 1000) {
@@ -188,7 +270,7 @@ public class ProductDetails extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                time_remaining.setText("TIME UP");
+                time_remaining.setText(TIME_UP);
                 time_remaining.setTextColor(Color.RED);
                 //itemHolder.timeHolder.setVisibility(View.GONE);
             }
@@ -200,8 +282,6 @@ public class ProductDetails extends AppCompatActivity {
      * reuses the methods to displayImages and Videos for the proceeds
      */
     private void displayProceedsDetails() {
-//        System.out.println(proceedsDetails.printProceeds());
-//        System.out.println(proceedsDetails.printProceeds());
         TextView proceedsTitle = findViewById(R.id.proceeds_title);
         proceedsTitle.setText(proceedsDetails.title);
 
@@ -221,10 +301,12 @@ public class ProductDetails extends AppCompatActivity {
      *       (for item) and one with normal vertical layout (for proceeds)
      */
     private void displayImages(List<File> imagesList, LinearLayout layout) {
+        if (imagesList == null)
+            return;
         for (File image: imagesList) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
+                    759
             );
             params.gravity = Gravity.CENTER;
             params.setMargins(5, 5, 5, 5);
@@ -238,11 +320,40 @@ public class ProductDetails extends AppCompatActivity {
     }
 
     /**
+     * Checks whoch item was clicked on the previous search / home page. Behaviour of buttons and
+     * layouts is changed accordingly
+     * @param category - thr category of the selected item
+     */
+    private void checkCategory(String category) {
+        switch (category) {
+            case RAFFLE_IDENTIFIER:
+                drop.setVisibility(GONE);
+                auction.setVisibility(GONE);
+                displayRaffleButtons();
+                break;
+
+            case AUCTION_IDENTIFIER:
+                drop.setVisibility(GONE);
+                raffle.setVisibility(GONE);
+                displayBidDetails();
+                break;
+
+            case DROP_IDENTIFIER:
+                auction.setVisibility(GONE);
+                raffle.setVisibility(GONE);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
      * Queries the database to get videos for the selected item
      * @return - list of URL's of all videos for items
      */
     private List<String> getItemVideos() {
-        itemVideosQuery = ParseQuery.getQuery(COLLECTIBLE_VIDEOS);
+        ParseQuery<ParseObject> itemVideosQuery = ParseQuery.getQuery(COLLECTIBLE_VIDEOS);
         itemVideosQuery.whereEqualTo("collectibleId", itemId);
         final List<String> allVideos = new ArrayList<>();
         itemVideosQuery.getFirstInBackground((object, e) -> {
@@ -267,14 +378,12 @@ public class ProductDetails extends AppCompatActivity {
      */
     private void getItemProceedsDetails() {
         proceedsDetails = new ItemProceedsDetails();
-        itemProceedsQuery = ParseQuery.getQuery(PROCEEDS);
+        ParseQuery<ParseObject> itemProceedsQuery = ParseQuery.getQuery(PROCEEDS);
         itemProceedsQuery.whereEqualTo("collectibleId", itemId);
         itemProceedsQuery.getFirstInBackground((object, e) -> {
             if (e == null) {
                 final String proceedTitle = object.getString("proceedTitle");
-//                System.out.println("Title " + proceedTitle);
                 final String proceedDescription = object.getString("proceedDescription");
-//                System.out.println("Desc " + proceedDescription);
                 final List<File> proceedsImages = new ArrayList<>();
                 final List<String> proceedVideo = new ArrayList<>();
                 for (int i = 1; i < 3; i++) {
@@ -305,5 +414,89 @@ public class ProductDetails extends AppCompatActivity {
             hasProceeds = true;
         });
 
+    }
+
+    /**
+     * Check if 'Enter' button is pressed for raffles. This method is used to tweak back button
+     * pressed behaviour based on the current view
+     * @return - whether the back button should return to previous activity or not
+     */
+    private boolean checkButtonPressed(boolean check) {
+        if (check) {
+            flag = false;
+            full_layout.setVisibility(View.VISIBLE);
+            raffle_buttons.setVisibility(GONE);
+            raffle.setVisibility(View.VISIBLE);
+            return true;
+        }
+        return false;
+    }
+
+    private void bottomSheetForItem() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("currentBid", itemBidAmount);
+        bundle.putInt("startBid", startBid);
+        bundle.putString("highestBidder", itemHighestBidder);
+        dialogFragment = new ItemBidFragment();
+        dialogFragment.setArguments(bundle);
+        dialogFragment.show(getSupportFragmentManager(), dialogFragment.getTag());
+
+
+        final View bottomSheetLayout = getLayoutInflater().inflate(R.layout.item_bottom_sheet, null);
+        (bottomSheetLayout.findViewById(R.id.cancel)).setOnClickListener(view ->
+                dialogFragment.dismiss());
+        (bottomSheetLayout.findViewById(R.id.done)).setOnClickListener(v ->
+                Toast.makeText(getApplicationContext(), "Ok button clicked", Toast.LENGTH_SHORT).show());
+    }
+
+    //TODO - Implement functionality for place bid button
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.backbtn:
+                if (!checkButtonPressed(flag)) {
+                    finish();
+                }
+                break;
+
+            case R.id.enter:
+                flag = true;
+                raffle_buttons.setVisibility(View.VISIBLE);
+                full_layout.setVisibility(GONE);
+                raffle.setVisibility(GONE);
+                break;
+
+            case R.id.buy:
+                //TODO - button for drops
+                break;
+
+            case R.id.bid:
+                bottomSheetForItem();
+                break;
+
+            default:
+                break;
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!checkButtonPressed(flag)) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void passData(Bundle bundle) {
+        int newBidAmount = bundle.getInt("userBid");
+        Toast.makeText(context, "New value is " + newBidAmount, Toast.LENGTH_SHORT).show();
+        bidderText.setVisibility(GONE);
+        currentBidAmount.setText("$" + newBidAmount);
+        if (itemBidAmount == 0) {
+            currentBidAmount.setVisibility(View.VISIBLE);
+            findViewById(R.id.current_bid_holder).setVisibility(View.VISIBLE);
+        }
+        itemBidAmount = newBidAmount;
     }
 }
