@@ -60,7 +60,6 @@ public class LoginPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-//        boolean finish = getIntent().getBooleanExtra("finish", false);
         pgsBar = findViewById(R.id.pBar);
         invalid = findViewById(R.id.invalid);
         tabs = findViewById(R.id.tabs);
@@ -93,12 +92,10 @@ public class LoginPageActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
 
@@ -211,22 +208,18 @@ public class LoginPageActivity extends AppCompatActivity {
 
             user.signUpInBackground(e -> {
                 if (e == null) {
-//                    alertDisplayer("Sucessful Sign Up!","Welcome " + username + "!");
                     Intent intent = new Intent(this, MainActivity.class);
-                    System.out.println("Sign up finish");
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Log.d(TAG, "Sign up finish");
                     startActivity(intent);
                 } else {
-                    System.out.println(e.getMessage());
                     if (e.getMessage().equals("Account already exists for this email address.")) {
                         emailEditTextSignUp.setError("Please enter different email");
                     }
                     else {
                         usernameEditTextSignup.setError("Please enter different username");
                     }
-                    System.out.println("Signup error");
+                    Log.e(TAG, "Sign up error");
                     ParseUser.logOut();
-//                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -244,9 +237,7 @@ public class LoginPageActivity extends AppCompatActivity {
 
         invalid.setVisibility(View.GONE);
         username = usernameEditTextLogin.getText().toString();
-        System.out.println(username);
         password = passwordEditTextLogin.getText().toString();
-        System.out.println(password);
         if (username.length() == 0) {
             usernameEditTextLogin.setError("Username cannot be empty");
         }
@@ -270,7 +261,7 @@ public class LoginPageActivity extends AppCompatActivity {
                 invalid.setVisibility(View.VISIBLE);
                 usernameEditTextLogin.setText("");
                 passwordEditTextLogin.setText("");
-                System.out.println(e.getMessage());
+                Log.e(TAG, e.getMessage());
                 ParseUser.logOut();
             }
         });

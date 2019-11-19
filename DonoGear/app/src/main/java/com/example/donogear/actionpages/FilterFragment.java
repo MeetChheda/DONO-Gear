@@ -48,6 +48,7 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
     private String category;
     private List<String> topicsSelected, causesSelected;
     private List<String> savedTags;
+
     public FilterFragment() {
         // Required empty public constructor
     }
@@ -181,7 +182,6 @@ public class FilterFragment extends BottomSheetDialogFragment implements View.On
                         causesSelected.add(button.getText().toString().toLowerCase());
                     }
                 }
-                System.out.println("Sending result -----------");
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("topics", new ArrayList<>(topicsSelected));
                 bundle.putStringArrayList("causes", new ArrayList<>(causesSelected));

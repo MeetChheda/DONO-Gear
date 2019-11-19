@@ -198,7 +198,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
      * TODO - Working code for snippet / better UI to show video display button
      */
     private void displayVideo(List<String> videoList, LinearLayout videoContainer) {
-//        final VideoView videoView = findViewById(R.id.videoView);
         if (videoList == null || videoList.size() == 0)
             return;
         for (int i = 0; i < videoList.size(); i += 3) {
