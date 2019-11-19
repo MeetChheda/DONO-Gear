@@ -30,5 +30,6 @@ public class Constants {
     public static final String TIME_UP = "TIME UP";
     public static final String DEFAULT_BID_MESSAGE = "No current bids. Be the first one!";
 
-
+    public static final String USER_DETAILS = "user_details";
+    public static final String USER_NAME = "user_name";
 }
