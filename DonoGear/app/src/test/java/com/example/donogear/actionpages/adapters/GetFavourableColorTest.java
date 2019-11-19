@@ -27,6 +27,10 @@ public class GetFavourableColorTest {
         itemAdapter = new ItemAdapter();
     }
 
+    /**
+     * Test to check if the background image has a dark color (eg BLACK) which will give us a WHITE
+     * text as the output. This white-text will be placed on top of the dark image
+     */
     @Test
     public void getWhiteTextTest() {
         Bitmap bitmap = createImage(100, 100, Color.BLACK);
@@ -34,6 +38,10 @@ public class GetFavourableColorTest {
         Assert.assertEquals(Color.WHITE, textColor);
     }
 
+    /**
+     * Test to check if the background image has a light color (eg WHITE) which will give us a BLACK
+     * text as the output. This black-text will be placed on top of the light image
+     */
     @Test
     public void getBlackTextTest() {
         Bitmap bitmap = createImage(100, 100, Color.WHITE);
@@ -41,6 +49,13 @@ public class GetFavourableColorTest {
         Assert.assertEquals(Color.BLACK, textColor);
     }
 
+    /**
+     * Helper method to create a sample image of any color
+     * @param width - width of the image
+     * @param height - height of the image
+     * @param color - color of the image
+     * @return image as a bitmap
+     */
     private static Bitmap createImage(int width, int height, int color) {
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(color);

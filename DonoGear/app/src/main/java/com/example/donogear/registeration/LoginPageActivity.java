@@ -104,24 +104,22 @@ public class LoginPageActivity extends AppCompatActivity {
         loginButton.setOnClickListener(view -> {
             // TODO request more user permissions when determining what is needed
             Collection<String> permissions = Arrays.asList("public_profile", "email");
-            ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginPageActivity.this, permissions, new LogInCallback() {
-                @Override
-                public void done(ParseUser user, ParseException err) {
-                    if (err != null) {
-                        ParseUser.logOut();
-                        Log.e(TAG, "An error occurred", err);
-                    }
-                    if (user == null) {
-                        ParseUser.logOut();
-                        Log.d(TAG, "The user cancelled the Facebook login.");
-                    } else if (user.isNew()) {
-                        Log.d(TAG, "Successfully logged in new user via Facebook");
-                        getUserDetailFromFB();
-                    } else {
-                        Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "Successfully logged in existing user via Facebook");
-                        directSuccessfulUserLogin();
-                    }
+            ParseFacebookUtils.logInWithReadPermissionsInBackground(this,
+                    permissions, (user, err) -> {
+                if (err != null) {
+                    ParseUser.logOut();
+                    Log.e(TAG, "An error occurred", err);
+                }
+                if (user == null) {
+                    ParseUser.logOut();
+                    Log.d(TAG, "The user cancelled the Facebook login.");
+                } else if (user.isNew()) {
+                    Log.d(TAG, "Successfully logged in new user via Facebook");
+                    getUserDetailFromFB();
+                } else {
+                    Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "Successfully logged in existing user via Facebook");
+                    directSuccessfulUserLogin();
                 }
             });
         });
