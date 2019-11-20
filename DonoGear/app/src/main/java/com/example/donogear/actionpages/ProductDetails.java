@@ -47,11 +47,13 @@ import java.util.TimerTask;
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
+import static com.example.donogear.utils.Constants.COLLECTIBLES;
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
 import static com.example.donogear.utils.Constants.DEFAULT_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ERROR_BID_TITLE;
+import static com.example.donogear.utils.Constants.NO_CURRENT_BIDS;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
@@ -78,7 +80,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private Button drop;
     private TextView startBidAmount;
     private TextView currentBidAmount;
-    private TextView bidderText;
     private Timer timer;
 
     private BottomSheetDialogFragment dialogFragment;
@@ -133,20 +134,36 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     }
 
     private void checkForRealTimeUpdate() {
-        if (itemBidAmount == 0) {
-            Log.d(TAG, "Current bid is already 0, no need to check right now");
-        }
+        Log.d(TAG,"Checking for new price now " + itemBidAmount);
+        currentBidAmount.setVisibility(GONE);
+        final boolean[] flag = {false};
         timer = new Timer();
-        final int[] updatedPrice = {0};
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                updatedPrice[0] = RealTimeUpdate.checkPrice(itemId);
-                if (updatedPrice[0] > 0) {
-                    itemBidAmount = updatedPrice[0];
-                    currentBidAmount.setVisibility(View.VISIBLE);
-                    findViewById(R.id.current_bid_holder).setVisibility(View.VISIBLE);
-                    bidderText.setVisibility(GONE);
+                ParseQuery<ParseObject> query = ParseQuery.getQuery(COLLECTIBLES);
+                query.whereEqualTo("objectId", itemId);
+                query.getFirstInBackground((object, e) -> {
+                    if (e == null) {
+                        itemBidAmount = object.getInt("currentBid");
+                        flag[0] = true;
+                        System.out.println("Got bid amount from DB: " + itemBidAmount);
+                    }
+                });
+                System.out.println(itemBidAmount + " and " + flag[0]);
+                if (itemBidAmount == 0 && flag[0]) {
+                    Log.d(TAG, "Current bid is not set, still 0");
+                    runOnUiThread(() -> {
+                        currentBidAmount.setVisibility(View.VISIBLE);
+                    });
+                }
+                if (itemBidAmount > 0) {
+                    System.out.println(itemBidAmount);
+                    Log.d(TAG, "Bid from the database is: " + itemBidAmount);
+                    runOnUiThread(() -> {
+                        currentBidAmount.setText("$" + itemBidAmount);
+                        currentBidAmount.setVisibility(View.VISIBLE);
+                    });
                 } else {
                     Log.e(TAG, "Error getting most recent bid. Please try later");
                 }
@@ -213,7 +230,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         raffle_buttons = findViewById(R.id.raffle_buttons);
         startBidAmount = findViewById(R.id.start_bid_amount);
         currentBidAmount = findViewById(R.id.current_bid_amount);
-        bidderText = findViewById(R.id.no_current_bids);
 
         raffle = findViewById(R.id.enter);
         auction = findViewById(R.id.bid);
@@ -277,13 +293,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         findViewById(R.id.bidLayout).setVisibility(View.VISIBLE);
         startBidAmount.setText("$" + startBid);
         currentBidAmount.setText("$" + itemBidAmount);
-
-        bidderText = findViewById(R.id.no_current_bids);
         if (itemBidAmount == 0) {
-            bidderText.setVisibility(View.VISIBLE);
-            bidderText.setText(DEFAULT_BID_MESSAGE);
-            currentBidAmount.setVisibility(GONE);
-            findViewById(R.id.current_bid_holder).setVisibility(GONE);
+            currentBidAmount.setText(NO_CURRENT_BIDS);
         }
     }
 
@@ -522,7 +533,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     public void passData(Bundle bundle) {
         int newBidAmount = bundle.getInt("userBid");
         if (itemBidAmount >= newBidAmount) {
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(ProductDetails.this)
                     .setTitle(ERROR_BID_TITLE)
                     .setMessage(ERROR_BID_MESSAGE)
                     .setPositiveButton("OK", (dialogInterface, i) -> bottomSheetForItem())
@@ -532,12 +543,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         }
         Toast.makeText(context, "New value is " + newBidAmount, Toast.LENGTH_SHORT).show();
         RealTimeUpdate.writeNewBid(itemId, newBidAmount, "dummyName");
-        bidderText.setVisibility(GONE);
-        currentBidAmount.setText("$" + newBidAmount);
-        if (itemBidAmount == 0) {
-            currentBidAmount.setVisibility(View.VISIBLE);
-            findViewById(R.id.current_bid_holder).setVisibility(View.VISIBLE);
-        }
         itemBidAmount = newBidAmount;
+        if (itemBidAmount > 0) {
+            currentBidAmount.setText("$" + newBidAmount);
+        }
     }
 }
