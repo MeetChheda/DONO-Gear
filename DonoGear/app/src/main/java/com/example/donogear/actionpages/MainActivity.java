@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.donogear.R;
@@ -56,6 +57,16 @@ public class MainActivity extends AppCompatActivity implements
     public BottomNavigationView mainNavigation;
     public TabLayout innerTabs;
 
+    public Switch sw55;
+    public Switch sw82;
+    public Switch sw91;
+    public Switch sw90;
+    public Switch sw10;
+    public Switch sw87;
+
+
+
+
     public boolean hasAllData, hasAllImages;
 
     @Override
@@ -69,6 +80,57 @@ public class MainActivity extends AppCompatActivity implements
         readData();
         getFilters();
         itemAdapter = new ItemAdapter(context, listOfItems);
+
+        //Switch Start
+        sw55 = (Switch) findViewById(R.id.switch55);
+        sw55.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        //Switch End
+
+        sw82 = (Switch) findViewById(R.id.switch82);
+        sw82.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        sw91 = (Switch) findViewById(R.id.switch91);
+        sw91.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        sw90 = (Switch) findViewById(R.id.switch90);
+        sw90.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        sw10 = (Switch) findViewById(R.id.switch10);
+        sw10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        sw87 = (Switch) findViewById(R.id.switch87);
+        sw87.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
     }
 
     /**
