@@ -6,6 +6,13 @@
     android:theme="@style/AppTheme"
     android:fitsSystemWindows="true">
 
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/backbtn"
+        android:layout_margin="10dp"
+        android:background="@null"
+        android:src="@drawable/ic_back"/>
 
     <Button
         android:id="@+id/myaccount_btn"

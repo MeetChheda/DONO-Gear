@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/fullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="60dp"
+        android:inputType="textPersonName"
+        android:enabled="false"
+        android:text="Full Name" />
+
+    <EditText
+        android:id="@+id/emailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:enabled="false"
+        android:text="Email" />
+
+    <EditText
+        android:id="@+id/phoneNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:ems="10"
+        android:inputType="phone"
+        android:enabled="false"
+        android:text="Phone Number" />
+    <Button
+        android:id="@+id/update_settings_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:visibility="visible"
+        android:text="Update Settings"/>
+    <Button
+        android:id="@+id/cancel_user_profile_update_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Cancel"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/guest_user_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:visibility="invisible"
+        android:text="@string/guest_user_account_message" />
+
+    <EditText
+        android:id="@+id/old_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="40dp"
+        android:inputType="textPassword"
+        android:text="Password"
+        android:visibility="invisible"/>
+
+    <EditText
+        android:id="@+id/new_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="25dp"
+        android:inputType="textPassword"
+        android:text="Password"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/change_password_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:visibility="visible"
+        android:text="Update Password"/>
+    <Button
+        android:id="@+id/cancel_password_update_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Cancel"
+        android:visibility="invisible"/>
+</LinearLayout>
