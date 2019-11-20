@@ -18,6 +18,7 @@ public class ItemDetails implements Serializable {
     public String category;
     public Date endDate;
     public List<File> listOfImages;
+    public boolean isTrending;
 
     /**
      * Default constructor for ItemDetails (Auction items)
@@ -30,10 +31,11 @@ public class ItemDetails implements Serializable {
      * @param category - category of the item (raffle, auction, drop)
      * @param endDate - endDate for the item (for raffles, auctions)
      * @param listOfImages - list Of images of the item
+     * @param isTrending - check if the item is trending
      */
     public ItemDetails(String id, String itemName, String itemDescription, int buyNowPrice,
                        int currentPrice, String highestBidder, String category, Date endDate,
-                       List<File> listOfImages) {
+                       List<File> listOfImages, boolean isTrending) {
         this.id = id;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -43,6 +45,7 @@ public class ItemDetails implements Serializable {
         this.category = category;
         this.endDate = endDate;
         this.listOfImages = listOfImages;
+        this.isTrending = isTrending;
     }
 
     /**

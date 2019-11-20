@@ -49,6 +49,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             titleText = itemView.findViewById(R.id.title);
             endTimeText = itemView.findViewById(R.id.time_left);
             timeHolder = itemView.findViewById(R.id.time_holder);
+
             itemView.setOnClickListener(view ->
                     itemClickListener.onItemClick(view, getAdapterPosition())
             );

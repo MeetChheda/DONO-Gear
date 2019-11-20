@@ -1,11 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
     android:fitsSystemWindows="true">
 
+    <FrameLayout
+        android:id="@+id/browse_frame_layout"
+        android:layout_width="match_parent"
+        android:background="#FFF"
+        android:layout_height="match_parent"
+        tools:context="com.example.donogear.actionpages.HomePageFragment"/>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/backbtn"
+        android:layout_margin="10dp"
+        android:background="@null"
+        android:src="@drawable/ic_back"/>
+    <RelativeLayout
+        android:id="@+id/announcement_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trending"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:id="@+id/trending_text"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="#000"
+                />
+
+                <LinearLayout
+                    android:id="@+id/trending_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/trending_text"
+                    android:orientation="horizontal">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/card_view_trending_recycler_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+                </LinearLayout>
 
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Announcements"
+                android:id="@+id/announcement_text"
+                android:layout_below="@id/trending_layout"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:textColor="#000"
+                android:textAllCaps="true"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/card_view_announcement_recycler_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/announcement_text"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="50dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleX="1.25"
+                android:src="@drawable/capture"
+                android:layout_below="@id/card_view_announcement_recycler_list"
+                android:layout_marginBottom="50dp"
+                />
+        </RelativeLayout>
+    </ScrollView>
+    </RelativeLayout>
 </RelativeLayout>
