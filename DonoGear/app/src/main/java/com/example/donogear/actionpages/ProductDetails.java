@@ -2,7 +2,9 @@ package com.example.donogear.actionpages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.donogear.R;
 import com.example.donogear.interfaces.ButtonDesign;
+import com.example.donogear.interfaces.RealTimeUpdate;
 import com.example.donogear.interfaces.TickTime;
 import com.example.donogear.interfaces.onSavePressed;
 import com.example.donogear.models.ItemDetails;
@@ -38,20 +42,25 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
 import static com.example.donogear.utils.Constants.DEFAULT_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
+import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
+import static com.example.donogear.utils.Constants.ERROR_BID_TITLE;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TIME_UP;
 
 public class ProductDetails extends AppCompatActivity implements ButtonDesign,
-        View.OnClickListener, onSavePressed {
+        View.OnClickListener, onSavePressed, RealTimeUpdate {
 
+    private static final String TAG = "ProductDetails";
     private String itemId, itemName, itemDescription, itemHighestBidder, category;
     private int itemBidAmount, startBid, costPerEntry;
     private Date itemTime;
@@ -70,6 +79,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private TextView startBidAmount;
     private TextView currentBidAmount;
     private TextView bidderText;
+    private Timer timer;
 
     private BottomSheetDialogFragment dialogFragment;
 
@@ -118,6 +128,30 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             }
         };
         handler.post(proceedsRunnable);
+
+        checkForRealTimeUpdate();
+    }
+
+    private void checkForRealTimeUpdate() {
+        if (itemBidAmount == 0) {
+            Log.d(TAG, "Current bid is already 0, no need to check right now");
+        }
+        timer = new Timer();
+        final int[] updatedPrice = {0};
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                updatedPrice[0] = RealTimeUpdate.checkPrice(itemId);
+                if (updatedPrice[0] > 0) {
+                    itemBidAmount = updatedPrice[0];
+                    currentBidAmount.setVisibility(View.VISIBLE);
+                    findViewById(R.id.current_bid_holder).setVisibility(View.VISIBLE);
+                    bidderText.setVisibility(GONE);
+                } else {
+                    Log.e(TAG, "Error getting most recent bid. Please try later");
+                }
+            }
+        }, 0, 1000);
     }
 
     /**
@@ -194,7 +228,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     }
 
     /**
-     * Displays the video snipper
+     * Displays the video snippet
      * TODO - Working code for snippet / better UI to show video display button
      */
     private void displayVideo(List<String> videoList, LinearLayout videoContainer) {
@@ -297,8 +331,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
     /**
      * Display the images in a layout.
-     * TODO: Would have to change use separate methods to incorporate horizontal scroll of images
-     *       (for item) and one with normal vertical layout (for proceeds)
      */
     private void displayImages(List<File> imagesList, LinearLayout layout) {
         if (imagesList == null)
@@ -476,7 +508,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
             default:
                 break;
-
         }
     }
 
@@ -490,7 +521,17 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     @Override
     public void passData(Bundle bundle) {
         int newBidAmount = bundle.getInt("userBid");
+        if (itemBidAmount >= newBidAmount) {
+            new AlertDialog.Builder(context)
+                    .setTitle(ERROR_BID_TITLE)
+                    .setMessage(ERROR_BID_MESSAGE)
+                    .setPositiveButton("OK", (dialogInterface, i) -> bottomSheetForItem())
+                    .setNegativeButton("NO", null)
+                    .show();
+            return;
+        }
         Toast.makeText(context, "New value is " + newBidAmount, Toast.LENGTH_SHORT).show();
+        RealTimeUpdate.writeNewBid(itemId, newBidAmount, "dummyName");
         bidderText.setVisibility(GONE);
         currentBidAmount.setText("$" + newBidAmount);
         if (itemBidAmount == 0) {

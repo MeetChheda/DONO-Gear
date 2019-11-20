@@ -59,21 +59,4 @@ public class ValidateBidTest {
         int newAmount = itemBidFragment.changeAmount(value, steps, latestValue, SUBTRACT_FROM_BID);
         Assert.assertEquals(2300, newAmount);
     }
-
-    /**
-     * Test to check if a the bid amount remains unchanged when a user tries to bid lower than the
-     * current bid. Instead, a toast is displayed appropriately to bid higher; mocked.
-     */
-//    @Test
-//    public void subtractingFromBidIllegallyTest() {
-//        startBid = 2000;
-//        currentBid = 0;
-//        steps = 100;
-//        int value = 2000;
-//        int latestValue = Math.max(startBid, currentBid);
-//        int newAmount = itemBidFragment.changeAmount(value, steps, latestValue, SUBTRACT_FROM_BID);
-//        Assert.assertEquals("Your bid should be higher than the current bid",
-//                ShadowToast.getTextOfLatestToast());
-//        Assert.assertEquals(2000, newAmount);
-//    }
 }
