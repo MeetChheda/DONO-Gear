@@ -9,5 +9,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="facebook_app_id">529865084467101</string>
     <string name="fb_login_protocol_scheme">fb529865084467101</string>
-    <string name="guest_user_account_message">Create a DONO Gear account to make changes</string>
+    <string name="guest_user_account_message">Create a DONO Gear account to access account information</string>
 </resources>
