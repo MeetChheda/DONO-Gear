@@ -35,6 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -542,7 +543,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             return;
         }
         Toast.makeText(context, "New value is " + newBidAmount, Toast.LENGTH_SHORT).show();
-        RealTimeUpdate.writeNewBid(itemId, newBidAmount, "dummyName");
+        RealTimeUpdate.writeNewBid(itemId, newBidAmount, ParseUser.getCurrentUser());
         itemBidAmount = newBidAmount;
         if (itemBidAmount > 0) {
             currentBidAmount.setText("$" + newBidAmount);
