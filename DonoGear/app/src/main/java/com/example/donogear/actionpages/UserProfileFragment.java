@@ -39,7 +39,6 @@ public class UserProfileFragment extends Fragment {
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,7 +57,6 @@ public class UserProfileFragment extends Fragment {
             public void run() {
                 if(activity.hasAllImages && activity.hasAllData) {
                     initializeLayout();
-                    initButtonClicks();
                 }
                 else {
                     handler.postDelayed(this, 100);
@@ -103,13 +101,5 @@ public class UserProfileFragment extends Fragment {
             startActivity(intent);
 
         });
-    }
-
-    /**
-     * Helper function to initialise buttons and define behaviour of the clicks
-     */
-    private void initButtonClicks() {
-
-
     }
 }

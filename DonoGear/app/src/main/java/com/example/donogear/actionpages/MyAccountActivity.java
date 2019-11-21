@@ -2,7 +2,6 @@ package com.example.donogear.actionpages;
 
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -15,16 +14,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.donogear.R;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
 
+/**
+ * Maintains my account page
+ */
 public class MyAccountActivity extends AppCompatActivity {
     private static final String PHONE_NUM = "phoneNumber";
 
@@ -61,17 +61,18 @@ public class MyAccountActivity extends AppCompatActivity {
                     boolean isValidInputs = validateUserInputs();
 
                     if (isValidInputs) {
-                        updateUserSettings();
+                        updateSavedUserInformation();
                         disableUserSettingsLayout();
                         isUpdatingUserSettings = false;
                     }
                 }
             }
         });
-
-
     }
 
+    /**
+     * Initialize the My Account page layout
+     */
     private void initializeLayout() {
         ParseUser user = ParseUser.getCurrentUser();
 
@@ -83,6 +84,11 @@ public class MyAccountActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Validates the user inputs page. Sets input errors if the inputs are invalid
+     *
+     * @return True if the inputs are valid. Otherwise false
+     */
     private boolean validateUserInputs() {
         boolean isValid = true;
 
@@ -106,6 +112,11 @@ public class MyAccountActivity extends AppCompatActivity {
         return isValid;
     }
 
+    /**
+     * Initializes the layout for a non-guest user
+     *
+     * @param user The user object
+     */
     private void initializeAuthenticatedUserLayout(ParseUser user) {
         updateCurrentUserInfo(user);
 
@@ -119,6 +130,9 @@ public class MyAccountActivity extends AppCompatActivity {
         phoneNumberInput.setText(currentPhoneNumber);
     }
 
+    /**
+     * Initializes the layout for a guest user
+     */
     private void initializeGuestUserLayout() {
         guestUserMessage = (TextView) findViewById(R.id.guest_user_message);
         guestUserMessage.setVisibility(View.VISIBLE);
@@ -127,6 +141,9 @@ public class MyAccountActivity extends AppCompatActivity {
         userSettings.setVisibility(GONE);
     }
 
+    /**
+     * Enables the edit user settings components
+     */
     private void enableUserSettingsLayout() {
         userNameInput.setEnabled(true);
         phoneNumberInput.setEnabled(true);
@@ -146,6 +163,9 @@ public class MyAccountActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Disables the edit user settings components
+     */
     private void disableUserSettingsLayout() {
         userNameInput.setEnabled(false);
         phoneNumberInput.setEnabled(false);
@@ -154,13 +174,19 @@ public class MyAccountActivity extends AppCompatActivity {
         cancelSettingsUpdateButton.setVisibility(INVISIBLE);
     }
 
+    /**
+     * Clears the errors for the input fields
+     */
     private void clearInputErrors() {
         userNameInput.setError(null);
         emailInput.setError(null);
         phoneNumberInput.setError(null);
     }
 
-    private void updateUserSettings() {
+    /**
+     * Updates the user information in the database
+     */
+    private void updateSavedUserInformation() {
         ParseUser user = ParseUser.getCurrentUser();
 
         user.setUsername(userNameInput.getText().toString());
@@ -178,6 +204,11 @@ public class MyAccountActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Updates the current user information displayed on the page
+     *
+     * @param user The current user
+     */
     private void updateCurrentUserInfo(ParseUser user) {
         currentUserName = user.getUsername();
         currentEmail = user.getEmail();
