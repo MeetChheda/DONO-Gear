@@ -10,4 +10,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="facebook_app_id">529865084467101</string>
     <string name="fb_login_protocol_scheme">fb529865084467101</string>
+    <string name="how_it_works">DONO is a social impact platform that connects fans to exclusive collectibles from their favorite athletes and entertainers</string>
+    <string name="donowebsite">https://www.dononow.com/home</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -47,6 +49,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
     private ItemAdapter itemAdapter;
     private List<ItemDetails> trendingItemList;
     private Context context;
+    private Button learnMore;
     private String typeOfSearch;
 
     public HomePageFragment() {
@@ -64,6 +67,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         System.out.println("Home Page called");
         setHasOptionsMenu(true);
         handler = new Handler();
+
         Runnable proceedsRunnable = new Runnable() {
             @Override
             public void run() {
@@ -71,6 +75,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
                     System.out.println("Initialize");
                     initializeLayout();
 //                    getType();
+
                 }
                 else {
                     handler.postDelayed(this, 100);
@@ -113,6 +118,16 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         recyclerView.setAdapter(announcementAdapter);
         announcementAdapter.notifyDataSetChanged();
         System.out.println("Initialize end");
+        learnMore = view.findViewById(R.id.learn_more_id);
+        learnMore.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.donowebsite)));
+                startActivity(browserIntent);
+            }
+        });
+
     }
 
 
