@@ -34,8 +34,20 @@ public class Constants {
     public static final int SUBTRACT_FROM_BID = -1;
 
     public static final String TIME_UP = "TIME UP";
-    public static final String DEFAULT_BID_MESSAGE = "No current bids. Be the first one!";
+
+    public static final String NO_CURRENT_BIDS = "N / A";
 
     public static final String USER_DETAILS = "user_details";
     public static final String USER_NAME = "user_name";
+
+    public static final String ERROR_BID_TITLE = "Error placing your bid";
+    public static final String ERROR_BID_MESSAGE =
+            "The most recent bid amount was changed when you were trying to bid. Do you want to " +
+                    "bid again?";
+
+    public static final String ALERT_MESSAGE = "Are you sure?";
+    public static final String HIGHEST_BID_MESSAGE = "You are already the highest bidder. Do you " +
+            "still want to continue?";
+
+    public static final String LOGIN_PROMPT = "Please login to place a bid";
 }

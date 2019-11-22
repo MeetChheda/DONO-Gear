@@ -97,19 +97,39 @@
                         android:layout_below="@+id/title"
                         android:layout_centerHorizontal="true"
                         android:layout_margin="8dp"
-                        android:maxLines="5"
                         android:textStyle="italic"
+                        android:maxLines="5"
                         android:paddingHorizontal="5dp"
                         android:lineSpacingExtra="3dp"
                         android:textColor="#000"
                         android:textSize="17sp"
                         android:padding="7dp" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/read_text"
+                        android:layout_below="@id/read_more"
+                        android:layout_centerHorizontal="true"
+                        android:text="Read more"
+                        android:layout_marginTop="-10dp"/>
+
+                    <ImageButton
+                        android:layout_width="75dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/read_more"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/description"
+                        android:foregroundGravity="center_horizontal"
+                        android:src="@drawable/ic_read_more"
+                        android:backgroundTint="@android:color/transparent"/>
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/bidLayout"
-                        android:layout_below="@id/description"
+                        android:layout_marginTop="5dp"
+                        android:layout_below="@id/read_text"
                         android:visibility="gone">
 
                         <TextView
@@ -146,6 +166,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/current_bid_amount"
+                            android:text="N / A"
                             android:textColor="@color/colorPrimary"
                             android:layout_below="@+id/start_bid_holder"
                             android:layout_alignParentEnd="true"
@@ -153,18 +174,6 @@
                             android:layout_marginTop="10dp"
                             android:textSize="20sp"
                             android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/no_current_bids"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginStart="30dp"
-                            android:layout_below="@+id/current_bid_amount"
-                            android:layout_centerHorizontal="true"
-                            android:textSize="17sp"
-                            android:textStyle="bold"
-                            android:visibility="gone"/>
                     </RelativeLayout>
 
                     <LinearLayout

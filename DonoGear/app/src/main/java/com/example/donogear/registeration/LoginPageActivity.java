@@ -1,7 +1,6 @@
 package com.example.donogear.registeration;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,15 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.donogear.R;
 import com.example.donogear.actionpages.MainActivity;
-
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.material.tabs.TabLayout;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.facebook.ParseFacebookUtils;
 import com.parse.twitter.ParseTwitterUtils;
@@ -34,8 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
-import static com.example.donogear.utils.Constants.USER_DETAILS;
-import static com.example.donogear.utils.Constants.USER_NAME;
 
 
 public class LoginPageActivity extends AppCompatActivity {
@@ -53,8 +46,6 @@ public class LoginPageActivity extends AppCompatActivity {
     String password;
     String email;
     ProgressBar pgsBar;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +62,7 @@ public class LoginPageActivity extends AppCompatActivity {
         passwordEditTextSignup = findViewById(R.id.passwordCreateAccount_editText);
         usernameEditTextLogin = findViewById(R.id.username_editText);
         passwordEditTextLogin = findViewById(R.id.password_editText);
-
-        checkSharedPreferences();
+        checkForLoggedInStatus();
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -105,48 +95,42 @@ public class LoginPageActivity extends AppCompatActivity {
         facebookLoginButton.setOnClickListener(view -> {
             // TODO request more user permissions when determining what is needed
             Collection<String> permissions = Arrays.asList("public_profile", "email");
-            ParseFacebookUtils.logInWithReadPermissionsInBackground(LoginPageActivity.this, permissions, new LogInCallback() {
-                @Override
-                public void done(ParseUser user, ParseException err) {
-                    if (err != null) {
-                        ParseUser.logOut();
-                        Log.e(TAG, "An error occurred", err);
-                    }
-                    if (user == null) {
-                        ParseUser.logOut();
-                        Log.d(TAG, "The user cancelled the Facebook login.");
-                    } else if (user.isNew()) {
-                        Log.d(TAG, "Successfully logged in new user via Facebook");
-                        getUserDetailFromFB();
-                    } else {
-                        Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "Successfully logged in existing user via Facebook");
-                        directSuccessfulUserLogin();
-                    }
+            ParseFacebookUtils.logInWithReadPermissionsInBackground(this,
+                    permissions, (user, err) -> {
+                if (err != null) {
+                    ParseUser.logOut();
+                    Log.e(TAG, "An error occurred", err);
+                }
+                if (user == null) {
+                    ParseUser.logOut();
+                    Log.d(TAG, "The user cancelled the Facebook login.");
+                } else if (user.isNew()) {
+                    Log.d(TAG, "Successfully logged in new user via Facebook");
+                    getUserDetailFromFB();
+                } else {
+                    Toast.makeText(LoginPageActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "Successfully logged in existing user via Facebook");
+                    directSuccessfulUserLogin();
                 }
             });
         });
 
         ImageView twitterLoginButton = findViewById(R.id.twitter_icon);
         twitterLoginButton.setOnClickListener(view -> {
-            ParseTwitterUtils.logIn(LoginPageActivity.this, new LogInCallback() {
-
-                @Override
-                public void done(final ParseUser user, ParseException err) {
-                    if (err != null) {
-                        ParseUser.logOut();
-                        Log.e(TAG, "An error occured", err);
-                    }
-                    if (user == null) {
-                        ParseUser.logOut();
-                        Log.d(TAG, "Uh oh. The user cancelled the Twitter login.");
-                    } else if (user.isNew()) {
-                        Log.d(TAG, "User signed up and logged in through Twitter!");
-                        getUserDetailsFromTwitter();
-                    } else {
-                        Log.d(TAG, "User logged in through Twitter!");
-                        directSuccessfulUserLogin();
-                    }
+            ParseTwitterUtils.logIn(LoginPageActivity.this, (user, err) -> {
+                if (err != null) {
+                    ParseUser.logOut();
+                    Log.e(TAG, "An error occured", err);
+                }
+                if (user == null) {
+                    ParseUser.logOut();
+                    Log.d(TAG, "Uh oh. The user cancelled the Twitter login.");
+                } else if (user.isNew()) {
+                    Log.d(TAG, "User signed up and logged in through Twitter!");
+                    getUserDetailsFromTwitter();
+                } else {
+                    Log.d(TAG, "User logged in through Twitter!");
+                    directSuccessfulUserLogin();
                 }
             });
         });
@@ -171,11 +155,8 @@ public class LoginPageActivity extends AppCompatActivity {
         });
     }
 
-    private void checkSharedPreferences() {
-        sharedPreferences = getSharedPreferences(USER_DETAILS, MODE_PRIVATE);
-        if (sharedPreferences.contains(USER_NAME)) {
-            String name = sharedPreferences.getString(USER_NAME, "");
-            Toast.makeText(this, "Logged in as: " + name, Toast.LENGTH_SHORT).show();
+    private void checkForLoggedInStatus() {
+        if (ParseUser.getCurrentUser() != null) {
             directSuccessfulUserLogin();
         }
     }
@@ -291,13 +272,6 @@ public class LoginPageActivity extends AppCompatActivity {
 
         ParseUser.logInInBackground(username, password, (parseUser, e) -> {
             if (parseUser != null) {
-                sharedPreferences = getApplicationContext()
-                        .getSharedPreferences(USER_DETAILS, MODE_PRIVATE);
-                editor = sharedPreferences.edit();
-                editor.putString(USER_NAME, username);
-                editor.apply();
-                Log.d(TAG, "SAVED CURRENT USER: " + username);
-
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
