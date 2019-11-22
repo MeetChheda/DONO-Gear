@@ -37,8 +37,8 @@ public class Constants {
 
     public static final String NO_CURRENT_BIDS = "N / A";
 
-    public static final String USER_DETAILS = "user_details";
-    public static final String USER_NAME = "user_name";
+    public static final String READ_MORE = "Read more";
+    public static final String READ_LESS = "Read less";
 
     public static final String ERROR_BID_TITLE = "Error placing your bid";
     public static final String ERROR_BID_MESSAGE =

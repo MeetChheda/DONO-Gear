@@ -162,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     searchArray.add(itemName);
                     listOfItems.add(itemDetails);
-                    System.out.println("Main List "+listOfItems.size());
                     itemAdapter.notifyDataSetChanged();
                 }
             } else {
@@ -600,6 +599,7 @@ public class MainActivity extends AppCompatActivity implements
                 innerBrowseTabs.setVisibility(View.VISIBLE);
                 innerHomeTabs.setVisibility(View.GONE);
                 currentFragment = new BrowsePageFragment();
+                tab = DONOR_IDENTIFIER;
                 break;
             case R.id.navigation_search:
                 innerTabs.setVisibility(View.VISIBLE);

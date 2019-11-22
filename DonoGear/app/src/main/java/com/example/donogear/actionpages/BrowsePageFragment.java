@@ -36,19 +36,13 @@ import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
  */
 public class BrowsePageFragment extends Fragment {
 
-
-    private boolean searchFlag;
-
-
     private RecyclerView recyclerView;
     private List<DonorDetails> listOfDonors;
     private List<CausesDetails> listOfCauses;
     private DonorAdapter donorAdapter;
     private CausesAdapter causesAdapter;
-    static BottomSheetDialogFragment fragment;
     private View view;
     private MainActivity activity;
-    private String typeOfSearch;
     private Handler handler;
 
 
@@ -97,7 +91,7 @@ public class BrowsePageFragment extends Fragment {
      */
     public void getType() {
         if (getArguments() != null) {
-            typeOfSearch = getArguments().getString("type");
+            String typeOfSearch = getArguments().getString("type");
             if (typeOfSearch.equals(DONOR_IDENTIFIER)) {
                 displayDonor();
             }

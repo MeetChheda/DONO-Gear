@@ -63,6 +63,8 @@ import static com.example.donogear.utils.Constants.NO_CURRENT_BIDS;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
+import static com.example.donogear.utils.Constants.READ_LESS;
+import static com.example.donogear.utils.Constants.READ_MORE;
 import static com.example.donogear.utils.Constants.TIME_UP;
 
 public class ProductDetails extends AppCompatActivity implements ButtonDesign,
@@ -545,15 +547,15 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             case R.id.read_more:
                 TextView desc = findViewById(R.id.description);
                 TextView read = findViewById(R.id.read_text);
-                if (desc.getMaxLines() == 5) {
-                    desc.setMaxLines(20);
+                if (desc.getMaxLines() == 4) {
+                    desc.setMaxLines(10);
                     readButton.setImageResource(R.drawable.ic_read_less);
-                    read.setText("Read less");
+                    read.setText(READ_LESS);
                 }
                 else {
-                    desc.setMaxLines(5);
+                    desc.setMaxLines(4);
                     readButton.setImageResource(R.drawable.ic_read_more);
-                    read.setText("Read more");
+                    read.setText(READ_MORE);
                 }
 
             default:
@@ -580,7 +582,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     .show();
             return;
         }
-        Toast.makeText(context, "New value is " + newBidAmount, Toast.LENGTH_SHORT).show();
         RealTimeUpdate.writeNewBid(itemId, newBidAmount, ParseUser.getCurrentUser());
 
         itemBidAmount = newBidAmount;
