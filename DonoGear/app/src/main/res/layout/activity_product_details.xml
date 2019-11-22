@@ -97,7 +97,6 @@
                         android:layout_below="@+id/title"
                         android:layout_centerHorizontal="true"
                         android:layout_margin="8dp"
-                        android:maxLines="5"
                         android:textStyle="italic"
                         android:paddingHorizontal="5dp"
                         android:lineSpacingExtra="3dp"

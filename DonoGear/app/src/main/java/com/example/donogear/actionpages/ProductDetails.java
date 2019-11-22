@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -36,8 +37,11 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -83,7 +87,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private Button drop;
     private TextView startBidAmount;
     private TextView currentBidAmount;
-    private Timer timer;
     private ParseLiveQueryClient liveQueryClient;
 
     private BottomSheetDialogFragment dialogFragment;
@@ -139,53 +142,21 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
     private void checkForRealTimeUpdate() {
         Log.d(TAG,"Checking for new price now " + itemBidAmount);
-//        currentBidAmount.setVisibility(GONE);
-        final boolean[] flag = {false};
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery(COLLECTIBLES);
-                query.whereEqualTo("objectId", itemId);
-                query.getFirstInBackground((object, e) -> {
-                    if (e == null) {
-                        itemBidAmount = object.getInt("currentBid");
-                        itemHighestBidder = object.getString("highestBidder");
-                        flag[0] = true;
-//                        System.out.println("Got bid amount from DB: " + itemBidAmount);
-                    }
-                });
-//                System.out.println(itemBidAmount + " and " + flag[0]);
-                if (itemBidAmount == 0 && flag[0]) {
-//                    Log.d(TAG, "Current bid is not set, still 0");
-                    runOnUiThread(() -> currentBidAmount.setVisibility(View.VISIBLE));
-                }
-                if (itemBidAmount > 0) {
-                    System.out.println(itemBidAmount);
-//                    Log.d(TAG, "Bid from the database is: " + itemBidAmount);
-                    runOnUiThread(() -> {
-                        currentBidAmount.setText("$" + itemBidAmount);
-                        currentBidAmount.setVisibility(View.VISIBLE);
-                    });
-                } else {
-                    Log.e(TAG, "Error getting most recent bid. Please try later");
-                }
-            }
-        }, 0, 1000);
-
-//        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
-//        parseQuery.whereGreaterThanOrEqualTo("startBid", Math.max(itemBidAmount, startBid));
-//        try {
-//            Log.d(TAG, parseQuery.count() + "");
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        SubscriptionHandling<ParseObject> subscriptionHandling = liveQueryClient.subscribe(parseQuery);
-//        subscriptionHandling.handleEvents((query, event, object) -> {
-//            Log.d(TAG, "checking --------- ");
-//            int bid = object.getInt("currentBid");
-//            Log.d(TAG, "new bid --------- " + bid);
-//        });
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
+        parseQuery.whereGreaterThanOrEqualTo("startBid", Math.max(itemBidAmount, startBid));
+        try {
+            Log.d(TAG, parseQuery.count() + "");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SubscriptionHandling<ParseObject> subscriptionHandling = liveQueryClient.subscribe(parseQuery);
+        subscriptionHandling.handleEvents((query, event, object) -> {
+            Log.d(TAG, "checking --------- ");
+            itemBidAmount = object.getInt("currentBid");
+            itemHighestBidder = object.getString("highestBidder");
+            runOnUiThread(() -> currentBidAmount.setText("$" + itemBidAmount));
+            Log.d(TAG, "new bid --------- " + itemBidAmount);
+        });
     }
 
     /**
@@ -259,7 +230,13 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         hasProceeds = false;
         hasVideos = false;
 
-        liveQueryClient = ParseLiveQueryClient.Factory.getClient();
+        try {
+            liveQueryClient = ParseLiveQueryClient.Factory.getClient(
+                    new URI(getString(R.string.back4app_live_server))
+            );
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -303,6 +280,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         titleText.setText(itemName);
         TextView descriptionText = findViewById(R.id.description);
         descriptionText.setText(itemDescription);
+        descriptionText.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
     }
 
     /**
@@ -351,6 +329,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
         TextView proceedsDescription = findViewById(R.id.proceeds_description);
         proceedsDescription.setText(proceedsDetails.description);
+        proceedsDescription.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         LinearLayout proceeds_images_layout = findViewById(R.id.proceeds_images);
         displayImages(proceedsDetails.proceedsImagesList, proceeds_images_layout);
 
