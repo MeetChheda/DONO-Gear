@@ -53,6 +53,7 @@ import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.HOME_IDENTIFIER;
 import static com.example.donogear.utils.Constants.PROCEEDS;
+import static com.example.donogear.utils.Constants.PROFILE;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TAGS;
 
@@ -147,9 +148,10 @@ public class MainActivity extends AppCompatActivity implements
                             item.getString("highestBidder") : "Be the first one to bid!";
                     final String category = item.getString("category");
                     final Date endDate = item.getDate("auctionEndDate");
+                    final int costPerEntry = item.getInt("costPerEntry");
                     final boolean trending = item.getBoolean("trending");
                     ItemDetails itemDetails = new ItemDetails(itemId, itemName, itemDescription, buyNowPrice,
-                            currentBid, highestBidder, category, endDate, itemImages, trending);
+                            currentBid, highestBidder, category, endDate, costPerEntry, itemImages, trending);
                     searchArray.add(itemName);
                     listOfItems.add(itemDetails);
                     itemAdapter.notifyDataSetChanged();
@@ -211,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        //get all the recent announcement from database
         ParseQuery<ParseObject> announcementQuery = ParseQuery.getQuery(ANNOUNCEMENTS);
         announcementQuery.findInBackground((announcements, e) -> {
 
@@ -218,9 +221,7 @@ public class MainActivity extends AppCompatActivity implements
                 for (ParseObject announcement: announcements) {
                     String announcementId = announcement.getObjectId();
                     final List<File> announcementImageList = getImageForAnnouncement(announcementId);
-                    System.out.println(announcementImageList.size());
                     final String announcementTitle = announcement.getString("title");
-                    System.out.println(announcementTitle);
                     final String announcementDescription = announcement.getString("description");
                     AnnouncementDetails announcementObject = new AnnouncementDetails(announcementId,
                             announcementTitle, announcementDescription, announcementImageList);
@@ -250,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements
                             announcementAdapter.notifyDataSetChanged();
                         }
                     } catch (ParseException ex) {
-                        Log.e("Error", e.toString());
+                        Log.e("Error", e.toString(), ex);
                     }
                 }
             }
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements
                             causesAdapter.notifyDataSetChanged();
                         }
                     } catch (ParseException ex) {
-                        Log.e("Error", e.toString());
+                        Log.e("Error", e.toString(), ex);
                     }
                 }
             }
@@ -304,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements
                             donorAdapter.notifyDataSetChanged();
                         }
                     } catch (ParseException ex) {
-                        Log.e("Error", e.toString());
+                        Log.e("Error", e.toString(), ex);
                     }
                 }
             }
@@ -332,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements
                                 itemAdapter.notifyDataSetChanged();
                             }
                         } catch (ParseException ex) {
-                            Log.e("Error", e.toString());
+                            Log.e("Error", e.toString(), ex);
                         }
                     }
                 }
@@ -583,7 +584,7 @@ public class MainActivity extends AppCompatActivity implements
                 innerBrowseTabs.setVisibility(View.GONE);
                 innerHomeTabs.setVisibility(View.GONE);
                 currentFragment = new UserProfileFragment();
-                tab = "Profile";
+                tab = PROFILE;
                 break;
         }
 

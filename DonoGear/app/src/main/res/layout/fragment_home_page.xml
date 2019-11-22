@@ -144,6 +144,8 @@
                 android:text="My Interests"
                 android:textStyle="bold"
                 android:textAllCaps="true"
+                android:layout_centerHorizontal="true"
+                android:textSize="20dp"
                 android:id="@+id/myinterests_text"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"

@@ -21,6 +21,7 @@ public class Constants {
     public static final String MY_INTERESTS = "myinterests";
     public static final String TRENDING = "trending";
     public static final String SEARCH = "search";
+    public static final String PROFILE = "profile";
 
 
 }

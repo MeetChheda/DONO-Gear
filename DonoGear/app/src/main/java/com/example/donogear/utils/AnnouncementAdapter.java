@@ -18,11 +18,14 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+/**
+ * Set announcement on home page fragment
+ */
 public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapter.ViewHolder>{
 
     private Context mContext;
     private List<AnnouncementDetails> announcementDetailsList;
-//    private ItemClickListener itemClickListener;
 
     /**
      * Default constructor for announcement adapter
@@ -52,10 +55,6 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
             announcementImage = itemView.findViewById(R.id.announcement_image);
             announcementTitle = itemView.findViewById(R.id.announcement_title);
             announcementDescription = itemView.findViewById(R.id.announcement_description);
-
-//            itemView.setOnClickListener(view ->
-//                    itemClickListener.onItemClick(view, getAdapterPosition())
-//            );
         }
     }
     @NonNull
@@ -77,10 +76,6 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
         }
 
         String announcementTitle = curAnnouncement.announcementTitle;
-//        if(announcementTitle.length() > 30) {
-//            announcementTitle = announcementTitle.substring(0, 30);
-//            announcementTitle = announcementTitle.substring(0, announcementTitle.lastIndexOf(" ")) + "...";
-//        }
         announcementHolder.announcementTitle.setText(announcementTitle);
 
         String announcementDescription = curAnnouncement.announcementDescription;

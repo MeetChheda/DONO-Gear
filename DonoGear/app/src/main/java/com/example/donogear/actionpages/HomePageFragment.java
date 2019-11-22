@@ -67,7 +67,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         view = inflater.inflate(R.layout.fragment_home_page, container, false);
         activity = (MainActivity) getActivity();
 
-        System.out.println("Home Page called");
+
         setHasOptionsMenu(true);
         handler = new Handler();
 
@@ -75,7 +75,6 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
             @Override
             public void run() {
                 if(activity.hasAllImages && activity.hasAllData) {
-                    System.out.println("Initialize");
                     initializeLayout();
                 }
                 else {
@@ -101,7 +100,6 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         trendingRecyclerView.setLayoutManager(horizontalLayoutManager);
         trendingItemList = new ArrayList<>();
         trendingItemAdapter = activity.itemAdapter;
-        System.out.println("Size of copy list " + activity.copyList.size());
         trendingItemList = displayTrendingItems(activity.copyList);
         if (trendingItemList.size() == 0) {
             trendingText.setVisibility(View.GONE);
@@ -109,9 +107,8 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         else {
             trendingText.setVisibility(View.VISIBLE);
         }
-        System.out.println(trendingItemList.size());
+
         trendingItemAdapter.setItemList(trendingItemList);
-        System.out.println(trendingItemAdapter.getItemCount());
         trendingRecyclerView.setAdapter(trendingItemAdapter);
         trendingItemAdapter.setClickListener(this, TRENDING);
         trendingItemAdapter.notifyDataSetChanged();
@@ -120,12 +117,10 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         recyclerView = view.findViewById(R.id.card_view_announcement_recycler_list);
         recyclerView.setLayoutManager(manager);
         listOfAnnouncements = activity.announcementDetailsList;
-        System.out.println("Size " + listOfAnnouncements.size());
         announcementAdapter = activity.announcementAdapter;
         announcementAdapter.setAnnouncementList(listOfAnnouncements);
         recyclerView.setAdapter(announcementAdapter);
         announcementAdapter.notifyDataSetChanged();
-        System.out.println("Initialize end");
 
         learnMore = view.findViewById(R.id.learn_more_id);
         learnMore.setOnClickListener(new View.OnClickListener() {
@@ -150,9 +145,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         else {
             myInterestsText.setVisibility(View.GONE);
         }
-        System.out.println(myInterestsItemList.size());
         myInterestsItemAdapter.setItemList(myInterestsItemList);
-        System.out.println(myInterestsItemAdapter.getItemCount());
         myInterestsRecyclerView.setAdapter(myInterestsItemAdapter);
         myInterestsItemAdapter.setClickListener(this, MY_INTERESTS);
         myInterestsItemAdapter.notifyDataSetChanged();
@@ -167,7 +160,6 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
     private List<ItemDetails> displayTrendingItems(List<ItemDetails> itemDetailsList) {
         for (ItemDetails itemDetails: itemDetailsList) {
             if (itemDetails.isTrending && itemDetails.listOfImages.size() > 0) {
-                System.out.println("Item added");
                 trendingItemList.add(itemDetails);
             }
         }
@@ -189,7 +181,6 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         else {
             item = myInterestsItemList.get(position);
         }
-//        System.out.println(item.itemName);
         Intent intent = new Intent(activity, ProductDetails.class);
         intent.putExtra("item_details", item);
         intent.putExtra("typeOfSearch", typeOfSearch);

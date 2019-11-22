@@ -23,6 +23,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Set the myInterest item in the adapter
+ */
 public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItemAdapter.ViewHolder> {
 
     private Context mContext;
@@ -118,6 +121,12 @@ public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItem
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
     }
 
+    /**
+     * Get time at every second
+     * @param endTime - endTime of the auction
+     * @param itemHolder - hold the item in the view
+     * @param position - get position of item
+     */
     private void tickTime(final Date endTime, final ViewHolder itemHolder, final int position) {
         final long timeInMilliSec = endTime.getTime() - Calendar.getInstance().getTimeInMillis();
         itemHolder.timer = new CountDownTimer(timeInMilliSec, 1000) {

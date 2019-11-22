@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+
 /**
  * Storing details for each item
+ * TODO: isTrending variable will be dynamic in future
  */
 public class ItemDetails implements Serializable {
     public String id;
@@ -35,7 +37,7 @@ public class ItemDetails implements Serializable {
      */
     public ItemDetails(String id, String itemName, String itemDescription, int buyNowPrice,
                        int currentPrice, String highestBidder, String category, Date endDate,
-                       List<File> listOfImages, boolean isTrending) {
+                       int costPerEntry, List<File> listOfImages, boolean isTrending) {
         this.id = id;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -44,29 +46,9 @@ public class ItemDetails implements Serializable {
         this.highestBidder = highestBidder;
         this.category = category;
         this.endDate = endDate;
+        this.costPerEntry = costPerEntry;
         this.listOfImages = listOfImages;
         this.isTrending = isTrending;
-    }
-
-    /**
-     *
-     * @param id - id of item
-     * @param itemName - name of the item
-     * @param itemDescription - description of the item
-     * @param costPerEntry - cost per entry to populate raffle item details page
-     * @param category - category of the item (raffle, auction, drop)
-     * @param endDate - endDate for the item (for raffles, auctions)
-     * @param listOfImages - list Of images of the item
-     */
-    public ItemDetails(String id, String itemName, String itemDescription, int costPerEntry, String category,
-                       Date endDate, List<File> listOfImages) {
-        this.id = id;
-        this.itemName = itemName;
-        this.itemDescription = itemDescription;
-        this.costPerEntry = costPerEntry;
-        this.category = category;
-        this.endDate = endDate;
-        this.listOfImages = listOfImages;
     }
 
     /**

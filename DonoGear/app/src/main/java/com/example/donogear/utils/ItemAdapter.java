@@ -28,6 +28,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private Context mContext;
     private List<ItemDetails> itemDetailsList;
     private ItemClickListener itemClickListener;
+    // Get the type for onItemClickListener
     private String type;
 
     public ItemAdapter(Context context, List<ItemDetails> list) {
@@ -92,12 +93,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         itemHolder.endTimeText.setTextColor(timeColor);
     }
 
+    /**
+     * Checks the color of the image
+     * @param bitmap - Decoding image into string
+     * @return  - favourable text color required
+     */
     private int getFavourableTextColor(Bitmap bitmap) {
         int pixel = bitmap.getPixel(0, bitmap.getHeight() - 1);
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
     }
 
+    /**
+     * Checks the color of the image
+     * @param bitmap - Decoding image into string
+     * @return  - favourable text color required
+     */
     private int getFavourableTimeColor(Bitmap bitmap) {
         int pixel = bitmap.getPixel(bitmap.getWidth() - 1, 0);
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
@@ -105,6 +116,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     }
 
 
+    /**
+     * Get time at every second
+     * @param endTime - endTime of the auction
+     * @param itemHolder - hold the item in the view
+     * @param position - get position of item
+     */
     private void tickTime(final Date endTime, final ViewHolder itemHolder, final int position) {
         final long timeInMilliSec = endTime.getTime() - Calendar.getInstance().getTimeInMillis();
         itemHolder.timer = new CountDownTimer(timeInMilliSec, 1000) {
