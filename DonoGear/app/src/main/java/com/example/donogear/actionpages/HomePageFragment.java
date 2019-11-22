@@ -1,7 +1,5 @@
 package com.example.donogear.actionpages;
 
-
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,9 +47,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
     private MyInterestsItemAdapter myInterestsItemAdapter;
     private List<ItemDetails> trendingItemList;
     private List<ItemDetails> myInterestsItemList;
-    private Context context;
     private Button learnMore;
-    private String typeOfSearch;
     private TextView trendingText;
     private TextView myInterestsText;
 
@@ -91,12 +87,10 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
      * Initializing layout and setting adapters of trending items, announcements and myInterests item
      */
     private void initializeLayout() {
-        if (getArguments() != null) {
-            typeOfSearch = getArguments().getString("type");
-        }
         trendingText = view.findViewById(R.id.trending_text);
         trendingRecyclerView = view.findViewById(R.id.card_view_trending_recycler_list);
-        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
         trendingRecyclerView.setLayoutManager(horizontalLayoutManager);
         trendingItemList = new ArrayList<>();
         trendingItemAdapter = activity.itemAdapter;
@@ -104,8 +98,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         System.out.println(activity.copyList);
         if (trendingItemList.size() == 0) {
             trendingText.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             trendingText.setVisibility(View.VISIBLE);
         }
 
@@ -124,23 +117,21 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         announcementAdapter.notifyDataSetChanged();
 
         learnMore = view.findViewById(R.id.learn_more_id);
-        learnMore.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.donowebsite)));
-                startActivity(browserIntent);
-            }
+        learnMore.setOnClickListener(v -> {
+            Intent browserIntent = new Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(getString(R.string.donowebsite)));
+            startActivity(browserIntent);
         });
 
         myInterestsText = view.findViewById(R.id.myinterests_text);
         myInterestsRecyclerView = view.findViewById(R.id.card_view_myinterests_recycler_list);
-        LinearLayoutManager horizontalInterestsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager horizontalInterestsLayoutManager = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
         myInterestsRecyclerView.setLayoutManager(horizontalInterestsLayoutManager);
         myInterestsItemList = new ArrayList<>();
         myInterestsItemAdapter = new MyInterestsItemAdapter(activity, activity.listOfItems);
         myInterestsItemList = activity.listOfItems;
-        System.out.println("List "+activity.listOfItems.size());
         if (myInterestsItemList.size() > 0) {
             myInterestsText.setVisibility(View.VISIBLE);
         }
@@ -185,7 +176,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         }
         Intent intent = new Intent(activity, ProductDetails.class);
         intent.putExtra("item_details", item);
-        intent.putExtra("category", typeOfSearch);
+        intent.putExtra("category", item.category);
         startActivity(intent);
     }
 }
