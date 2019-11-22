@@ -6,7 +6,7 @@ public class Constants {
 
     //Table name in database
     public static final String COLLECTIBLES = "Collectible";
-    public static final String COLLECTIBLE_IMAGES = "CollectibeImages";
+    public static final String COLLECTIBLE_IMAGES = "CollectibleImages";
     public static final String COLLECTIBLE_VIDEOS = "CollectibleVideos";
     public static final String DONOR = "Donor";
     public static final String PROCEEDS = "Proceeds";

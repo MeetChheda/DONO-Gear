@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,11 +33,11 @@ public class UserProfileFragment extends Fragment {
     private View view;
     private MainActivity activity;
     private SharedPreferences sharedPreferences;
+    private Handler handler;
 
     public UserProfileFragment() {
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +47,26 @@ public class UserProfileFragment extends Fragment {
         activity = (MainActivity) getActivity();
         setHasOptionsMenu(true);
         initializeLayout();
+
+        activity = (MainActivity) getActivity();
+
+
+        handler = new Handler();
+        Runnable proceedsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(activity.hasAllImages && activity.hasAllData) {
+                    initializeLayout();
+                }
+                else {
+                    handler.postDelayed(this, 100);
+                }
+            }
+        };
+        handler.post(proceedsRunnable);
+
+
+
         return view;
     }
 
@@ -56,6 +77,12 @@ public class UserProfileFragment extends Fragment {
     private void initializeLayout() {
 
         Button logout = view.findViewById(R.id.userlogout_btn);
+        Button myAccountButton = view.findViewById(R.id.myaccount_btn);
+
+        myAccountButton.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, MyAccountActivity.class);
+            startActivity(intent);
+        });
 
         logout.setOnClickListener(v -> {
             LoginManager.getInstance().logOut();

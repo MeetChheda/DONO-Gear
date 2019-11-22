@@ -6,24 +6,53 @@
     android:theme="@style/AppTheme"
     android:fitsSystemWindows="true">
 
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/backbtn"
+        android:layout_margin="10dp"
+        android:background="@null"
+        android:src="@drawable/ic_back"/>
 
-
-    <Button
-        android:id="@+id/userlogout_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="30dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="#2FD6D6"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:paddingEnd="50dp"
-        android:paddingStart="50dp"
-        android:layout_marginBottom="20dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        ></Button>
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/myaccount_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="250dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="20dp"
+            android:background="#2FD6D6"
+            android:paddingStart="50dp"
+            android:paddingLeft="10dp"
+            android:paddingEnd="50dp"
+            android:paddingRight="10dp"
+            android:text="My Account"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/userlogout_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="20dp"
+            android:background="#2FD6D6"
+            android:paddingStart="50dp"
+            android:paddingLeft="10dp"
+            android:paddingEnd="50dp"
+            android:paddingRight="10dp"
+            android:text="Logout"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
 
 </RelativeLayout>
