@@ -140,6 +140,10 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         checkForRealTimeUpdate();
     }
 
+    /**
+     * Updates the bid amount in real time by subscribing to the database and waiting for a change
+     * using Parse Live Queries
+     */
     private void checkForRealTimeUpdate() {
         Log.d(TAG,"Checking for new price now " + itemBidAmount);
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
