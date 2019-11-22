@@ -101,6 +101,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         trendingItemList = new ArrayList<>();
         trendingItemAdapter = activity.itemAdapter;
         trendingItemList = displayTrendingItems(activity.copyList);
+        System.out.println(activity.copyList);
         if (trendingItemList.size() == 0) {
             trendingText.setVisibility(View.GONE);
         }
@@ -139,6 +140,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         myInterestsItemList = new ArrayList<>();
         myInterestsItemAdapter = new MyInterestsItemAdapter(activity, activity.listOfItems);
         myInterestsItemList = activity.listOfItems;
+        System.out.println("List "+activity.listOfItems.size());
         if (myInterestsItemList.size() > 0) {
             myInterestsText.setVisibility(View.VISIBLE);
         }
@@ -183,7 +185,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         }
         Intent intent = new Intent(activity, ProductDetails.class);
         intent.putExtra("item_details", item);
-        intent.putExtra("typeOfSearch", typeOfSearch);
+        intent.putExtra("category", typeOfSearch);
         startActivity(intent);
     }
 }

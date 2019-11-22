@@ -31,10 +31,9 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="-10dp"
                 android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-
-                android:paddingTop="10dp"
+                android:paddingTop="5dp"
                 android:text="Time remaining"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="#555"
                 android:textSize="15dp"
                 android:textStyle="bold" />
@@ -44,10 +43,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="bold"
                 android:padding="7dp"
                 android:text="  D  :  H  :  M  :  S"
-                android:textStyle="bold"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentEnd="true"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"

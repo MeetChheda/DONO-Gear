@@ -23,6 +23,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
+import static com.example.donogear.utils.Constants.TIME_UP;
+
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     private Context mContext;
@@ -31,6 +34,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     // Get the type for onItemClickListener
     private String type;
 
+    public ItemAdapter(){}
     public ItemAdapter(Context context, List<ItemDetails> list) {
         mContext = context;
         itemDetailsList = list;
@@ -76,7 +80,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             timeColor = getFavourableTimeColor(bitmap);
             itemHolder.imageView.setImageBitmap(bitmap);
         }
-
         String title = curItem.itemName;
         if(title.length() > 30) {
             title = title.substring(0, 30);
@@ -87,10 +90,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         if (itemHolder.timer != null) {
             itemHolder.timer.cancel();
         }
-        tickTime(endTime, itemHolder, i);
-        itemHolder.titleText.setTextColor(textColor);
-        itemHolder.timeHolder.setTextColor(timeColor);
-        itemHolder.endTimeText.setTextColor(timeColor);
+        if (!curItem.category.equals(DROP_IDENTIFIER)) {
+            itemHolder.titleText.setTextColor(textColor);
+            itemHolder.timeHolder.setTextColor(timeColor);
+            itemHolder.endTimeText.setTextColor(timeColor);
+            tickTime(endTime, itemHolder, i);
+        }
+        if (curItem.category.equals(DROP_IDENTIFIER)) {
+            itemHolder.timeHolder.setVisibility(View.GONE);
+            itemHolder.endTimeText.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -98,7 +107,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
      * @param bitmap - Decoding image into string
      * @return  - favourable text color required
      */
-    private int getFavourableTextColor(Bitmap bitmap) {
+    public int getFavourableTextColor(Bitmap bitmap) {
         int pixel = bitmap.getPixel(0, bitmap.getHeight() - 1);
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
@@ -134,8 +143,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
             @Override
             public void onFinish() {
-                itemHolder.endTimeText.setText("TIME UP");
-
+                itemHolder.endTimeText.setText(TIME_UP);
+                itemHolder.endTimeText.setTextColor(Color.RED);
             }
         }.start();
     }
