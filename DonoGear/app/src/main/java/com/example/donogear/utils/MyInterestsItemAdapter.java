@@ -23,23 +23,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
-import static com.example.donogear.utils.Constants.TIME_UP;
-
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
+/**
+ * Set the myInterest item in the adapter
+ */
+public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItemAdapter.ViewHolder> {
 
     private Context mContext;
     private List<ItemDetails> itemDetailsList;
     private ItemClickListener itemClickListener;
-    // Get the type for onItemClickListener
     private String type;
 
-    public ItemAdapter(){}
-    public ItemAdapter(Context context, List<ItemDetails> list) {
+    public MyInterestsItemAdapter(Context context, List<ItemDetails> list) {
         mContext = context;
         itemDetailsList = list;
     }
 
+    /**
+     * Set item list
+     * @param newList - if list is updated, set new list of all items
+     */
     public void setItemList(List<ItemDetails> newList) {
         itemDetailsList = newList;
     }
@@ -57,7 +59,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             timeHolder = itemView.findViewById(R.id.time_holder);
 
             itemView.setOnClickListener(view ->
-                    itemClickListener.onItemClick(view, getAdapterPosition(), type)
+                    itemClickListener.onItemClick(view, getAdapterPosition(),type)
             );
         }
     }
@@ -80,6 +82,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             timeColor = getFavourableTimeColor(bitmap);
             itemHolder.imageView.setImageBitmap(bitmap);
         }
+
         String title = curItem.itemName;
         if(title.length() > 30) {
             title = title.substring(0, 30);
@@ -90,16 +93,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         if (itemHolder.timer != null) {
             itemHolder.timer.cancel();
         }
-        if (!curItem.category.equals(DROP_IDENTIFIER)) {
-            itemHolder.titleText.setTextColor(textColor);
-            itemHolder.timeHolder.setTextColor(timeColor);
-            itemHolder.endTimeText.setTextColor(timeColor);
-            tickTime(endTime, itemHolder, i);
-        }
-        if (curItem.category.equals(DROP_IDENTIFIER)) {
-            itemHolder.timeHolder.setVisibility(View.GONE);
-            itemHolder.endTimeText.setVisibility(View.GONE);
-        }
+        tickTime(endTime, itemHolder, i);
+        itemHolder.titleText.setTextColor(textColor);
+        itemHolder.timeHolder.setTextColor(timeColor);
+        itemHolder.endTimeText.setTextColor(timeColor);
     }
 
     /**
@@ -107,7 +104,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
      * @param bitmap - Decoding image into string
      * @return  - favourable text color required
      */
-    public int getFavourableTextColor(Bitmap bitmap) {
+    private int getFavourableTextColor(Bitmap bitmap) {
         int pixel = bitmap.getPixel(0, bitmap.getHeight() - 1);
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
@@ -123,7 +120,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;
     }
-
 
     /**
      * Get time at every second
@@ -143,8 +139,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
             @Override
             public void onFinish() {
-                itemHolder.endTimeText.setText(TIME_UP);
-                itemHolder.endTimeText.setTextColor(Color.RED);
+                itemHolder.endTimeText.setText("TIME UP");
+
             }
         }.start();
     }

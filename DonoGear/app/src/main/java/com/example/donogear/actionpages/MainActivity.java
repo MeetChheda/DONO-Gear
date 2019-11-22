@@ -5,19 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.donogear.R;
 import com.example.donogear.interfaces.myOnBackPressed;
 import com.example.donogear.interfaces.onSavePressed;
+import com.example.donogear.models.AnnouncementDetails;
 import com.example.donogear.models.CausesDetails;
 import com.example.donogear.models.DonorDetails;
 import com.example.donogear.models.ItemDetails;
+import com.example.donogear.utils.AnnouncementAdapter;
 import com.example.donogear.utils.CausesAdapter;
 import com.example.donogear.utils.DonorAdapter;
 import com.example.donogear.utils.ItemAdapter;
@@ -37,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.example.donogear.utils.Constants.ANNOUNCEMENTS;
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
 import static com.example.donogear.utils.Constants.CAUSES_IDENTIFIER;
 import static com.example.donogear.utils.Constants.COLLECTIBLES;
@@ -44,7 +50,9 @@ import static com.example.donogear.utils.Constants.COLLECTIBLE_IMAGES;
 import static com.example.donogear.utils.Constants.DONOR;
 import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
+import static com.example.donogear.utils.Constants.HOME_IDENTIFIER;
 import static com.example.donogear.utils.Constants.PROCEEDS;
+import static com.example.donogear.utils.Constants.PROFILE;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TAGS;
 
@@ -60,14 +68,17 @@ public class MainActivity extends AppCompatActivity implements
     public List<ItemDetails> superCopyList;
     public List<DonorDetails> donorDetailsList;
     public List<CausesDetails> causesDetailsList;
+    public List<AnnouncementDetails> announcementDetailsList;
     public Context context;
     public ItemAdapter itemAdapter;
     public CausesAdapter causesAdapter;
     public DonorAdapter donorAdapter;
+    public AnnouncementAdapter announcementAdapter;
     public Map<String, List<String>> tagsToItems;
     public BottomNavigationView mainNavigation;
     public TabLayout innerTabs;
     public TabLayout innerBrowseTabs;
+    public TabLayout innerHomeTabs;
     public boolean hasAllData;
     public boolean hasAllImages;
 
@@ -76,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     //TODO - Mapping for better storing and querying of list of items
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +98,14 @@ public class MainActivity extends AppCompatActivity implements
         initializeLayout();
         manageInnerTabs();
         manageInnerBrowseTabs();
+        manageInnerHomeTabs();
+
         readData();
         getFilters();
         itemAdapter = new ItemAdapter(context, listOfItems);
         donorAdapter = new DonorAdapter(context, donorDetailsList);
         causesAdapter = new CausesAdapter(context, causesDetailsList);
+        announcementAdapter = new AnnouncementAdapter(context, announcementDetailsList);
     }
 
     /**
@@ -130,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements
                 for (ParseObject item : items) {
                     String itemId = item.getObjectId();
                     final List<File> itemImages = getImagesForItems(itemId);
+//                    System.out.println(itemImages.size());
                     final int startBid = item.getInt("startBid");
                     final int buyNowPrice = item.getInt("buyNowPrice");
                     final int currentBid = item.getInt("currentBid");
@@ -139,11 +155,14 @@ public class MainActivity extends AppCompatActivity implements
                     final String category = item.getString("category");
                     final Date endDate = item.getDate("auctionEndDate");
                     final int costPerEntry = item.getInt("costPerEntry");
+                    final boolean trending = item.getBoolean("trending");
                     ItemDetails itemDetails = new ItemDetails(itemId, itemName, itemDescription,
                             startBid, buyNowPrice, currentBid, highestBidder, category, endDate,
-                            costPerEntry, itemImages);
+                            costPerEntry, itemImages, trending);
+
                     searchArray.add(itemName);
                     listOfItems.add(itemDetails);
+                    System.out.println("Main List "+listOfItems.size());
                     itemAdapter.notifyDataSetChanged();
                 }
             } else {
@@ -202,6 +221,51 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("Error", e.toString());
             }
         });
+
+        //get all the recent announcement from database
+        ParseQuery<ParseObject> announcementQuery = ParseQuery.getQuery(ANNOUNCEMENTS);
+        announcementQuery.findInBackground((announcements, e) -> {
+
+            if (e == null) {
+                for (ParseObject announcement: announcements) {
+                    String announcementId = announcement.getObjectId();
+                    final List<File> announcementImageList = getImageForAnnouncement(announcementId);
+                    final String announcementTitle = announcement.getString("title");
+                    final String announcementDescription = announcement.getString("description");
+                    AnnouncementDetails announcementObject = new AnnouncementDetails(announcementId,
+                            announcementTitle, announcementDescription, announcementImageList);
+                    announcementDetailsList.add(announcementObject);
+                    announcementAdapter.notifyDataSetChanged();
+                }
+            } else {
+                // Something is wrong
+                Toast.makeText(MainActivity.this, "Error: " + e, Toast.LENGTH_SHORT).show();
+                Log.e("Error", e.toString());
+            }
+        });
+    }
+
+
+    private List<File> getImageForAnnouncement(String announcementId) {
+        ParseQuery<ParseObject> announcementImageQuery = ParseQuery.getQuery(ANNOUNCEMENTS);
+        List<File> imageFileList = new ArrayList<>();
+        announcementImageQuery.whereEqualTo("objectId", announcementId);
+        announcementImageQuery.getFirstInBackground((object, e) -> {
+            if (e == null) {
+                if (object.getParseFile("image") != null) {
+                    try {
+                        if (object.getParseFile("image").getFile() != null) {
+                            File imageFile = object.getParseFile("image").getFile();
+                            imageFileList.add(imageFile);
+                            announcementAdapter.notifyDataSetChanged();
+                        }
+                    } catch (ParseException ex) {
+                        Log.e("Error", e.toString(), ex);
+                    }
+                }
+            }
+        });
+        return imageFileList;
     }
 
     /**
@@ -220,10 +284,10 @@ public class MainActivity extends AppCompatActivity implements
                         if (object.getParseFile("proceedImage1").getFile() != null) {
                             File imageFile = object.getParseFile("proceedImage1").getFile();
                             imageFileList.add(imageFile);
-                            donorAdapter.notifyDataSetChanged();
+                            causesAdapter.notifyDataSetChanged();
                         }
                     } catch (ParseException ex) {
-                        Log.e("Error", e.toString());
+                        Log.e("Error", e.toString(), ex);
                     }
                 }
             }
@@ -247,10 +311,10 @@ public class MainActivity extends AppCompatActivity implements
                         if (object.getParseFile("image").getFile() != null) {
                             File imageFile = object.getParseFile("image").getFile();
                             imageFileList.add(imageFile);
-                            causesAdapter.notifyDataSetChanged();
+                            donorAdapter.notifyDataSetChanged();
                         }
                     } catch (ParseException ex) {
-                        Log.e("Error", e.toString());
+                        Log.e("Error", e.toString(), ex);
                     }
                 }
             }
@@ -277,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements
                                 allImages.add(image);
                             }
                         } catch (ParseException ex) {
-                            Log.e("Error", e.toString());
+                            Log.e("Error", e.toString(), ex);
                         }
                     }
                 }
@@ -294,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements
         copyList = new ArrayList<>();
         donorDetailsList = new ArrayList<>();
         causesDetailsList = new ArrayList<>();
+        announcementDetailsList = new ArrayList<>();
         superCopyList = new ArrayList<>();
         selectedTopics = new ArrayList<>();
         selectedCauses = new ArrayList<>();
@@ -311,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements
 
         innerTabs = findViewById(R.id.innerSearchtabs);
         innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
+        innerHomeTabs = findViewById(R.id.innerHometabs);
         mainNavigation = findViewById(R.id.navigation);
         mainNavigation.setOnNavigationItemSelectedListener(this);
         mainNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
@@ -372,6 +438,30 @@ public class MainActivity extends AppCompatActivity implements
                         loadFragment(new BrowsePageFragment(), CAUSES_IDENTIFIER);
                         break;
 
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
+
+    private void manageInnerHomeTabs() {
+        // Load the tab at index 0 which is Donor
+        innerHomeTabs.getTabAt(0).select();
+        innerBrowseTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                switch (tab.getPosition()) {
+                    case 0:
+                        loadFragment(new BrowsePageFragment(), HOME_IDENTIFIER);
+                        break;
                 }
             }
 
@@ -502,17 +592,19 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.navigation_home:
                 innerTabs.setVisibility(View.GONE);
                 innerBrowseTabs.setVisibility(View.GONE);
+                innerHomeTabs.setVisibility(View.VISIBLE);
                 currentFragment = new HomePageFragment();
                 break;
             case R.id.navigation_browse:
                 innerTabs.setVisibility(View.GONE);
                 innerBrowseTabs.setVisibility(View.VISIBLE);
-                tab = DONOR_IDENTIFIER;
+                innerHomeTabs.setVisibility(View.GONE);
                 currentFragment = new BrowsePageFragment();
                 break;
             case R.id.navigation_search:
                 innerTabs.setVisibility(View.VISIBLE);
                 innerBrowseTabs.setVisibility(View.GONE);
+                innerHomeTabs.setVisibility(View.GONE);
                 currentFragment = new SearchPageFragment();
                 tab = AUCTION_IDENTIFIER;
                 break;
@@ -520,6 +612,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.navigation_profile:
                 innerTabs.setVisibility(View.GONE);
                 innerBrowseTabs.setVisibility(View.GONE);
+                innerHomeTabs.setVisibility(View.GONE);
                 currentFragment = new UserProfileFragment();
                 break;
         }

@@ -11,6 +11,7 @@ public class Constants {
     public static final String DONOR = "Donor";
     public static final String PROCEEDS = "Proceeds";
     public static final String TAGS = "Tags";
+    public static final String ANNOUNCEMENTS = "Announcement";
 
     public static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -21,6 +22,11 @@ public class Constants {
     public static final String DROP_IDENTIFIER = "drop";
     public static final String DONOR_IDENTIFIER = "donor";
     public static final String CAUSES_IDENTIFIER = "causes";
+    public static final String HOME_IDENTIFIER = "home";
+    public static final String MY_INTERESTS = "myinterests";
+    public static final String TRENDING = "trending";
+    public static final String SEARCH = "search";
+    public static final String PROFILE = "profile";
 
 
     public static final int PRIMARY_COLOR = Color.parseColor("#2fd6d6");

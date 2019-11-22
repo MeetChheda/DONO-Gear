@@ -12,15 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.donogear.R;
 import com.example.donogear.actionpages.MainActivity;
-
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseUser;
 import com.parse.facebook.ParseFacebookUtils;
+import com.parse.twitter.ParseTwitterUtils;
 
 import org.json.JSONException;
 
@@ -91,9 +90,9 @@ public class LoginPageActivity extends AppCompatActivity {
             }
         });
 
-        ImageView loginButton =  findViewById(R.id.facebook_icon);
+        ImageView facebookLoginButton =  findViewById(R.id.facebook_icon);
 
-        loginButton.setOnClickListener(view -> {
+        facebookLoginButton.setOnClickListener(view -> {
             // TODO request more user permissions when determining what is needed
             Collection<String> permissions = Arrays.asList("public_profile", "email");
             ParseFacebookUtils.logInWithReadPermissionsInBackground(this,
@@ -114,6 +113,45 @@ public class LoginPageActivity extends AppCompatActivity {
                     directSuccessfulUserLogin();
                 }
             });
+        });
+
+        ImageView twitterLoginButton = findViewById(R.id.twitter_icon);
+        twitterLoginButton.setOnClickListener(view -> {
+            ParseTwitterUtils.logIn(LoginPageActivity.this, (user, err) -> {
+                if (err != null) {
+                    ParseUser.logOut();
+                    Log.e(TAG, "An error occured", err);
+                }
+                if (user == null) {
+                    ParseUser.logOut();
+                    Log.d(TAG, "Uh oh. The user cancelled the Twitter login.");
+                } else if (user.isNew()) {
+                    Log.d(TAG, "User signed up and logged in through Twitter!");
+                    getUserDetailsFromTwitter();
+                } else {
+                    Log.d(TAG, "User logged in through Twitter!");
+                    directSuccessfulUserLogin();
+                }
+            });
+        });
+
+    }
+
+    /**
+     * Retrieves user information from Twitter
+     */
+    private void getUserDetailsFromTwitter() {
+        ParseUser user = ParseUser.getCurrentUser();
+        try{
+            user.setUsername(ParseTwitterUtils.getTwitter().getScreenName());
+        } catch(Exception e){
+            Log.e(TAG, "Error retrieving user data", e);
+        }
+
+        user.saveInBackground(e -> {
+            Log.d(TAG, "Successfully added user to App user registry");
+            Toast.makeText(this, "Login Successful", Toast.LENGTH_LONG).show();
+            directSuccessfulUserLogin();
         });
     }
 

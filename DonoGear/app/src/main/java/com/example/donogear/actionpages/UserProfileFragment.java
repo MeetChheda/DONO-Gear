@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.donogear.registeration.LauncherActivity;
 import com.facebook.login.LoginManager;
@@ -31,7 +31,6 @@ public class UserProfileFragment extends Fragment {
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,6 +38,9 @@ public class UserProfileFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_user_profile, container, false);
         activity = (MainActivity) getActivity();
         setHasOptionsMenu(true);
+        initializeLayout();
+
+        activity = (MainActivity) getActivity();
         initializeLayout();
         return view;
     }
@@ -50,6 +52,12 @@ public class UserProfileFragment extends Fragment {
     private void initializeLayout() {
 
         Button logout = view.findViewById(R.id.userlogout_btn);
+        Button myAccountButton = view.findViewById(R.id.myaccount_btn);
+
+        myAccountButton.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, MyAccountActivity.class);
+            startActivity(intent);
+        });
 
         logout.setOnClickListener(v -> {
             LoginManager.getInstance().logOut();
