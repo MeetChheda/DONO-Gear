@@ -42,7 +42,7 @@ public class Constants {
 
     public static final String ERROR_BID_TITLE = "Error placing your bid";
     public static final String ERROR_BID_MESSAGE =
-            "The most recent bid amount was changed when you were trying to bid. Do you want to " +
+            "The most recent bid amount was changed while you were trying to bid. Do you want to " +
                     "bid again?";
 
     public static final String ALERT_MESSAGE = "Are you sure?";

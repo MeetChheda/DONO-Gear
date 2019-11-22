@@ -5,14 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.donogear.R;
@@ -52,7 +49,6 @@ import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.HOME_IDENTIFIER;
 import static com.example.donogear.utils.Constants.PROCEEDS;
-import static com.example.donogear.utils.Constants.PROFILE;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TAGS;
 
@@ -136,16 +132,13 @@ public class MainActivity extends AppCompatActivity implements
      */
     private void readData() {
 
-        /**
-         * Querying collectible-item data
-         */
+        //Querying collectible-item data
         ParseQuery<ParseObject> collectibleQuery = ParseQuery.getQuery(COLLECTIBLES);
         collectibleQuery.findInBackground((items, e) -> {
             if (e == null) {
                 for (ParseObject item : items) {
                     String itemId = item.getObjectId();
                     final List<File> itemImages = getImagesForItems(itemId);
-//                    System.out.println(itemImages.size());
                     final int startBid = item.getInt("startBid");
                     final int buyNowPrice = item.getInt("buyNowPrice");
                     final int currentBid = item.getInt("currentBid");
@@ -175,9 +168,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-        /**
-         * Querying donor data
-         */
+        // Querying donor data
         ParseQuery<ParseObject> donorQuery = ParseQuery.getQuery(DONOR);
         donorQuery.findInBackground((donors, e) -> {
             if (e == null) {
@@ -198,9 +189,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-        /**
-         * Querying causes data
-         */
+        //Querying causes data
         ParseQuery<ParseObject> causesQuery = ParseQuery.getQuery(PROCEEDS);
         causesQuery.findInBackground((causes, e) -> {
             if (e == null) {
@@ -501,6 +490,8 @@ public class MainActivity extends AppCompatActivity implements
      * active category (drops, auction, raffles)
      * @param topics - list of selected topics
      * @param causes - list of selected causes
+     * @param items - list of items to filter from
+     * @param tagsToItems - map of filter tags to items
      * @return list of items after filtering
      */
     public List<ItemDetails> filterItemsBySelectedTags(List<String> topics, List<String> causes,
