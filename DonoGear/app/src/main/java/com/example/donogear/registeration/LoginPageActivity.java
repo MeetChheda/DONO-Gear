@@ -1,7 +1,6 @@
 package com.example.donogear.registeration;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +19,6 @@ import com.example.donogear.actionpages.MainActivity;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.android.material.tabs.TabLayout;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.facebook.ParseFacebookUtils;
 
@@ -33,8 +30,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
-import static com.example.donogear.utils.Constants.USER_DETAILS;
-import static com.example.donogear.utils.Constants.USER_NAME;
 
 
 public class LoginPageActivity extends AppCompatActivity {
@@ -52,8 +47,6 @@ public class LoginPageActivity extends AppCompatActivity {
     String password;
     String email;
     ProgressBar pgsBar;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +63,7 @@ public class LoginPageActivity extends AppCompatActivity {
         passwordEditTextSignup = findViewById(R.id.passwordCreateAccount_editText);
         usernameEditTextLogin = findViewById(R.id.username_editText);
         passwordEditTextLogin = findViewById(R.id.password_editText);
-
-        checkSharedPreferences();
+        checkForLoggedInStatus();
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -125,11 +117,8 @@ public class LoginPageActivity extends AppCompatActivity {
         });
     }
 
-    private void checkSharedPreferences() {
-        sharedPreferences = getSharedPreferences(USER_DETAILS, MODE_PRIVATE);
-        if (sharedPreferences.contains(USER_NAME)) {
-            String name = sharedPreferences.getString(USER_NAME, "");
-            Toast.makeText(this, "Logged in as: " + name, Toast.LENGTH_SHORT).show();
+    private void checkForLoggedInStatus() {
+        if (ParseUser.getCurrentUser() != null) {
             directSuccessfulUserLogin();
         }
     }
@@ -245,13 +234,6 @@ public class LoginPageActivity extends AppCompatActivity {
 
         ParseUser.logInInBackground(username, password, (parseUser, e) -> {
             if (parseUser != null) {
-                sharedPreferences = getApplicationContext()
-                        .getSharedPreferences(USER_DETAILS, MODE_PRIVATE);
-                editor = sharedPreferences.edit();
-                editor.putString(USER_NAME, username);
-                editor.apply();
-                Log.d(TAG, "SAVED CURRENT USER: " + username);
-
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

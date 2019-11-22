@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,6 +35,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.livequery.ParseLiveQueryClient;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,11 +51,11 @@ import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
 import static com.example.donogear.utils.Constants.COLLECTIBLES;
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
-import static com.example.donogear.utils.Constants.DEFAULT_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ERROR_BID_TITLE;
 import static com.example.donogear.utils.Constants.HIGHEST_BID_MESSAGE;
+import static com.example.donogear.utils.Constants.LOGIN_PROMPT;
 import static com.example.donogear.utils.Constants.NO_CURRENT_BIDS;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
@@ -83,6 +83,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private Button drop;
     private TextView startBidAmount;
     private TextView currentBidAmount;
+    private Timer timer;
+    private ParseLiveQueryClient liveQueryClient;
 
     private BottomSheetDialogFragment dialogFragment;
 
@@ -137,7 +139,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
     private void checkForRealTimeUpdate() {
         Log.d(TAG,"Checking for new price now " + itemBidAmount);
-        currentBidAmount.setVisibility(GONE);
+//        currentBidAmount.setVisibility(GONE);
         final boolean[] flag = {false};
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -150,19 +152,17 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                         itemBidAmount = object.getInt("currentBid");
                         itemHighestBidder = object.getString("highestBidder");
                         flag[0] = true;
-                        System.out.println("Got bid amount from DB: " + itemBidAmount);
+//                        System.out.println("Got bid amount from DB: " + itemBidAmount);
                     }
                 });
-                System.out.println(itemBidAmount + " and " + flag[0]);
+//                System.out.println(itemBidAmount + " and " + flag[0]);
                 if (itemBidAmount == 0 && flag[0]) {
-                    Log.d(TAG, "Current bid is not set, still 0");
-                    runOnUiThread(() -> {
-                        currentBidAmount.setVisibility(View.VISIBLE);
-                    });
+//                    Log.d(TAG, "Current bid is not set, still 0");
+                    runOnUiThread(() -> currentBidAmount.setVisibility(View.VISIBLE));
                 }
                 if (itemBidAmount > 0) {
                     System.out.println(itemBidAmount);
-                    Log.d(TAG, "Bid from the database is: " + itemBidAmount);
+//                    Log.d(TAG, "Bid from the database is: " + itemBidAmount);
                     runOnUiThread(() -> {
                         currentBidAmount.setText("$" + itemBidAmount);
                         currentBidAmount.setVisibility(View.VISIBLE);
@@ -172,6 +172,20 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 }
             }
         }, 0, 1000);
+
+//        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
+//        parseQuery.whereGreaterThanOrEqualTo("startBid", Math.max(itemBidAmount, startBid));
+//        try {
+//            Log.d(TAG, parseQuery.count() + "");
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        SubscriptionHandling<ParseObject> subscriptionHandling = liveQueryClient.subscribe(parseQuery);
+//        subscriptionHandling.handleEvents((query, event, object) -> {
+//            Log.d(TAG, "checking --------- ");
+//            int bid = object.getInt("currentBid");
+//            Log.d(TAG, "new bid --------- " + bid);
+//        });
     }
 
     /**
@@ -244,6 +258,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         findViewById(R.id.backbtn).setOnClickListener(this);
         hasProceeds = false;
         hasVideos = false;
+
+        liveQueryClient = ParseLiveQueryClient.Factory.getClient();
     }
 
     /**
@@ -479,17 +495,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     }
 
     private void bottomSheetForItem() {
-        if (ParseUser.getCurrentUser() != null) {
-            ParseUser user = ParseUser.getCurrentUser();
-            if (user.getUsername().equals(itemHighestBidder)) {
-                new AlertDialog.Builder(ProductDetails.this)
-                        .setTitle(ALERT_MESSAGE)
-                        .setMessage(HIGHEST_BID_MESSAGE)
-                        .setPositiveButton("YES", (dialogInterface, i) -> bottomSheetForItem())
-                        .setNegativeButton("NO", null)
-                        .show();
-            }
-        }
+        Log.d(TAG, "Entering sheet and checking user ----");
+
         Bundle bundle = new Bundle();
         bundle.putInt("currentBid", itemBidAmount);
         bundle.putInt("startBid", startBid);
@@ -528,7 +535,25 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 break;
 
             case R.id.bid:
-                bottomSheetForItem();
+                if (ParseUser.getCurrentUser() != null) {
+                    ParseUser user = ParseUser.getCurrentUser();
+                    Log.d(TAG, "Current username is: " + user.getUsername() + " and highest: " + itemHighestBidder);
+                    if (user.getUsername().equals(itemHighestBidder)) {
+                        Log.e(TAG, "Yep");
+                        new AlertDialog.Builder(ProductDetails.this)
+                                .setTitle(ALERT_MESSAGE)
+                                .setMessage(HIGHEST_BID_MESSAGE)
+                                .setPositiveButton("YES", (dialogInterface, i) -> bottomSheetForItem())
+                                .setNegativeButton("NO", null)
+                                .show();
+                        return;
+                    } else {
+                        bottomSheetForItem();
+                    }
+                } else {
+                    Toast.makeText(context, LOGIN_PROMPT, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 break;
 
             default:
@@ -555,9 +580,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     .show();
             return;
         }
-
         Toast.makeText(context, "New value is " + newBidAmount, Toast.LENGTH_SHORT).show();
         RealTimeUpdate.writeNewBid(itemId, newBidAmount, ParseUser.getCurrentUser());
+
         itemBidAmount = newBidAmount;
         if (itemBidAmount > 0) {
             currentBidAmount.setText("$" + newBidAmount);

@@ -11,12 +11,8 @@ import com.example.donogear.actionpages.MainActivity;
 import com.example.donogear.R;
 import com.parse.ParseUser;
 
-import static com.example.donogear.utils.Constants.USER_DETAILS;
-import static com.example.donogear.utils.Constants.USER_NAME;
-
 public class LauncherActivity extends AppCompatActivity {
-
-    private SharedPreferences sharedPreferences;
+    private ParseUser parseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +24,13 @@ public class LauncherActivity extends AppCompatActivity {
         loginButton.setOnClickListener(view -> loginClicked());
         guestButton.setOnClickListener(view -> guestAccess());
 
-        ParseUser.logOut();
-        checkSharedPreferences();
-    }
-
-    private void checkSharedPreferences() {
-        sharedPreferences = getSharedPreferences(USER_DETAILS, MODE_PRIVATE);
-        if (sharedPreferences.contains(USER_NAME)) {
+        parseUser = ParseUser.getCurrentUser();
+        if (parseUser != null) {
+            System.out.println("Parse User not null");
+            System.out.println(parseUser.getUsername());
             loginClicked();
+        } else {
+            System.out.println("Parse User currently null");
         }
     }
 
