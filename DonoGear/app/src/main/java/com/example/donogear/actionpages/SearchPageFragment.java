@@ -178,6 +178,11 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         startActivity(intent);
     }
 
+    @Override
+    public void onMyInterestItemClick(View view, int position) {
+
+    }
+
     /**
      * Facilitates auto complete search based on itemName (for the time being). Filters from the list
      * of items to display items that match the name.

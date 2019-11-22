@@ -18,6 +18,7 @@ public class Constants {
     public static final String DONOR_IDENTIFIER = "donor";
     public static final String CAUSES_IDENTIFIER = "causes";
     public static final String HOME_IDENTIFIER = "home";
+    public static final String MY_INTERESTS = "myinterests";
 
 
 }

@@ -3,8 +3,6 @@ package com.example.donogear.actionpages;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,13 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.donogear.R;
 import com.example.donogear.interfaces.ItemClickListener;
@@ -27,9 +23,8 @@ import com.example.donogear.models.AnnouncementDetails;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.utils.AnnouncementAdapter;
 import com.example.donogear.utils.ItemAdapter;
+import com.example.donogear.utils.MyInterestsItemAdapter;
 
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,13 +39,18 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
     private Handler handler;
     private RecyclerView recyclerView;
     private RecyclerView trendingRecyclerView;
+    private RecyclerView myInterestsRecyclerView;
     private List<AnnouncementDetails> listOfAnnouncements;
     private AnnouncementAdapter announcementAdapter;
-    private ItemAdapter itemAdapter;
+    private ItemAdapter trendingItemAdapter;
+    private MyInterestsItemAdapter myInterestsItemAdapter;
     private List<ItemDetails> trendingItemList;
+    private List<ItemDetails> myInterestsItemList;
     private Context context;
     private Button learnMore;
     private String typeOfSearch;
+    private TextView trendingText;
+    private TextView myInterestsText;
 
     public HomePageFragment() {
         // Required empty public constructor
@@ -74,8 +74,6 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
                 if(activity.hasAllImages && activity.hasAllData) {
                     System.out.println("Initialize");
                     initializeLayout();
-//                    getType();
-
                 }
                 else {
                     handler.postDelayed(this, 100);
@@ -87,30 +85,37 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
 
     }
 
+    /**
+     * Initializing layout and setting adapters of trending items, announcements and myInterests item
+     */
     private void initializeLayout() {
         if (getArguments() != null) {
             typeOfSearch = getArguments().getString("type");
         }
+        trendingText = view.findViewById(R.id.trending_text);
         trendingRecyclerView = view.findViewById(R.id.card_view_trending_recycler_list);
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         trendingRecyclerView.setLayoutManager(horizontalLayoutManager);
         trendingItemList = new ArrayList<>();
-        itemAdapter = activity.itemAdapter;
-        displayTrendingItems(activity.listOfItems);
+        trendingItemAdapter = activity.itemAdapter;
+        System.out.println("Size of copy list " + activity.copyList.size());
+        trendingItemList = displayTrendingItems(activity.copyList);
+        if (trendingItemList.size() == 0) {
+            trendingText.setVisibility(View.GONE);
+        }
+        else {
+            trendingText.setVisibility(View.VISIBLE);
+        }
         System.out.println(trendingItemList.size());
-        itemAdapter.setItemList(trendingItemList);
-        System.out.println(itemAdapter.getItemCount());
-        trendingRecyclerView.setAdapter(itemAdapter);
-        itemAdapter.setClickListener(this);
-        itemAdapter.notifyDataSetChanged();
-
+        trendingItemAdapter.setItemList(trendingItemList);
+        System.out.println(trendingItemAdapter.getItemCount());
+        trendingRecyclerView.setAdapter(trendingItemAdapter);
+        trendingItemAdapter.setClickListener(this);
+        trendingItemAdapter.notifyDataSetChanged();
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView = view.findViewById(R.id.card_view_announcement_recycler_list);
         recyclerView.setLayoutManager(manager);
-
-
-//        recyclerView.setLayoutManager(manager);
         listOfAnnouncements = activity.announcementDetailsList;
         System.out.println("Size " + listOfAnnouncements.size());
         announcementAdapter = activity.announcementAdapter;
@@ -118,6 +123,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         recyclerView.setAdapter(announcementAdapter);
         announcementAdapter.notifyDataSetChanged();
         System.out.println("Initialize end");
+
         learnMore = view.findViewById(R.id.learn_more_id);
         learnMore.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -128,21 +134,69 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
             }
         });
 
+        myInterestsText = view.findViewById(R.id.myinterests_text);
+        myInterestsRecyclerView = view.findViewById(R.id.card_view_myinterests_recycler_list);
+        LinearLayoutManager horizontalInterestsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        myInterestsRecyclerView.setLayoutManager(horizontalInterestsLayoutManager);
+        myInterestsItemList = new ArrayList<>();
+        myInterestsItemAdapter = new MyInterestsItemAdapter(activity, activity.listOfItems);
+        myInterestsItemList = activity.listOfItems;
+        if (myInterestsItemList.size() > 0) {
+            myInterestsText.setVisibility(View.VISIBLE);
+        }
+        else {
+            myInterestsText.setVisibility(View.GONE);
+        }
+        System.out.println(myInterestsItemList.size());
+        myInterestsItemAdapter.setItemList(myInterestsItemList);
+        System.out.println(myInterestsItemAdapter.getItemCount());
+        myInterestsRecyclerView.setAdapter(myInterestsItemAdapter);
+        myInterestsItemAdapter.setClickListener(this);
+        myInterestsItemAdapter.notifyDataSetChanged();
     }
 
 
-    private void displayTrendingItems(List<ItemDetails> itemDetailsList) {
+    /**
+     * Filter item list and set trending item list
+     * @param itemDetailsList - list of all items
+     * @return - list of items which are trending
+     */
+    private List<ItemDetails> displayTrendingItems(List<ItemDetails> itemDetailsList) {
         for (ItemDetails itemDetails: itemDetailsList) {
             if (itemDetails.isTrending && itemDetails.listOfImages.size() > 0) {
+                System.out.println("Item added");
                 trendingItemList.add(itemDetails);
             }
         }
+        return trendingItemList;
     }
 
+    /**
+     * Overriding the interface method to perform action for onClick on any trending item. Will call
+     * the next trending item details activity
+     * @param view - clicked view
+     * @param position - position of the item clicked
+     */
     @Override
     public void onItemClick(View view, int position) {
         ItemDetails item = trendingItemList.get(position);
 //        System.out.println(item.itemName);
+        Intent intent = new Intent(activity, ProductDetails.class);
+        intent.putExtra("item_details", item);
+        intent.putExtra("typeOfSearch", typeOfSearch);
+        startActivity(intent);
+    }
+
+
+    /**
+     * Overriding the interface method to perform action for onClick on any myInterest item. Will call
+     * the next myInterest item details activity
+     * @param view - clicked view
+     * @param position - position of the item clicked
+     */
+    @Override
+    public void onMyInterestItemClick(View view, int position) {
+        ItemDetails item = myInterestsItemList.get(position);
         Intent intent = new Intent(activity, ProductDetails.class);
         intent.putExtra("item_details", item);
         intent.putExtra("typeOfSearch", typeOfSearch);

@@ -137,9 +137,33 @@
                 android:layout_marginRight="90dp"
                 android:layout_below="@id/how_it_works_image"
                 android:backgroundTint="@color/colorPrimaryDark"
-                android:layout_alignParentBottom="true"/>
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Interests"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:id="@+id/myinterests_text"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="#000"
+                android:layout_below="@id/learn_more_id"
+                />
 
+            <LinearLayout
+                android:id="@+id/myinterests_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@id/myinterests_text"
+                android:orientation="horizontal">
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/card_view_myinterests_recycler_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
     </RelativeLayout>
