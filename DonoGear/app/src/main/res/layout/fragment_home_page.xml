@@ -1,11 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
     android:fitsSystemWindows="true">
 
+    <FrameLayout
+        android:id="@+id/browse_frame_layout"
+        android:layout_width="match_parent"
+        android:background="#FFF"
+        android:layout_height="match_parent"
+        tools:context="com.example.donogear.actionpages.HomePageFragment"/>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/backbtn"
+        android:layout_margin="10dp"
+        android:background="@null"
+        android:src="@drawable/ic_back"/>
+    <RelativeLayout
+        android:id="@+id/announcement_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="60dp">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trending"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_centerHorizontal="true"
+                android:textSize="20dp"
+                android:id="@+id/trending_text"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="#000"
+                />
+
+                <LinearLayout
+                    android:id="@+id/trending_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/trending_text"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/card_view_trending_recycler_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+                </LinearLayout>
 
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Announcements"
+                android:id="@+id/announcement_text"
+                android:layout_below="@id/trending_layout"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="#000"
+                android:textAllCaps="true"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/card_view_announcement_recycler_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/announcement_text"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How It Works"
+                android:id="@+id/how_it_works_text"
+                android:layout_below="@id/card_view_announcement_recycler_list"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="#000"
+                android:textAllCaps="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/how_it_works"
+                android:id="@+id/how_it_works"
+                android:layout_below="@id/how_it_works_text"
+                android:textSize="16dp"
+                android:layout_marginLeft="30dp"
+                android:paddingLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="#666"
+                android:textAllCaps="true"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/how_it_works_image"
+                android:src="@drawable/capture"
+                android:layout_below="@id/how_it_works"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Learn More"
+                android:id="@+id/learn_more_id"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                android:textColor="#fff"
+                android:layout_marginLeft="90dp"
+                android:layout_marginRight="90dp"
+                android:layout_below="@id/how_it_works_image"
+                android:backgroundTint="@color/colorPrimaryDark"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Interests"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_centerHorizontal="true"
+                android:textSize="20dp"
+                android:id="@+id/myinterests_text"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="#000"
+                android:layout_below="@id/learn_more_id"
+                />
+
+            <LinearLayout
+                android:id="@+id/myinterests_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@id/myinterests_text"
+                android:orientation="horizontal">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/card_view_myinterests_recycler_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+    </RelativeLayout>
 </RelativeLayout>

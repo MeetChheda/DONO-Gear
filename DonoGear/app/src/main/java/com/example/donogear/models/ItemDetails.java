@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+
 /**
  * Storing details for each item
+ * TODO: isTrending variable will be dynamic in future
  */
 public class ItemDetails implements Serializable {
     public String id;
@@ -19,6 +21,7 @@ public class ItemDetails implements Serializable {
     public String category;
     public Date endDate;
     public List<File> listOfImages;
+    public boolean isTrending;
 
     /**
      * Default constructor for ItemDetails (Auction / Raffle items)
@@ -33,10 +36,11 @@ public class ItemDetails implements Serializable {
      * @param endDate - endDate for the item (for raffles, auctions)
      * @param costPerEntry - cost per entry for raffle items
      * @param listOfImages - list Of images of the item
+     * @param isTrending - check if the item is trending
      */
     public ItemDetails(String id, String itemName, String itemDescription, int startBid, int buyNowPrice,
                        int currentPrice, String highestBidder, String category, Date endDate,
-                       int costPerEntry, List<File> listOfImages) {
+                       int costPerEntry, List<File> listOfImages, boolean isTrending) {
         this.id = id;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
@@ -48,6 +52,7 @@ public class ItemDetails implements Serializable {
         this.endDate = endDate;
         this.costPerEntry = costPerEntry;
         this.listOfImages = listOfImages;
+        this.isTrending = isTrending;
     }
 
     /**
