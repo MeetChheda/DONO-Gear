@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -47,8 +48,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
@@ -85,6 +84,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private Button raffle;
     private Button auction;
     private Button drop;
+    private ImageButton readButton;
     private TextView startBidAmount;
     private TextView currentBidAmount;
     private ParseLiveQueryClient liveQueryClient;
@@ -222,11 +222,13 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         raffle = findViewById(R.id.enter);
         auction = findViewById(R.id.bid);
         drop = findViewById(R.id.buy);
+        readButton = findViewById(R.id.read_more);
 
         raffle.setOnClickListener(this);
         auction.setOnClickListener(this);
         drop.setOnClickListener(this);
         findViewById(R.id.backbtn).setOnClickListener(this);
+        readButton.setOnClickListener(this);
         hasProceeds = false;
         hasVideos = false;
 
@@ -534,6 +536,21 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     return;
                 }
                 break;
+
+
+            case R.id.read_more:
+                TextView desc = findViewById(R.id.description);
+                TextView read = findViewById(R.id.read_text);
+                if (desc.getMaxLines() == 5) {
+                    desc.setMaxLines(20);
+                    readButton.setImageResource(R.drawable.ic_read_less);
+                    read.setText("Read less");
+                }
+                else {
+                    desc.setMaxLines(5);
+                    readButton.setImageResource(R.drawable.ic_read_more);
+                    read.setText("Read more");
+                }
 
             default:
                 break;

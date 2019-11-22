@@ -441,6 +441,8 @@ public class MainActivity extends AppCompatActivity implements
      * @param category - category selected
      */
     public List<ItemDetails> filterItemsByCategory(List<ItemDetails> list, String category) {
+        if (category == null)
+            return list;
         List<ItemDetails> newList = list.stream()
                 .filter(item -> item.category.equals(category))
                 .collect(Collectors.toList());
@@ -495,13 +497,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         Fragment currentFragment = null;
-        String tab = "";
+        String tab = null;
         switch (menuItem.getItemId()) {
             case R.id.navigation_home:
                 innerTabs.setVisibility(View.GONE);
                 innerBrowseTabs.setVisibility(View.GONE);
                 currentFragment = new HomePageFragment();
-                tab = "Home";
                 break;
             case R.id.navigation_browse:
                 innerTabs.setVisibility(View.GONE);
@@ -520,7 +521,6 @@ public class MainActivity extends AppCompatActivity implements
                 innerTabs.setVisibility(View.GONE);
                 innerBrowseTabs.setVisibility(View.GONE);
                 currentFragment = new UserProfileFragment();
-                tab = "Profile";
                 break;
         }
         return loadFragment(currentFragment, tab);
