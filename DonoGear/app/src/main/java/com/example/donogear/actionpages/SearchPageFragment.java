@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.donogear.utils.Constants.SEARCH;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -117,7 +119,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         recyclerView.setAdapter(itemAdapter);
         searchFlag = false;
 
-        itemAdapter.setClickListener(this);
+        itemAdapter.setClickListener(this, SEARCH);
         itemAdapter.notifyDataSetChanged();
         Bundle bundle = new Bundle();
         bundle.putSerializable("tagsSelected", new ArrayList<>(tagsSelected));
@@ -169,18 +171,14 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
      * @param position - position of the clicked item in the list
      */
     @Override
-    public void onItemClick(View view, int position) {
-        ItemDetails item = listOfItems.get(position);
-//        System.out.println(item.itemName);
-        Intent intent = new Intent(activity, ProductDetails.class);
-        intent.putExtra("item_details", item);
-        intent.putExtra("typeOfSearch", typeOfSearch);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onMyInterestItemClick(View view, int position) {
-
+    public void onItemClick(View view, int position, String type) {
+        if (type.equals(SEARCH)) {
+            ItemDetails item = listOfItems.get(position);
+            Intent intent = new Intent(activity, ProductDetails.class);
+            intent.putExtra("item_details", item);
+            intent.putExtra("typeOfSearch", typeOfSearch);
+            startActivity(intent);
+        }
     }
 
     /**

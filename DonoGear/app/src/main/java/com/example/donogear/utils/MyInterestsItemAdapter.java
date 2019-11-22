@@ -56,7 +56,7 @@ public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItem
             timeHolder = itemView.findViewById(R.id.time_holder);
 
             itemView.setOnClickListener(view ->
-                    itemClickListener.onMyInterestItemCLick(view, getAdapterPosition())
+                    itemClickListener.onItemClick(view, getAdapterPosition(),type)
             );
         }
     }
@@ -142,7 +142,8 @@ public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItem
         return itemDetailsList.size();
     }
 
-    public void setClickListener(ItemClickListener itemClickListener) {
+    public void setClickListener(ItemClickListener itemClickListener, String type) {
+        this.type = type;
         this.itemClickListener = itemClickListener;
     }
 }

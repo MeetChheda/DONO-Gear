@@ -28,6 +28,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private Context mContext;
     private List<ItemDetails> itemDetailsList;
     private ItemClickListener itemClickListener;
+    private String type;
 
     public ItemAdapter(Context context, List<ItemDetails> list) {
         mContext = context;
@@ -51,7 +52,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             timeHolder = itemView.findViewById(R.id.time_holder);
 
             itemView.setOnClickListener(view ->
-                    itemClickListener.onItemClick(view, getAdapterPosition())
+                    itemClickListener.onItemClick(view, getAdapterPosition(), type)
             );
         }
     }
@@ -128,7 +129,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         return itemDetailsList.size();
     }
 
-    public void setClickListener(ItemClickListener itemClickListener) {
+    public void setClickListener(ItemClickListener itemClickListener, String type) {
+        this.type = type;
         this.itemClickListener = itemClickListener;
     }
 }

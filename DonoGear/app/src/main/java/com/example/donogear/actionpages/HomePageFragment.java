@@ -28,6 +28,9 @@ import com.example.donogear.utils.MyInterestsItemAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.donogear.utils.Constants.MY_INTERESTS;
+import static com.example.donogear.utils.Constants.TRENDING;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -110,7 +113,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         trendingItemAdapter.setItemList(trendingItemList);
         System.out.println(trendingItemAdapter.getItemCount());
         trendingRecyclerView.setAdapter(trendingItemAdapter);
-        trendingItemAdapter.setClickListener(this);
+        trendingItemAdapter.setClickListener(this, TRENDING);
         trendingItemAdapter.notifyDataSetChanged();
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -151,7 +154,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         myInterestsItemAdapter.setItemList(myInterestsItemList);
         System.out.println(myInterestsItemAdapter.getItemCount());
         myInterestsRecyclerView.setAdapter(myInterestsItemAdapter);
-        myInterestsItemAdapter.setClickListener(this);
+        myInterestsItemAdapter.setClickListener(this, MY_INTERESTS);
         myInterestsItemAdapter.notifyDataSetChanged();
     }
 
@@ -178,25 +181,15 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
      * @param position - position of the item clicked
      */
     @Override
-    public void onItemClick(View view, int position) {
-        ItemDetails item = trendingItemList.get(position);
+    public void onItemClick(View view, int position, String type) {
+        ItemDetails item;
+        if (type.equals(TRENDING)) {
+            item = trendingItemList.get(position);
+        }
+        else {
+            item = myInterestsItemList.get(position);
+        }
 //        System.out.println(item.itemName);
-        Intent intent = new Intent(activity, ProductDetails.class);
-        intent.putExtra("item_details", item);
-        intent.putExtra("typeOfSearch", typeOfSearch);
-        startActivity(intent);
-    }
-
-
-    /**
-     * Overriding the interface method to perform action for onClick on any myInterest item. Will call
-     * the next myInterest item details activity
-     * @param view - clicked view
-     * @param position - position of the item clicked
-     */
-    @Override
-    public void onMyInterestItemClick(View view, int position) {
-        ItemDetails item = myInterestsItemList.get(position);
         Intent intent = new Intent(activity, ProductDetails.class);
         intent.putExtra("item_details", item);
         intent.putExtra("typeOfSearch", typeOfSearch);
