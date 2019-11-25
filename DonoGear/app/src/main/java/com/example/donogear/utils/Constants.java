@@ -26,7 +26,6 @@ public class Constants {
     public static final String MY_INTERESTS = "myinterests";
     public static final String TRENDING = "trending";
     public static final String SEARCH = "search";
-    public static final String PROFILE = "profile";
 
 
     public static final int PRIMARY_COLOR = Color.parseColor("#2fd6d6");
@@ -50,4 +49,8 @@ public class Constants {
             "still want to continue?";
 
     public static final String LOGIN_PROMPT = "Please login to place a bid";
+    public static final String SAVE_USER_DETAILS = "Save details";
+    public static final String UPDATE_USER_DETAILS = "Update details";
+    public static final String LOGIN_FOR_DETAILS = "Log in / register with DONO-Gear to create a " +
+            "profile and use many exciting features";
 }

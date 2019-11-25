@@ -16,7 +16,6 @@ import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -67,6 +66,7 @@ import static com.example.donogear.utils.Constants.READ_LESS;
 import static com.example.donogear.utils.Constants.READ_MORE;
 import static com.example.donogear.utils.Constants.TIME_UP;
 
+
 public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         View.OnClickListener, onSavePressed, RealTimeUpdate {
 
@@ -108,9 +108,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         displayItemDetails();
         checkCategory(category);
 
-        /**
-         * Delay timers (2) to facilitate populating of layout only after background tasks of fetching
-         * the item-specific videos and proceeds details have been finished
+        /*
+          Delay timers (2) to facilitate populating of layout only after background tasks of fetching
+          the item-specific videos and proceeds details have been finished
          */
         Runnable videoRunnable = new Runnable() {
             @Override
@@ -119,8 +119,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     displayVideo(itemVideosUrl, itemVideosLayout);
                 }
                 else {
-//                    System.out.println("Video? : " + hasVideos);
-                    handler.postDelayed(this, 1000);
+                    handler.postDelayed(this, 100);
                 }
             }
         };
@@ -133,12 +132,11 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     displayProceedsDetails();
                 }
                 else {
-                    handler.postDelayed(this, 1000);
+                    handler.postDelayed(this, 100);
                 }
             }
         };
         handler.post(proceedsRunnable);
-
         checkForRealTimeUpdate();
     }
 
@@ -150,18 +148,11 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         Log.d(TAG,"Checking for new price now " + itemBidAmount);
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
         parseQuery.whereGreaterThanOrEqualTo("startBid", Math.max(itemBidAmount, startBid));
-        try {
-            Log.d(TAG, parseQuery.count() + "");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         SubscriptionHandling<ParseObject> subscriptionHandling = liveQueryClient.subscribe(parseQuery);
         subscriptionHandling.handleEvents((query, event, object) -> {
-            Log.d(TAG, "checking --------- ");
             itemBidAmount = object.getInt("currentBid");
             itemHighestBidder = object.getString("highestBidder");
             runOnUiThread(() -> currentBidAmount.setText("$" + itemBidAmount));
-            Log.d(TAG, "new bid --------- " + itemBidAmount);
         });
     }
 
@@ -189,7 +180,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 String price = "$" + (1.0 * ticketDenominations.get(i + j) / costPerEntry);
                 price += "\n" + ticketDenominations.get(i + j) + " Entries";
                 ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
-//                setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 button.setText(price);
 
                 newLayout.addView(button);
@@ -227,6 +217,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
         raffle = findViewById(R.id.enter);
         auction = findViewById(R.id.bid);
+        if (ParseUser.getCurrentUser() == null) {
+            auction.setAlpha(0.25f);
+        }
         drop = findViewById(R.id.buy);
         readButton = findViewById(R.id.read_more);
 
@@ -254,6 +247,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private void displayVideo(List<String> videoList, LinearLayout videoContainer) {
         if (videoList == null || videoList.size() == 0)
             return;
+
         for (int i = 0; i < videoList.size(); i += 3) {
             LinearLayout newLayout = new LinearLayout(getBaseContext());
             newLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -353,23 +347,16 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         if (imagesList == null)
             return;
         for (File image: imagesList) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    759
-            );
-            params.gravity = Gravity.CENTER;
-            params.setMargins(5, 5, 5, 5);
             ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(params);
             Bitmap bitmap = BitmapFactory.decodeFile(image.toString());
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setImageBitmap(bitmap);
             layout.addView(imageView);
         }
     }
 
     /**
-     * Checks whoch item was clicked on the previous search / home page. Behaviour of buttons and
+     * Checks which item was clicked on the previous search / home page. Behaviour of buttons and
      * layouts is changed accordingly
      * @param category - thr category of the selected item
      */
@@ -482,8 +469,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     }
 
     private void bottomSheetForItem() {
-        Log.d(TAG, "Entering sheet and checking user ----");
-
         Bundle bundle = new Bundle();
         bundle.putInt("currentBid", itemBidAmount);
         bundle.putInt("startBid", startBid);

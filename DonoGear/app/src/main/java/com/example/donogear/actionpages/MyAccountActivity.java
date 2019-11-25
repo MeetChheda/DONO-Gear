@@ -21,15 +21,15 @@ import java.util.regex.Pattern;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
+import static com.example.donogear.utils.Constants.SAVE_USER_DETAILS;
+import static com.example.donogear.utils.Constants.UPDATE_USER_DETAILS;
 
 /**
  * Maintains my account page
  */
 public class MyAccountActivity extends AppCompatActivity {
-    private static final String PHONE_NUM = "phoneNumber";
 
-    private View view;
-    private MainActivity activity;
+    private static final String PHONE_NUM = "phoneNumber";
     private String currentUserName;
     private String currentEmail;
     private String currentPhoneNumber;
@@ -47,24 +47,20 @@ public class MyAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_account);
 
-        updateUserSettingsButton = (Button) findViewById(R.id.update_settings_button);
+        updateUserSettingsButton = findViewById(R.id.update_settings_button);
         initializeLayout();
 
-        updateUserSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        updateUserSettingsButton.setOnClickListener(v -> {
 
-                if (! isUpdatingUserSettings) {
-                    enableUserSettingsLayout();
-                    isUpdatingUserSettings = true;
-                } else {
-                    boolean isValidInputs = validateUserInputs();
-
-                    if (isValidInputs) {
-                        updateSavedUserInformation();
-                        disableUserSettingsLayout();
-                        isUpdatingUserSettings = false;
-                    }
+            if (!isUpdatingUserSettings) {
+                enableUserSettingsLayout();
+                isUpdatingUserSettings = true;
+            } else {
+                boolean isValidInputs = validateUserInputs();
+                if (isValidInputs) {
+                    updateSavedUserInformation();
+                    disableUserSettingsLayout();
+                    isUpdatingUserSettings = false;
                 }
             }
         });
@@ -104,7 +100,8 @@ public class MyAccountActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        if (! TextUtils.isEmpty(phoneNumberInput.getText()) && ! PhoneNumberUtils.isGlobalPhoneNumber(phoneNumberInput.getText().toString())) {
+        if (! TextUtils.isEmpty(phoneNumberInput.getText()) &&
+                !PhoneNumberUtils.isGlobalPhoneNumber(phoneNumberInput.getText().toString())) {
             phoneNumberInput.setError("Please enter a valid phone number");
             isValid = false;
         }
@@ -114,16 +111,15 @@ public class MyAccountActivity extends AppCompatActivity {
 
     /**
      * Initializes the layout for a non-guest user
-     *
      * @param user The user object
      */
     private void initializeAuthenticatedUserLayout(ParseUser user) {
         updateCurrentUserInfo(user);
 
-        userNameInput = (EditText) findViewById(R.id.fullName);
-        emailInput = (EditText) findViewById(R.id.emailAddress);
-        phoneNumberInput = (EditText) findViewById(R.id.phoneNum);
-        cancelSettingsUpdateButton = (Button) findViewById(R.id.cancel_user_profile_update_button);
+        userNameInput = findViewById(R.id.fullName);
+        emailInput = findViewById(R.id.emailAddress);
+        phoneNumberInput = findViewById(R.id.phoneNum);
+        cancelSettingsUpdateButton = findViewById(R.id.cancel_user_profile_update_button);
 
         userNameInput.setText(currentUserName);
         emailInput.setText(currentEmail);
@@ -134,10 +130,10 @@ public class MyAccountActivity extends AppCompatActivity {
      * Initializes the layout for a guest user
      */
     private void initializeGuestUserLayout() {
-        guestUserMessage = (TextView) findViewById(R.id.guest_user_message);
+        guestUserMessage = findViewById(R.id.guest_user_message);
         guestUserMessage.setVisibility(View.VISIBLE);
 
-        LinearLayout userSettings = (LinearLayout) findViewById(R.id.user_settings);
+        LinearLayout userSettings = findViewById(R.id.user_settings);
         userSettings.setVisibility(GONE);
     }
 
@@ -148,18 +144,15 @@ public class MyAccountActivity extends AppCompatActivity {
         userNameInput.setEnabled(true);
         phoneNumberInput.setEnabled(true);
         emailInput.setEnabled(true);
-        updateUserSettingsButton.setText("Save Settings");
+        updateUserSettingsButton.setText(SAVE_USER_DETAILS);
         cancelSettingsUpdateButton.setVisibility(View.VISIBLE);
 
-        cancelSettingsUpdateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userNameInput.setText(currentUserName);
-                emailInput.setText(currentEmail);
-                phoneNumberInput.setText(currentPhoneNumber);
-                clearInputErrors();
-                disableUserSettingsLayout();
-            }
+        cancelSettingsUpdateButton.setOnClickListener(v -> {
+            userNameInput.setText(currentUserName);
+            emailInput.setText(currentEmail);
+            phoneNumberInput.setText(currentPhoneNumber);
+            clearInputErrors();
+            disableUserSettingsLayout();
         });
     }
 
@@ -170,7 +163,7 @@ public class MyAccountActivity extends AppCompatActivity {
         userNameInput.setEnabled(false);
         phoneNumberInput.setEnabled(false);
         emailInput.setEnabled(false);
-        updateUserSettingsButton.setText("Update Settings");
+        updateUserSettingsButton.setText(UPDATE_USER_DETAILS);
         cancelSettingsUpdateButton.setVisibility(INVISIBLE);
     }
 
@@ -188,11 +181,11 @@ public class MyAccountActivity extends AppCompatActivity {
      */
     private void updateSavedUserInformation() {
         ParseUser user = ParseUser.getCurrentUser();
-
         user.setUsername(userNameInput.getText().toString());
         user.setEmail(emailInput.getText().toString());
 
-        String phoneNum = ! TextUtils.isEmpty(phoneNumberInput.getText()) ? phoneNumberInput.getText().toString().trim() : "";
+        String phoneNum = !TextUtils.isEmpty(phoneNumberInput.getText())
+                ? phoneNumberInput.getText().toString().trim() : "";
         user.put(PHONE_NUM, phoneNum);
 
         try {
@@ -206,7 +199,6 @@ public class MyAccountActivity extends AppCompatActivity {
 
     /**
      * Updates the current user information displayed on the page
-     *
      * @param user The current user
      */
     private void updateCurrentUserInfo(ParseUser user) {

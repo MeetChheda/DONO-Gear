@@ -30,16 +30,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/horizontal_scroll"
-                        android:scrollbars="none">
+                        android:scrollbars="none"
+                        android:fillViewport="true">
 
                         <LinearLayout
                             android:id="@+id/inner_layout"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"/>
 
                     </HorizontalScrollView>
                 </LinearLayout>
+
 
                 <ImageButton
                     android:layout_width="50dp"
