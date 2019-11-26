@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.donogear.actionpages.MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"
+        android:text="Notifications" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView"
+        android:layout_marginLeft="9dp"
+        android:text="REMINDERS" />
+
+
+
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="119dp"
+        android:layout_height="53dp"
+        android:text="Push Notifications"
+        android:textAllCaps="false"
+
+        android:layout_marginLeft="9dp"
+
+        android:layout_below="@+id/textView9"
+        />
+    <Button
+        android:id="@+id/button"
+        android:layout_width="119dp"
+        android:layout_height="53dp"
+        android:text="Email"
+        android:textAllCaps="false"
+        android:layout_toRightOf="@id/button8"
+        android:layout_marginLeft="25dp"
+        android:layout_below="@+id/textView9"
+        />
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="119dp"
+        android:layout_height="53dp"
+        android:text="Text Message"
+        android:textAllCaps="false"
+        android:layout_below="@+id/textView9"
+        android:layout_toRightOf="@id/button"
+        android:layout_marginLeft="25dp"
+        />
+    <View
+        android:id="@+id/view40"
+        android:layout_below="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="Send me:" />
+
+
+
+
+
+    <View
+        android:id="@+id/hr1"
+        android:layout_below="@id/textView9"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/abc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button8"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="9dp"
+        android:text="Raffles" />
+
+    <View
+        android:id="@+id/view1"
+        android:layout_below="@+id/abc"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/draw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/abc"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="1 day before draw" />
+
+    <View
+        android:id="@+id/view12"
+        android:layout_below="@+id/draw"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <Switch
+        android:id="@+id/switch10"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/draw"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="9dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/abc"/>
+
+    <TextView
+        android:id="@+id/winner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/draw"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="Winner Announcements" />
+
+    <Switch
+        android:id="@+id/switch87"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/switch10"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="-9dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="9dp"
+        android:layout_toRightOf="@id/winner" />
+
+    <Switch
+        android:id="@+id/switch11"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/winner"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="9dp"
+        android:layout_below="@id/switch10"/>
+
+    <View
+        android:id="@+id/view13"
+        android:layout_below="@+id/winner"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/customrem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/winner"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="Add custom reminder" />
+
+    <Button
+        android:id="@+id/button35"
+        android:layout_width="53dp"
+        android:layout_height="33dp"
+        android:layout_below="@+id/switch11"
+        android:layout_marginLeft="224dp"
+        android:layout_marginTop="269dp"
+        android:layout_marginRight="99dp"
+        android:layout_toRightOf="@id/customrem"
+        android:background="#40e0d0" />
+
+    <View
+        android:id="@+id/view14"
+        android:layout_below="@+id/customrem"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/drops"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/customrem"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="9dp"
+        android:text="Drops:" />
+
+    <View
+        android:layout_below="@+id/drops"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/hourbef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/drops"
+        android:layout_marginTop="21dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="1 hour before drop" />
+
+
+
+    <Switch
+        android:id="@+id/switch90"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/hourbef"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/switch87"
+        android:layout_marginRight="9dp"
+        android:layout_marginTop="80dp"/>
+
+    <View
+        android:id="@+id/view54"
+        android:layout_below="@+id/hourbef"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/customrem2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/hourbef"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="Add custom reminder" />
+
+    <Button
+        android:id="@+id/button33"
+        android:layout_width="49dp"
+        android:layout_height="27dp"
+        android:layout_below="@+id/switch90"
+        android:layout_alignParentRight="false"
+        android:layout_marginLeft="225dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="99dp"
+
+        android:layout_toRightOf="@id/customrem2"
+        android:background="#40e0d0" />
+
+    <View
+        android:id="@+id/view15"
+        android:layout_below="@+id/customrem2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/auction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/customrem2"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="9dp"
+        android:text="Auctions:" />
+
+    <View
+        android:id="@+id/view16"
+        android:layout_below="@+id/auction"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/outbid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/auction"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="If I am outbid" />
+
+    <Switch
+        android:id="@+id/switch91"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button33"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="51dp"
+        android:layout_marginRight="7dp"
+        android:layout_toRightOf="@+id/outbid" />
+
+    <View
+        android:id="@+id/view18"
+        android:layout_below="@+id/outbid"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/customrem3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/outbid"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="Add custom reminder" />
+
+    <Button
+        android:id="@+id/button34"
+        android:layout_width="41dp"
+        android:layout_height="26dp"
+        android:layout_below="@+id/switch91"
+        android:layout_alignParentRight="false"
+        android:layout_marginLeft="229dp"
+        android:layout_marginTop="-229dp"
+        android:layout_marginRight="99dp"
+        android:layout_toRightOf="@id/customrem3"
+        android:background="#40e0d0" />
+
+    <View
+        android:id="@+id/view22"
+        android:layout_below="@+id/customrem3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/general"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/customrem3"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="9dp"
+        android:text="GENERAL"
+        />
+
+    <View
+        android:id="@+id/view23"
+        android:layout_below="@+id/general"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/sendme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/general"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="Send me:"
+        />
+    <Button
+        android:id="@+id/button59"
+        android:layout_width="119dp"
+        android:layout_height="53dp"
+        android:text="Push Notifications"
+        android:textAllCaps="false"
+        android:layout_marginLeft="9dp"
+        android:layout_below="@+id/sendme"
+        />
+    <Button
+        android:id="@+id/button60"
+        android:layout_width="119dp"
+        android:layout_height="53dp"
+        android:text="Email"
+        android:textAllCaps="false"
+        android:layout_toRightOf="@id/button59"
+        android:layout_marginLeft="25dp"
+
+        android:layout_below="@+id/sendme"
+        />
+    <Button
+        android:id="@+id/button61"
+        android:layout_width="119dp"
+        android:layout_height="53dp"
+        android:text="Text Message"
+        android:textAllCaps="false"
+        android:layout_below="@+id/sendme"
+        android:layout_toRightOf="@id/button60"
+        android:layout_marginLeft="25dp"
+
+
+        />
+
+    <View
+        android:id="@+id/view38"
+        android:layout_below="@+id/button60"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/rec7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button61"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="Recommended for you" />
+
+    <Switch
+        android:id="@+id/switch82"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/rec7"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/button61"
+        android:layout_marginRight="9dp"
+        android:layout_marginTop="20dp"/>
+
+    <View
+        android:id="@+id/view83"
+        android:layout_below="@+id/rec7"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <TextView
+        android:id="@+id/featured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rec7"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="9dp"
+        android:text="Featured" />
+
+    <View
+        android:id="@+id/view66"
+        android:layout_below="@+id/featured"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#000" />
+
+    <Switch
+        android:id="@+id/switch55"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/featured"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/switch82"
+        android:layout_marginRight="9dp"
+        android:layout_marginTop="20dp"/>
+
+
+
+
+
+
+
+
+
+
+
+    <!--    <Button-->
+    <!--        android:id="@+id/button"-->
+    <!--        android:layout_width="59dp"-->
+    <!--        android:layout_height="25dp"-->
+    <!--        android:background="#0f0"-->
+    <!--        android:layout_alignParentRight="true"-->
+    <!--        android:layout_below="@id/hr"-->
+    <!--        />-->
+
+
+
+</RelativeLayout>

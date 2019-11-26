@@ -21,7 +21,7 @@ import com.example.donogear.R;
  */
 public class UserProfileFragment extends Fragment {
 
-    private Button logout;
+    private Button logout, notifications;
     private View view;
     private MainActivity activity;
 
@@ -44,6 +44,7 @@ public class UserProfileFragment extends Fragment {
     private void initializeLayout() {
 
         logout = view.findViewById(R.id.userlogout_btn);
+        notifications  = view.findViewById(R.id.notification_btn);
 
         logout.setOnClickListener(v -> {
             System.out.println("LOGOUT");
@@ -55,6 +56,11 @@ public class UserProfileFragment extends Fragment {
 
             System.out.println("Test print");
 
+        });
+
+        notifications.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, NotificationsActivity.class);
+            startActivity(intent);
         });
     }
 }
