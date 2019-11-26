@@ -9,15 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.donogear.registeration.LauncherActivity;
 import com.facebook.login.LoginManager;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.ParseUser;
 
 import com.example.donogear.R;
 
+import java.util.ArrayList;
 import static com.example.donogear.utils.Constants.LOGIN_FOR_DETAILS;
+import static com.example.donogear.utils.Constants.MY_INTERESTS;
 
 
 /**
@@ -28,6 +32,7 @@ public class UserProfileFragment extends Fragment {
     private static final String TAG = "UserProfileActivity";
     private View view;
     private MainActivity activity;
+    private ArrayList<String> userInterests;
 
     public UserProfileFragment() {
 
@@ -48,15 +53,16 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * Function added for logging out
-     *
+     * Function added for logging out, my interests and user details page
      */
     private void initializeLayout() {
+        userInterests = new ArrayList<>();
         CoordinatorLayout relativeLayout = view.findViewById(R.id.profile_snackbar);
         Button logout = view.findViewById(R.id.userlogout_btn);
         Button myAccountButton = view.findViewById(R.id.myaccount_btn);
         Button myInterestsButton  = view.findViewById(R.id.myinterests_btn);
-        if (ParseUser.getCurrentUser() == null) {
+        ParseUser user = ParseUser.getCurrentUser();
+        if (user == null) {
             Snackbar.make(relativeLayout, LOGIN_FOR_DETAILS, 4000).show();
             logout.setEnabled(false);
             logout.setAlpha(0.25f);
@@ -64,11 +70,26 @@ public class UserProfileFragment extends Fragment {
             myAccountButton.setAlpha(0.25f);
             myInterestsButton.setEnabled(false);
             myInterestsButton.setAlpha(0.25f);
+        } else {
+            Object obj = user.get(MY_INTERESTS);
+            if (obj != null) {
+                userInterests = (ArrayList<String>) obj;
+                Toast.makeText(activity, "Got them", Toast.LENGTH_SHORT).show();
+            }
         }
 
         myAccountButton.setOnClickListener(v -> {
             Intent intent = new Intent(activity, MyAccountActivity.class);
             startActivity(intent);
+        });
+
+        myInterestsButton.setOnClickListener(v -> {
+            BottomSheetDialogFragment fragment = new MyInterestsFragment();
+            Bundle bundle = new Bundle();
+
+            bundle.putStringArrayList(MY_INTERESTS, userInterests);
+            fragment.setArguments(bundle);
+            fragment.show(activity.getSupportFragmentManager(), fragment.getTag());
         });
 
         logout.setOnClickListener(v -> {

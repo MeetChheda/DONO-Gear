@@ -11,284 +11,299 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.core.widget.NestedScrollView
+        <ProgressBar
+            android:id="@+id/progress_cyclic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:minWidth="50dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="50dp">
+            android:id="@+id/full_item">
 
-            <RelativeLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:orientation="horizontal"
-                    android:id="@+id/hori">
-
-                    <HorizontalScrollView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/horizontal_scroll"
-                        android:scrollbars="none"
-                        android:fillViewport="true">
-
-                        <LinearLayout
-                            android:id="@+id/inner_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"/>
-
-                    </HorizontalScrollView>
-                </LinearLayout>
-
-
-                <ImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/backbtn"
-                    android:layout_margin="10dp"
-                    android:background="@null"
-                    android:src="@drawable/ic_back"/>
-
-                <TextView
-                    android:id="@+id/time_remaining"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/hori"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="-30dp"
-                    android:background="@drawable/time_outline"
-                    android:textColor="#000"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:padding="7dp"
-                    android:text="Time remaining"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="15dp"
-                    android:id="@+id/raffle_buttons"
-                    android:layout_below="@id/time_remaining"
-                    android:visibility="gone"/>
-
+                android:layout_height="match_parent"
+                android:layout_marginBottom="50dp">
 
                 <RelativeLayout
-                    android:layout_below="@id/time_remaining"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/full_item_layout">
+                    android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:textColor="#000"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
-                        android:padding="7dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:orientation="horizontal"
+                        android:id="@+id/hori">
 
-                    <TextView
-                        android:id="@+id/description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/title"
-                        android:layout_centerHorizontal="true"
-                        android:layout_margin="8dp"
-                        android:textStyle="italic"
-                        android:maxLines="4"
-                        android:paddingHorizontal="5dp"
-                        android:lineSpacingExtra="3dp"
-                        android:textColor="#000"
-                        android:textSize="17sp"
-                        android:padding="7dp" />
+                        <HorizontalScrollView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/horizontal_scroll"
+                            android:scrollbars="none"
+                            android:fillViewport="true">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/read_text"
-                        android:layout_below="@id/read_more"
-                        android:layout_centerHorizontal="true"
-                        android:text="Read more"
-                        android:layout_marginTop="-10dp"/>
+                            <LinearLayout
+                                android:id="@+id/inner_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"/>
+
+                        </HorizontalScrollView>
+                    </LinearLayout>
+
 
                     <ImageButton
-                        android:layout_width="75dp"
-                        android:layout_height="30dp"
-                        android:id="@+id/read_more"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@id/description"
-                        android:foregroundGravity="center_horizontal"
-                        android:src="@drawable/ic_read_more"
-                        android:backgroundTint="@android:color/transparent"/>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/bidLayout"
-                        android:layout_marginTop="5dp"
-                        android:layout_below="@id/read_text"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/start_bid_holder"
-                            android:text="Starting bid: "
-                            android:layout_marginStart="50dp"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/start_bid_amount"
-                            android:textColor="@color/colorPrimary"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="50dp"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/current_bid_holder"
-                            android:text="Current bid: "
-                            android:layout_marginTop="10dp"
-                            android:layout_marginStart="50dp"
-                            android:layout_below="@+id/start_bid_amount"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/current_bid_amount"
-                            android:text="N / A"
-                            android:textColor="@color/colorPrimary"
-                            android:layout_below="@+id/start_bid_holder"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="50dp"
-                            android:layout_marginTop="10dp"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:id="@+id/videoButtons"
-                        android:layout_below="@id/bidLayout"/>
-
-                    <VideoView
-                        android:id="@+id/videoView"
-                        android:layout_width="350dp"
-                        android:layout_height="150dp"
-                        android:layout_below="@+id/videoButtons"
-                        android:layout_marginTop="15dp"
-                        android:layout_centerHorizontal="true"
-                        android:visibility="gone"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"
-                        android:layout_below="@id/videoButtons"
-                        android:layout_marginTop="15dp"/>
-
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:id="@+id/backbtn"
+                        android:layout_margin="10dp"
+                        android:background="@null"
+                        android:src="@drawable/ic_back"/>
 
                     <TextView
-                        android:id="@+id/proceedsDummy"
+                        android:id="@+id/time_remaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/videoView"
+                        android:layout_below="@+id/hori"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="-30dp"
                         android:background="@drawable/time_outline"
-                        android:textColor="#000"
-                        android:layout_marginTop="30dp"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:padding="10dp"
-                        android:text="PROCEEDS"/>
-
-                    <TextView
-                        android:id="@+id/proceeds_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/proceedsDummy"
-                        android:layout_centerHorizontal="true"
                         android:textColor="#000"
                         android:textStyle="bold"
                         android:textSize="20sp"
-                        android:padding="7dp" />
-
-                    <TextView
-                        android:id="@+id/proceeds_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/proceeds_title"
-                        android:layout_centerHorizontal="true"
-                        android:layout_margin="8dp"
-                        android:maxLines="5"
-                        android:textStyle="italic"
-                        android:paddingHorizontal="5dp"
-                        android:lineSpacingExtra="3dp"
-                        android:textColor="#000"
-                        android:textSize="17sp"
-                        android:padding="7dp" />
+                        android:padding="7dp"
+                        android:text="Time remaining"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/proceeds_images"
                         android:orientation="vertical"
-                        android:layout_below="@id/proceeds_description"/>
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/raffle_buttons"
+                        android:layout_below="@id/time_remaining"
+                        android:visibility="gone"/>
 
-                    <LinearLayout
+
+                    <RelativeLayout
+                        android:layout_below="@id/time_remaining"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:id="@+id/proceed_video_buttons"
-                        android:layout_below="@id/proceeds_images"/>
+                        android:orientation="vertical"
+                        android:id="@+id/full_item_layout">
+
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:textColor="#000"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:padding="7dp" />
+
+                        <TextView
+                            android:id="@+id/description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/title"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="8dp"
+                            android:textStyle="italic"
+                            android:maxLines="4"
+                            android:paddingHorizontal="5dp"
+                            android:lineSpacingExtra="3dp"
+                            android:textColor="#000"
+                            android:textSize="17sp"
+                            android:padding="7dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/read_text"
+                            android:layout_below="@id/read_more"
+                            android:layout_centerHorizontal="true"
+                            android:text="Read more"
+                            android:layout_marginTop="-10dp"/>
+
+                        <ImageButton
+                            android:layout_width="75dp"
+                            android:layout_height="30dp"
+                            android:id="@+id/read_more"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@id/description"
+                            android:foregroundGravity="center_horizontal"
+                            android:src="@drawable/ic_read_more"
+                            android:backgroundTint="@android:color/transparent"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/bidLayout"
+                            android:layout_marginTop="5dp"
+                            android:layout_below="@id/read_text"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/start_bid_holder"
+                                android:text="Starting bid: "
+                                android:layout_marginStart="50dp"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/start_bid_amount"
+                                android:textColor="@color/colorPrimary"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginEnd="50dp"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/current_bid_holder"
+                                android:text="Current bid: "
+                                android:layout_marginTop="10dp"
+                                android:layout_marginStart="50dp"
+                                android:layout_below="@+id/start_bid_amount"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/current_bid_amount"
+                                android:text="N / A"
+                                android:textColor="@color/colorPrimary"
+                                android:layout_below="@+id/start_bid_holder"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginEnd="50dp"
+                                android:layout_marginTop="10dp"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:id="@+id/videoButtons"
+                            android:layout_below="@id/bidLayout"/>
+
+                        <VideoView
+                            android:id="@+id/videoView"
+                            android:layout_width="350dp"
+                            android:layout_height="150dp"
+                            android:layout_below="@+id/videoButtons"
+                            android:layout_marginTop="15dp"
+                            android:layout_centerHorizontal="true"
+                            android:visibility="gone"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#000"
+                            android:layout_below="@id/videoButtons"
+                            android:layout_marginTop="15dp"/>
+
+
+                        <TextView
+                            android:id="@+id/proceedsDummy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/videoView"
+                            android:layout_centerHorizontal="true"
+                            android:background="@drawable/time_outline"
+                            android:textColor="#000"
+                            android:layout_marginTop="30dp"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:padding="10dp"
+                            android:text="PROCEEDS"/>
+
+                        <TextView
+                            android:id="@+id/proceeds_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/proceedsDummy"
+                            android:layout_centerHorizontal="true"
+                            android:textColor="#000"
+                            android:textStyle="bold"
+                            android:textSize="20sp"
+                            android:padding="7dp" />
+
+                        <TextView
+                            android:id="@+id/proceeds_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/proceeds_title"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="8dp"
+                            android:maxLines="5"
+                            android:textStyle="italic"
+                            android:paddingHorizontal="5dp"
+                            android:lineSpacingExtra="3dp"
+                            android:textColor="#000"
+                            android:textSize="17sp"
+                            android:padding="7dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/proceeds_images"
+                            android:orientation="vertical"
+                            android:layout_below="@id/proceeds_description"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:id="@+id/proceed_video_buttons"
+                            android:layout_below="@id/proceeds_images"/>
+                    </RelativeLayout>
+
                 </RelativeLayout>
+            </androidx.core.widget.NestedScrollView>
 
-            </RelativeLayout>
-        </androidx.core.widget.NestedScrollView>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/enter"
+                android:text="Enter"
+                android:textSize="18sp"
+                android:textColor="#fff"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:layout_alignParentBottom="true"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/enter"
-            android:text="Enter"
-            android:textSize="18sp"
-            android:textColor="#fff"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:layout_alignParentBottom="true"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/bid"
+                android:text="Place  Bid"
+                android:textSize="18sp"
+                android:textColor="#fff"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:layout_alignParentBottom="true"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/bid"
-            android:text="Place  Bid"
-            android:textSize="18sp"
-            android:textColor="#fff"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:layout_alignParentBottom="true"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/buy"
-            android:text="Buy"
-            android:textSize="18sp"
-            android:textColor="#fff"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:layout_alignParentBottom="true"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/buy"
+                android:text="Buy"
+                android:textSize="18sp"
+                android:textColor="#fff"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:layout_alignParentBottom="true"/>
+        </RelativeLayout>
     </RelativeLayout>
 
     <FrameLayout

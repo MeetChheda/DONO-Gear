@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.donogear.R;
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements
     public TabLayout innerHomeTabs;
     public boolean hasAllData;
     public boolean hasAllImages;
+    private ProgressBar bar;
+    private List<String> userInterests;
 
     private List<String> selectedCauses;
     private List<String> selectedTopics;
@@ -125,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("Error", e.toString());
             }
         });
+        bar.setVisibility(View.GONE);
     }
 
     /**
@@ -366,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements
         innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
         innerHomeTabs = findViewById(R.id.innerHometabs);
         mainNavigation = findViewById(R.id.navigation);
+        bar = findViewById(R.id.progressBar_cyclic);
         mainNavigation.setOnNavigationItemSelectedListener(this);
         mainNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
         mainNavigation.setSelectedItemId(R.id.navigation_search);

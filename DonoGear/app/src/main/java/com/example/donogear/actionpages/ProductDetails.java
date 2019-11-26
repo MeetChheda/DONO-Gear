@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,6 +100,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         setContentView(R.layout.activity_product_details);
 
         initData();
+        RelativeLayout fullLayout = findViewById(R.id.full_item);
+        fullLayout.setVisibility(GONE);
         itemVideosUrl = getItemVideos();
         getItemProceedsDetails();
         LinearLayout horizontalScrollViewContainer = findViewById(R.id.inner_layout);
@@ -107,6 +110,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         displayRemainingTime();
         displayItemDetails();
         checkCategory(category);
+        ProgressBar bar = findViewById(R.id.progress_cyclic);
+        boolean[] flags = new boolean[2];
 
         /*
           Delay timers (2) to facilitate populating of layout only after background tasks of fetching
@@ -116,7 +121,12 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             @Override
             public void run() {
                 if(hasVideos) {
+                    flags[0] = true;
                     displayVideo(itemVideosUrl, itemVideosLayout);
+                    if (flags[1]) {
+                        bar.setVisibility(GONE);
+                        fullLayout.setVisibility(View.VISIBLE);
+                    }
                 }
                 else {
                     handler.postDelayed(this, 100);
@@ -129,7 +139,12 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             @Override
             public void run() {
                 if(hasProceeds) {
+                    flags[1] = true;
                     displayProceedsDetails();
+                    if (flags[0]) {
+                        bar.setVisibility(GONE);
+                        fullLayout.setVisibility(View.VISIBLE);
+                    }
                 }
                 else {
                     handler.postDelayed(this, 100);
