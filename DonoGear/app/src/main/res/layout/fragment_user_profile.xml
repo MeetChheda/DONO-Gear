@@ -87,6 +87,27 @@
 
     </LinearLayout>
     <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/edit_payment_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="400dp"
+            android:layout_marginBottom="20dp"
+            android:background="#2FD6D6"
+            android:paddingStart="50dp"
+            android:paddingLeft="10dp"
+            android:paddingEnd="50dp"
+            android:paddingRight="10dp"
+            android:text="Edit Payment"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"

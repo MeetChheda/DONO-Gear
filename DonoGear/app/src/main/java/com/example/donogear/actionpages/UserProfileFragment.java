@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -34,8 +33,6 @@ import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
 public class UserProfileFragment extends Fragment {
 
     private static final String PHONE_NUM = "phoneNumber";
-    private static final String TAG = "UserProfileActivity";
-
 
     private View view;
     private MainActivity activity;
@@ -47,6 +44,7 @@ public class UserProfileFragment extends Fragment {
     private EditText phoneNumberInput;
     private Button updateUserSettingsButton;
     private Button cancelSettingsUpdateButton;
+    private Button editPaymentInfoButton;
     private boolean isUpdatingUserSettings = false;
     private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
@@ -114,6 +112,21 @@ public class UserProfileFragment extends Fragment {
             startActivity(intent);
 
         });
+
+        editPaymentInfoButton = view.findViewById(R.id.edit_payment_btn);
+
+        editPaymentInfoButton.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, PaymentInfoActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
+
+//        if (ContextCompat.checkSelfPermission(getActivity(),
+//                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+//            // REQUEST_CODE_LOCATION should be defined on your app level
+//            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE_LOCATION);
+//        }
     }
 
     /**
@@ -250,4 +263,13 @@ public class UserProfileFragment extends Fragment {
             currentPhoneNumber = (String) phoneNum;
         }
     }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if (requestCode == REQUEST_CODE_LOCATION && grantResults.length > 0
+//                && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+//            throw new RuntimeException("Location services are required in order to " +
+//                    "connect to a reader.");
+//        }
+//    }
 }
