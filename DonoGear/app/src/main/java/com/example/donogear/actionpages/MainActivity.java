@@ -30,6 +30,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import static com.example.donogear.utils.Constants.DONOR;
 import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.HOME_IDENTIFIER;
+import static com.example.donogear.utils.Constants.MY_INTERESTS;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TAGS;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean hasAllData;
     public boolean hasAllImages;
     private ProgressBar bar;
-    private List<String> userInterests;
+    public List<String> userInterests;
 
     private List<String> selectedCauses;
     private List<String> selectedTopics;

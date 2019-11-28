@@ -5,11 +5,11 @@ import android.os.Bundle;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.donogear.registeration.LauncherActivity;
 import com.facebook.login.LoginManager;
@@ -71,11 +71,7 @@ public class UserProfileFragment extends Fragment {
             myInterestsButton.setEnabled(false);
             myInterestsButton.setAlpha(0.25f);
         } else {
-            Object obj = user.get(MY_INTERESTS);
-            if (obj != null) {
-                userInterests = (ArrayList<String>) obj;
-                Toast.makeText(activity, "Got them", Toast.LENGTH_SHORT).show();
-            }
+            getUserInterests(user);
         }
 
         myAccountButton.setOnClickListener(v -> {
@@ -86,7 +82,7 @@ public class UserProfileFragment extends Fragment {
         myInterestsButton.setOnClickListener(v -> {
             BottomSheetDialogFragment fragment = new MyInterestsFragment();
             Bundle bundle = new Bundle();
-
+            getUserInterests(user);
             bundle.putStringArrayList(MY_INTERESTS, userInterests);
             fragment.setArguments(bundle);
             fragment.show(activity.getSupportFragmentManager(), fragment.getTag());
@@ -99,5 +95,14 @@ public class UserProfileFragment extends Fragment {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
+    }
+
+    /**
+     * Get user interests from the database
+     * @param user - current Parse user, if logged in
+     */
+    private void getUserInterests(ParseUser user) {
+        Object obj = user.get(MY_INTERESTS);
+        userInterests = (ArrayList<String>) obj;
     }
 }

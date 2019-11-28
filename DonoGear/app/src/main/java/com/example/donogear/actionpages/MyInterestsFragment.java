@@ -46,11 +46,7 @@ public class MyInterestsFragment extends BottomSheetDialogFragment implements Vi
     private Set<String> selectedTags;
     private LinearLayout layout;
     private int counter = -1;
-    private Button save;
-    private Button reset;
-    private ImageButton cancel;
     private List<SwitchCompat> allSwitches;
-    private boolean done;
 
     public MyInterestsFragment() {
         // Required empty public constructor
@@ -82,9 +78,9 @@ public class MyInterestsFragment extends BottomSheetDialogFragment implements Vi
     private void initializeLayout() {
         topicsTags = new ArrayList<String>(MainActivity.tags[0]);
         causesTags = new ArrayList<String>(MainActivity.tags[1]);
-        reset = view.findViewById(R.id.reset_btn);
-        save = view.findViewById(R.id.save_btn);
-        cancel = view.findViewById(R.id.cancel_btn);
+        Button reset = view.findViewById(R.id.reset_btn);
+        Button save = view.findViewById(R.id.save_btn);
+        ImageButton cancel = view.findViewById(R.id.cancel_btn);
         reset.setOnClickListener(this);
         cancel.setOnClickListener(this);
         save.setOnClickListener(this);
@@ -127,7 +123,6 @@ public class MyInterestsFragment extends BottomSheetDialogFragment implements Vi
     private void addButtons(List<String> tags) {
         for(String tag: tags) {
             RelativeLayout lay = new RelativeLayout(getContext());
-            lay.setId(-1);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
             );

@@ -52,16 +52,20 @@ import java.util.List;
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
+import static com.example.donogear.utils.Constants.BUY_NOW;
 import static com.example.donogear.utils.Constants.COLLECTIBLES;
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ERROR_BID_TITLE;
 import static com.example.donogear.utils.Constants.HIGHEST_BID_MESSAGE;
+import static com.example.donogear.utils.Constants.ITEM_ID;
+import static com.example.donogear.utils.Constants.ITEM_NAME;
 import static com.example.donogear.utils.Constants.LOGIN_PROMPT;
 import static com.example.donogear.utils.Constants.NO_CURRENT_BIDS;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
+import static com.example.donogear.utils.Constants.RAFFLE_COUNT;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.READ_LESS;
 import static com.example.donogear.utils.Constants.READ_MORE;
@@ -73,7 +77,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
     private static final String TAG = "ProductDetails";
     private String itemId, itemName, itemDescription, itemHighestBidder, category;
-    private int itemBidAmount, startBid, costPerEntry;
+    private int itemBidAmount, startBid, costPerEntry, itemBuyNowPrice;
     private Date itemTime;
     private List<File> itemImages;
     private List<String> itemVideosUrl;
@@ -192,14 +196,24 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 layoutParams.gravity = Gravity.TOP;
                 button.setLayoutParams(layoutParams);
                 button.setTextColor(Color.BLACK);
-                String price = "$" + (1.0 * ticketDenominations.get(i + j) / costPerEntry);
+                button.setId(ticketDenominations.get(i + j));
+                double cost = 1.0 * ticketDenominations.get(i + j) / costPerEntry;
+                String price = "$" + cost;
                 price += "\n" + ticketDenominations.get(i + j) + " Entries";
                 ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 button.setText(price);
 
                 newLayout.addView(button);
-                button.setOnClickListener(v -> Toast.makeText(context,
-                        button.getText(), Toast.LENGTH_SHORT).show());
+                button.setOnClickListener(v -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ITEM_ID, itemId);
+                    bundle.putString(ITEM_NAME, itemName);
+                    bundle.putInt(BUY_NOW, (int) cost);
+                    bundle.putInt(RAFFLE_COUNT, v.getId());
+                    Intent intent = new Intent(this, PaymentActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                });
             }
             raffle_buttons.addView(newLayout);
         }
@@ -224,6 +238,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         itemBidAmount = itemDetails.currentPrice;
         startBid = itemDetails.startBid;
         costPerEntry = itemDetails.costPerEntry;
+        itemBuyNowPrice = itemDetails.buyNowPrice;
 
         full_layout = findViewById(R.id.full_item_layout);
         raffle_buttons = findViewById(R.id.raffle_buttons);
@@ -392,6 +407,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             case DROP_IDENTIFIER:
                 auction.setVisibility(GONE);
                 raffle.setVisibility(GONE);
+                TextView price = findViewById(R.id.time_remaining);
+                String cost = "Price: $";
+                price.setText(cost + itemBuyNowPrice);
                 break;
 
             default:
@@ -503,6 +521,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     //TODO - Implement functionality for place bid button
     @Override
     public void onClick(View view) {
+        Bundle bundle = new Bundle();
         switch (view.getId()) {
             case R.id.backbtn:
                 if (!checkButtonPressed(flag)) {
@@ -519,6 +538,12 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
             case R.id.buy:
                 //TODO - button for drops
+                bundle.putString(ITEM_ID, itemId);
+                bundle.putString(ITEM_NAME, itemName);
+                bundle.putInt(BUY_NOW, itemBuyNowPrice);
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
 
             case R.id.bid:
