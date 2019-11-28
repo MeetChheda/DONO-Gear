@@ -1,7 +1,5 @@
 package com.example.donogear.actionpages;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -25,11 +23,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
 import static com.example.donogear.utils.Constants.BUY_NOW;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
-import static com.example.donogear.utils.Constants.ERROR_BID_TITLE;
 import static com.example.donogear.utils.Constants.ERROR_SHIP;
-import static com.example.donogear.utils.Constants.INCOMPLETE_DETAILS;
 import static com.example.donogear.utils.Constants.INVALID_CARD_CVC;
 import static com.example.donogear.utils.Constants.INVALID_CARD_DETAILS;
 import static com.example.donogear.utils.Constants.INVALID_CARD_EXP;
@@ -74,6 +71,10 @@ public class PaymentActivity extends AppCompatActivity {
         reset.setOnClickListener(view -> cardMultilineWidget.clear());
     }
 
+
+    /**
+     * Initialize the Payment Activity page layout
+     */
     private void initializeLayout() {
         TextView title = findViewById(R.id.payment_title);
         TextView amount = findViewById(R.id.payment_amount);
@@ -111,7 +112,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     /**
      * Validate if user has entered all fields
-     * @return
+     * @return check if there is ant missingKey
      */
     private boolean validShippingDetails() {
         missingKeys = new ArrayList<>();
@@ -221,6 +222,10 @@ public class PaymentActivity extends AppCompatActivity {
         progress.setMessage("Please Wait");
         progress.show();
     }
+
+    /**
+     * Progress dialog for dismissing the UI
+     */
 
     private void finishProgress(){
         progress.dismiss();

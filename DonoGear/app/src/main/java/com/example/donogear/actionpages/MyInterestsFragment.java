@@ -126,14 +126,13 @@ public class MyInterestsFragment extends BottomSheetDialogFragment implements Vi
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(0, 15, 0, 15);
+            params.setMargins(60, 30, 60, 30);
             params.addRule(RelativeLayout.ALIGN_PARENT_START);
             TextView textView = new TextView(getContext());
             textView.setText(tag.toUpperCase());
             textView.setLayoutParams(params);
-            textView.setTextSize(15);
+            textView.setTextSize(16);
             textView.setTextColor(Color.BLACK);
-
             SwitchCompat switchCompat = new SwitchCompat(getContext());
             switchCompat.setId(++counter);
             switchCompat.setTextOff(tag);
@@ -151,16 +150,9 @@ public class MyInterestsFragment extends BottomSheetDialogFragment implements Vi
             params.addRule(RelativeLayout.ALIGN_PARENT_END);
             switchCompat.setLayoutParams(params);
 
-            View v = new View(getContext());
-            RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 5
-            );
-            v.setBackgroundColor(Color.GRAY);
-            param.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            v.setLayoutParams(param);
+
             lay.addView(textView);
             lay.addView(switchCompat);
-            lay.addView(v);
             layout.addView(lay);
         }
     }

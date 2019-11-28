@@ -44,31 +44,48 @@
         android:layout_below="@id/top"
         android:layout_marginTop="2dp"
         android:id="@+id/view"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Collectible Info"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:layout_below="@+id/view"
+        android:layout_centerHorizontal="true"
+        android:textSize="18dp"
+        android:id="@+id/product_info_text"
+        android:layout_marginTop="10dp"
+        android:textColor="#000"
+        tools:ignore="NotSibling" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/item_details"
-        android:layout_below="@id/view">
+        android:layout_below="@id/product_info_text">
+
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Collectible name: "
+        android:text="Collectible Name: "
+        android:layout_marginStart="30dp"
         android:fontFamily="sans-serif-medium"
+        android:textColor="#000"
+        android:textSize="15dp"
         android:id="@+id/payment_title_holder"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginHorizontal="30dp"/>
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:id="@+id/payment_title"
-        android:gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:layout_toEndOf="@id/payment_title_holder"
+
+        android:layout_marginStart="160dp"
+        android:textSize="15dp"
         android:textColor="@color/colorPrimaryDark"/>
 
     <TextView
@@ -78,19 +95,22 @@
         android:fontFamily="sans-serif-medium"
         android:id="@+id/payment_amount_holder"
         android:layout_marginTop="20dp"
+        android:textColor="#000"
+        android:textSize="15dp"
         android:layout_below="@id/payment_title"
         android:layout_alignParentStart="true"
-        android:layout_marginHorizontal="60dp"/>
+        android:layout_marginStart="30dp"
+        />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:fontFamily="sans-serif-medium"
         android:id="@+id/payment_amount"
         android:layout_marginTop="20dp"
+        android:textSize="15dp"
+        android:layout_marginStart="160dp"
         android:layout_below="@id/payment_title"
-        android:layout_toEndOf="@id/payment_amount_holder"
         android:layout_marginHorizontal="60dp"
         android:textColor="@color/colorPrimaryDark"/>
     </RelativeLayout>
@@ -101,19 +121,48 @@
         android:background="#c0c0c0"
         android:layout_below="@id/item_details"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:id="@+id/view2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Card Details"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:layout_below="@+id/view2"
+        android:layout_centerHorizontal="true"
+        android:textSize="18dp"
+        android:id="@+id/card_details_text"
+        android:layout_marginTop="10dp"
+        android:textColor="#000"
+        />
 
     <com.stripe.android.view.CardMultilineWidget
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/card_widget"
-        android:layout_below="@id/view2"/>
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_below="@id/card_details_text"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#c0c0c0"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_below="@id/card_widget"
+        android:layout_marginTop="10dp"
+        android:id="@+id/view3"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/card_widget"
-        android:id="@+id/bottom">
+        android:id="@+id/bottom"
+        android:layout_marginTop="10dp">
 
         <Button
             android:id="@+id/shipping"
@@ -124,7 +173,7 @@
             android:visibility="visible"
             android:layout_alignParentStart="true"
             android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="30dp"
             android:backgroundTint="#40E0D0"
             tools:layout_editor_absoluteX="11dp"
             tools:layout_editor_absoluteY="5dp" />
@@ -137,6 +186,7 @@
             android:text="Clear form"
             android:visibility="visible"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="30dp"
             android:textColor="#ffffff"
             android:backgroundTint="#40E0D0"
             android:layout_marginRight="15dp"
@@ -147,7 +197,7 @@
     <Button
         android:id="@+id/purchase"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:text="Pay"
         android:layout_below="@id/bottom"
         android:layout_centerHorizontal="true"
@@ -155,9 +205,7 @@
         android:textColor="#ffffff"
         android:layout_marginTop="15dp"
         android:backgroundTint="#40E0D0"
-        android:layout_gravity="center_horizontal"
-        tools:layout_editor_absoluteX="11dp"
-        tools:layout_editor_absoluteY="5dp" />
+        android:layout_gravity="center_horizontal"/>
 
 
 </RelativeLayout>
