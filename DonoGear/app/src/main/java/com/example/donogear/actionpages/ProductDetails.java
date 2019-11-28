@@ -16,11 +16,11 @@ import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,27 +52,32 @@ import java.util.List;
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
+import static com.example.donogear.utils.Constants.BUY_NOW;
 import static com.example.donogear.utils.Constants.COLLECTIBLES;
 import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ERROR_BID_TITLE;
 import static com.example.donogear.utils.Constants.HIGHEST_BID_MESSAGE;
+import static com.example.donogear.utils.Constants.ITEM_ID;
+import static com.example.donogear.utils.Constants.ITEM_NAME;
 import static com.example.donogear.utils.Constants.LOGIN_PROMPT;
 import static com.example.donogear.utils.Constants.NO_CURRENT_BIDS;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
+import static com.example.donogear.utils.Constants.RAFFLE_COUNT;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.READ_LESS;
 import static com.example.donogear.utils.Constants.READ_MORE;
 import static com.example.donogear.utils.Constants.TIME_UP;
+
 
 public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         View.OnClickListener, onSavePressed, RealTimeUpdate {
 
     private static final String TAG = "ProductDetails";
     private String itemId, itemName, itemDescription, itemHighestBidder, category;
-    private int itemBidAmount, startBid, costPerEntry;
+    private int itemBidAmount, startBid, costPerEntry, itemBuyNowPrice;
     private Date itemTime;
     private List<File> itemImages;
     private List<String> itemVideosUrl;
@@ -99,6 +104,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         setContentView(R.layout.activity_product_details);
 
         initData();
+        RelativeLayout fullLayout = findViewById(R.id.full_item);
+        fullLayout.setVisibility(GONE);
         itemVideosUrl = getItemVideos();
         getItemProceedsDetails();
         LinearLayout horizontalScrollViewContainer = findViewById(R.id.inner_layout);
@@ -107,20 +114,26 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         displayRemainingTime();
         displayItemDetails();
         checkCategory(category);
+        ProgressBar bar = findViewById(R.id.progress_cyclic);
+        boolean[] flags = new boolean[2];
 
-        /**
-         * Delay timers (2) to facilitate populating of layout only after background tasks of fetching
-         * the item-specific videos and proceeds details have been finished
+        /*
+          Delay timers (2) to facilitate populating of layout only after background tasks of fetching
+          the item-specific videos and proceeds details have been finished
          */
         Runnable videoRunnable = new Runnable() {
             @Override
             public void run() {
                 if(hasVideos) {
+                    flags[0] = true;
                     displayVideo(itemVideosUrl, itemVideosLayout);
+                    if (flags[1]) {
+                        bar.setVisibility(GONE);
+                        fullLayout.setVisibility(View.VISIBLE);
+                    }
                 }
                 else {
-//                    System.out.println("Video? : " + hasVideos);
-                    handler.postDelayed(this, 1000);
+                    handler.postDelayed(this, 100);
                 }
             }
         };
@@ -130,15 +143,19 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             @Override
             public void run() {
                 if(hasProceeds) {
+                    flags[1] = true;
                     displayProceedsDetails();
+                    if (flags[0]) {
+                        bar.setVisibility(GONE);
+                        fullLayout.setVisibility(View.VISIBLE);
+                    }
                 }
                 else {
-                    handler.postDelayed(this, 1000);
+                    handler.postDelayed(this, 100);
                 }
             }
         };
         handler.post(proceedsRunnable);
-
         checkForRealTimeUpdate();
     }
 
@@ -150,18 +167,11 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         Log.d(TAG,"Checking for new price now " + itemBidAmount);
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
         parseQuery.whereGreaterThanOrEqualTo("startBid", Math.max(itemBidAmount, startBid));
-        try {
-            Log.d(TAG, parseQuery.count() + "");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         SubscriptionHandling<ParseObject> subscriptionHandling = liveQueryClient.subscribe(parseQuery);
         subscriptionHandling.handleEvents((query, event, object) -> {
-            Log.d(TAG, "checking --------- ");
             itemBidAmount = object.getInt("currentBid");
             itemHighestBidder = object.getString("highestBidder");
             runOnUiThread(() -> currentBidAmount.setText("$" + itemBidAmount));
-            Log.d(TAG, "new bid --------- " + itemBidAmount);
         });
     }
 
@@ -186,15 +196,24 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 layoutParams.gravity = Gravity.TOP;
                 button.setLayoutParams(layoutParams);
                 button.setTextColor(Color.BLACK);
-                String price = "$" + (1.0 * ticketDenominations.get(i + j) / costPerEntry);
+                button.setId(ticketDenominations.get(i + j));
+                double cost = 1.0 * ticketDenominations.get(i + j) / costPerEntry;
+                String price = "$" + cost;
                 price += "\n" + ticketDenominations.get(i + j) + " Entries";
                 ButtonDesign.setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
-//                setButtonLayout(button, PRIMARY_COLOR, Color.WHITE);
                 button.setText(price);
 
                 newLayout.addView(button);
-                button.setOnClickListener(v -> Toast.makeText(context,
-                        button.getText(), Toast.LENGTH_SHORT).show());
+                button.setOnClickListener(v -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ITEM_ID, itemId);
+                    bundle.putString(ITEM_NAME, itemName);
+                    bundle.putInt(BUY_NOW, (int) cost);
+                    bundle.putInt(RAFFLE_COUNT, v.getId());
+                    Intent intent = new Intent(this, PaymentActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                });
             }
             raffle_buttons.addView(newLayout);
         }
@@ -219,6 +238,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         itemBidAmount = itemDetails.currentPrice;
         startBid = itemDetails.startBid;
         costPerEntry = itemDetails.costPerEntry;
+        itemBuyNowPrice = itemDetails.buyNowPrice;
 
         full_layout = findViewById(R.id.full_item_layout);
         raffle_buttons = findViewById(R.id.raffle_buttons);
@@ -227,6 +247,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
         raffle = findViewById(R.id.enter);
         auction = findViewById(R.id.bid);
+        if (ParseUser.getCurrentUser() == null) {
+            auction.setAlpha(0.25f);
+        }
         drop = findViewById(R.id.buy);
         readButton = findViewById(R.id.read_more);
 
@@ -254,6 +277,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private void displayVideo(List<String> videoList, LinearLayout videoContainer) {
         if (videoList == null || videoList.size() == 0)
             return;
+
         for (int i = 0; i < videoList.size(); i += 3) {
             LinearLayout newLayout = new LinearLayout(getBaseContext());
             newLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -353,23 +377,16 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         if (imagesList == null)
             return;
         for (File image: imagesList) {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    759
-            );
-            params.gravity = Gravity.CENTER;
-            params.setMargins(5, 5, 5, 5);
             ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(params);
             Bitmap bitmap = BitmapFactory.decodeFile(image.toString());
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setImageBitmap(bitmap);
             layout.addView(imageView);
         }
     }
 
     /**
-     * Checks whoch item was clicked on the previous search / home page. Behaviour of buttons and
+     * Checks which item was clicked on the previous search / home page. Behaviour of buttons and
      * layouts is changed accordingly
      * @param category - thr category of the selected item
      */
@@ -390,6 +407,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             case DROP_IDENTIFIER:
                 auction.setVisibility(GONE);
                 raffle.setVisibility(GONE);
+                TextView price = findViewById(R.id.time_remaining);
+                String cost = "Price: $";
+                price.setText(cost + itemBuyNowPrice);
                 break;
 
             default:
@@ -482,8 +502,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     }
 
     private void bottomSheetForItem() {
-        Log.d(TAG, "Entering sheet and checking user ----");
-
         Bundle bundle = new Bundle();
         bundle.putInt("currentBid", itemBidAmount);
         bundle.putInt("startBid", startBid);
@@ -503,6 +521,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     //TODO - Implement functionality for place bid button
     @Override
     public void onClick(View view) {
+        Bundle bundle = new Bundle();
         switch (view.getId()) {
             case R.id.backbtn:
                 if (!checkButtonPressed(flag)) {
@@ -519,6 +538,12 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
             case R.id.buy:
                 //TODO - button for drops
+                bundle.putString(ITEM_ID, itemId);
+                bundle.putString(ITEM_NAME, itemName);
+                bundle.putInt(BUY_NOW, itemBuyNowPrice);
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
 
             case R.id.bid:
