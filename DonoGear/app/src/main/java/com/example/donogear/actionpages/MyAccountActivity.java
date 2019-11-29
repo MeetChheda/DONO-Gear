@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
+import static com.example.donogear.utils.Constants.CUSTOMER_ID;
 import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
 import static com.example.donogear.utils.Constants.SAVE_USER_DETAILS;
 import static com.example.donogear.utils.Constants.UPDATE_USER_DETAILS;
@@ -132,6 +133,9 @@ public class MyAccountActivity extends AppCompatActivity {
         editPaymentInfoButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, PaymentInfoActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Bundle bundle = new Bundle();
+            bundle.putString(CUSTOMER_ID, user.getObjectId());
+            intent.putExtras(bundle);
             startActivity(intent);
         });
     }

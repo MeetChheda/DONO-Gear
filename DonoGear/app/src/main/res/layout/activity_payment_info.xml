@@ -8,26 +8,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <com.braintreepayments.cardform.view.CardForm
-            android:id="@+id/card_form"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp">
+
+        <com.stripe.android.view.CardMultilineWidget
+            android:id="@+id/savedCardWidget"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="20dp"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="500dp"
+        android:layout_marginTop="400dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <Button
-            android:id="@+id/confirm_btn"
+            android:id="@+id/save_payment_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#2FD6D6"
             android:layout_marginEnd="80dp"
             android:layout_marginStart="80dp"
-            android:text="Confirm"
+            android:text="Save"
             android:textColor="@android:color/white"/>
         <Button
             android:id="@+id/cancel_payment_update_btn"
@@ -39,6 +43,4 @@
             android:text="Cancel"
             android:visibility="visible"/>
     </LinearLayout>
-
-
 </RelativeLayout>
