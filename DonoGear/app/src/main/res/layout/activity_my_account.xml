@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/user_settings"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/fullName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:ems="10"
+            android:enabled="false"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:hint="Enter a user name"
+            android:inputType="textPersonName"
+            tools:text="Full Name" />
+
+        <EditText
+            android:id="@+id/emailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:ems="10"
+            android:enabled="false"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:hint="Enter a valid email address"
+            android:inputType="textEmailAddress"
+            tools:text="Email Address" />
+
+        <EditText
+            android:id="@+id/phoneNum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:ems="10"
+            android:enabled="false"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:hint="Enter a phone number"
+            android:inputType="phone"
+            tools:text="Phone Number" />
+        <Button
+            android:id="@+id/update_settings_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginStart="80dp"
+            android:visibility="visible"
+            android:background="#2FD6D6"
+            android:textColor="@android:color/white"
+            android:text="Update Settings"/>
+        <Button
+            android:id="@+id/cancel_user_profile_update_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginStart="80dp"
+            android:text="Cancel"
+
+            android:visibility="invisible"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/guest_user_settings"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/guest_user_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:layout_marginTop="250dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:text="@string/guest_user_account_message"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/edit_payment_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/edit_payment_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="20dp"
+            android:background="#2FD6D6"
+            android:paddingStart="50dp"
+            android:paddingLeft="10dp"
+            android:paddingEnd="50dp"
+            android:paddingRight="10dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginStart="80dp"
+            android:text="Edit Payment"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+</LinearLayout>

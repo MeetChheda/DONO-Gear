@@ -2,29 +2,26 @@ package com.example.donogear.actionpages;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
-import android.text.TextUtils;
-import android.util.Log;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 
-import androidx.fragment.app.Fragment;
-
-import com.example.donogear.R;
 import com.example.donogear.registeration.LauncherActivity;
 import com.facebook.login.LoginManager;
-import com.parse.ParseException;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.ParseUser;
 
-import java.util.regex.Pattern;
+import com.example.donogear.R;
 
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
+import java.util.ArrayList;
+import static com.example.donogear.utils.Constants.LOGIN_FOR_DETAILS;
+import static com.example.donogear.utils.Constants.MY_INTERESTS;
 
 
 /**
@@ -32,21 +29,10 @@ import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
  */
 public class UserProfileFragment extends Fragment {
 
-    private static final String PHONE_NUM = "phoneNumber";
-
+    private static final String TAG = "UserProfileActivity";
     private View view;
     private MainActivity activity;
-    private String currentUserName;
-    private String currentEmail;
-    private String currentPhoneNumber;
-    private EditText userNameInput;
-    private EditText emailInput;
-    private EditText phoneNumberInput;
-    private Button updateUserSettingsButton;
-    private Button cancelSettingsUpdateButton;
-    private Button editPaymentInfoButton;
-    private boolean isUpdatingUserSettings = false;
-    private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+    private ArrayList<String> userInterests;
 
     public UserProfileFragment() {
 
@@ -67,42 +53,40 @@ public class UserProfileFragment extends Fragment {
     }
 
     /**
-     * Function added for logging out
-     *
+     * Function added for logging out, my interests and user details page
      */
     private void initializeLayout() {
-
+        userInterests = new ArrayList<>();
+        CoordinatorLayout relativeLayout = view.findViewById(R.id.profile_snackbar);
+        Button logout = view.findViewById(R.id.userlogout_btn);
+        Button myAccountButton = view.findViewById(R.id.myaccount_btn);
+        Button myInterestsButton  = view.findViewById(R.id.myinterests_btn);
         ParseUser user = ParseUser.getCurrentUser();
-
-        if (user != null) {
-            initializeAuthenticatedUserLayout(user);
+        if (user == null) {
+            Snackbar.make(relativeLayout, LOGIN_FOR_DETAILS, 4000).show();
+            logout.setEnabled(false);
+            logout.setAlpha(0.25f);
+            myAccountButton.setEnabled(false);
+            myAccountButton.setAlpha(0.25f);
+            myInterestsButton.setEnabled(false);
+            myInterestsButton.setAlpha(0.25f);
         } else {
-            // This is a guest user. Disable all controls
-            initializeGuestUserLayout();
+            getUserInterests(user);
         }
 
-        updateUserSettingsButton = (Button) view.findViewById(R.id.update_settings_button);
-
-        updateUserSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (! isUpdatingUserSettings) {
-                    enableUserSettingsLayout();
-                    isUpdatingUserSettings = true;
-                } else {
-                    boolean isValidInputs = validateUserInputs();
-
-                    if (isValidInputs) {
-                        updateSavedUserInformation();
-                        disableUserSettingsLayout();
-                        isUpdatingUserSettings = false;
-                    }
-                }
-            }
+        myAccountButton.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, MyAccountActivity.class);
+            startActivity(intent);
         });
 
-        Button logout = view.findViewById(R.id.userlogout_btn);
+        myInterestsButton.setOnClickListener(v -> {
+            BottomSheetDialogFragment fragment = new MyInterestsFragment();
+            Bundle bundle = new Bundle();
+            getUserInterests(user);
+            bundle.putStringArrayList(MY_INTERESTS, userInterests);
+            fragment.setArguments(bundle);
+            fragment.show(activity.getSupportFragmentManager(), fragment.getTag());
+        });
 
         logout.setOnClickListener(v -> {
             LoginManager.getInstance().logOut();
@@ -110,166 +94,15 @@ public class UserProfileFragment extends Fragment {
             Intent intent = new Intent(activity, LauncherActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-
-        });
-
-        editPaymentInfoButton = view.findViewById(R.id.edit_payment_btn);
-
-        editPaymentInfoButton.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, PaymentInfoActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        });
-
-//        if (ContextCompat.checkSelfPermission(getActivity(),
-//                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-//            // REQUEST_CODE_LOCATION should be defined on your app level
-//            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CODE_LOCATION);
-//        }
-    }
-
-    /**
-     * Validates the user inputs page. Sets input errors if the inputs are invalid
-     *
-     * @return True if the inputs are valid. Otherwise false
-     */
-    private boolean validateUserInputs() {
-        boolean isValid = true;
-
-        clearInputErrors();
-
-        if (TextUtils.isEmpty(userNameInput.getText())){
-            userNameInput.setError("User name is required");
-            isValid = false;
-        }
-
-        if (! pattern.matcher(emailInput.getText()).matches()) {
-            emailInput.setError("Please enter valid email");
-            isValid = false;
-        }
-
-        if (! TextUtils.isEmpty(phoneNumberInput.getText()) && ! PhoneNumberUtils.isGlobalPhoneNumber(phoneNumberInput.getText().toString())) {
-            phoneNumberInput.setError("Please enter a valid phone number");
-            isValid = false;
-        }
-
-        return isValid;
-    }
-
-    /**
-     * Initializes the layout for a non-guest user
-     *
-     * @param user The user object
-     */
-    private void initializeAuthenticatedUserLayout(ParseUser user) {
-        updateCurrentUserInfo(user);
-
-        userNameInput = (EditText) view.findViewById(R.id.fullName);
-        emailInput = (EditText) view.findViewById(R.id.emailAddress);
-        phoneNumberInput = (EditText) view.findViewById(R.id.phoneNum);
-        cancelSettingsUpdateButton = (Button) view.findViewById(R.id.cancel_user_profile_update_button);
-
-        userNameInput.setText(currentUserName);
-        emailInput.setText(currentEmail);
-        phoneNumberInput.setText(currentPhoneNumber);
-    }
-
-    /**
-     * Initializes the layout for a guest user
-     */
-    private void initializeGuestUserLayout() {
-        LinearLayout guestUserLayout = (LinearLayout) view.findViewById(R.id.guest_user_settings);
-        guestUserLayout.setVisibility(View.VISIBLE);
-
-        LinearLayout userSettings = (LinearLayout) view.findViewById(R.id.user_settings);
-        userSettings.setVisibility(GONE);
-    }
-
-    /**
-     * Enables the edit user settings components
-     */
-    private void enableUserSettingsLayout() {
-        userNameInput.setEnabled(true);
-        phoneNumberInput.setEnabled(true);
-        emailInput.setEnabled(true);
-        updateUserSettingsButton.setText("Save Settings");
-        cancelSettingsUpdateButton.setVisibility(View.VISIBLE);
-
-        cancelSettingsUpdateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userNameInput.setText(currentUserName);
-                emailInput.setText(currentEmail);
-                phoneNumberInput.setText(currentPhoneNumber);
-                clearInputErrors();
-                disableUserSettingsLayout();
-            }
         });
     }
 
     /**
-     * Disables the edit user settings components
+     * Get user interests from the database
+     * @param user - current Parse user, if logged in
      */
-    private void disableUserSettingsLayout() {
-        userNameInput.setEnabled(false);
-        phoneNumberInput.setEnabled(false);
-        emailInput.setEnabled(false);
-        updateUserSettingsButton.setText("Update Settings");
-        cancelSettingsUpdateButton.setVisibility(INVISIBLE);
+    private void getUserInterests(ParseUser user) {
+        Object obj = user.get(MY_INTERESTS);
+        userInterests = (ArrayList<String>) obj;
     }
-
-    /**
-     * Clears the errors for the input fields
-     */
-    private void clearInputErrors() {
-        userNameInput.setError(null);
-        emailInput.setError(null);
-        phoneNumberInput.setError(null);
-    }
-
-    /**
-     * Updates the user information in the database
-     */
-    private void updateSavedUserInformation() {
-        ParseUser user = ParseUser.getCurrentUser();
-
-        user.setUsername(userNameInput.getText().toString());
-        user.setEmail(emailInput.getText().toString());
-
-        String phoneNum = ! TextUtils.isEmpty(phoneNumberInput.getText()) ? phoneNumberInput.getText().toString().trim() : "";
-        user.put(PHONE_NUM, phoneNum);
-
-        try {
-            user.saveInBackground();
-            user = user.fetch();
-            updateCurrentUserInfo(user);
-        } catch (ParseException e) {
-            Log.e("MyAccountPage", "Unable to save user info:" + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Updates the current user information displayed on the page
-     *
-     * @param user The current user
-     */
-    private void updateCurrentUserInfo(ParseUser user) {
-        currentUserName = user.getUsername();
-        currentEmail = user.getEmail();
-        Object phoneNum = user.get(PHONE_NUM);
-
-        if (phoneNum != null) {
-            currentPhoneNumber = (String) phoneNum;
-        }
-    }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == REQUEST_CODE_LOCATION && grantResults.length > 0
-//                && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-//            throw new RuntimeException("Location services are required in order to " +
-//                    "connect to a reader.");
-//        }
-//    }
 }

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/back_btn"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:src="@drawable/ic_back"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter shipping details"
+            android:textSize="20dp"
+            android:fontFamily="sans-serif-medium"
+            android:layout_centerInParent="true"
+            android:id="@+id/paymentinfo"
+            android:textColor="@color/colorPrimaryDark"/>
+
+    </RelativeLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <EditText
+            android:id="@+id/input_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:hint="User Name" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <EditText
+            android:id="@+id/input_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="Email" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <EditText
+            android:id="@+id/input_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Address" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <EditText
+            android:id="@+id/input_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="State" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <EditText
+            android:id="@+id/input_zipcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Zipcode" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/done"
+        android:text="Save"
+        android:backgroundTint="#40E0D0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>
