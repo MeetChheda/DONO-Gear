@@ -3,12 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <com.braintreepayments.cardform.view.CardForm
-        android:id="@+id/card_form"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
+        <com.braintreepayments.cardform.view.CardForm
+            android:id="@+id/card_form"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="500dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/confirm_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#2FD6D6"
+            android:layout_marginEnd="80dp"
+            android:layout_marginStart="80dp"
+            android:text="Confirm"
+            android:textColor="@android:color/white"/>
+        <Button
+            android:id="@+id/cancel_payment_update_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginStart="80dp"
+            android:text="Cancel"
+            android:visibility="visible"/>
+    </LinearLayout>
 
 
 </RelativeLayout>
