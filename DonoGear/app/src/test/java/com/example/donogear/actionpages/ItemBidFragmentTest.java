@@ -1,4 +1,4 @@
-package com.example.donogear.actionpages.productdetails;
+package com.example.donogear.actionpages;
 
 import com.example.donogear.actionpages.ItemBidFragment;
 import org.junit.Assert;
@@ -18,7 +18,7 @@ import static com.example.donogear.utils.Constants.SUBTRACT_FROM_BID;
  * Tests to validate if the bid amount is correctly updated or not. This class runs using
  * RobolectricTestRunner and mocks a method as would be actually implemented in the app.
  */
-public class ValidateBidTest {
+public class ItemBidFragmentTest {
 
     private int startBid;
     private int currentBid;

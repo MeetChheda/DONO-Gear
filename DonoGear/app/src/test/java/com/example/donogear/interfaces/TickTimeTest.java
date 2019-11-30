@@ -1,4 +1,4 @@
-package com.example.donogear.actionpages.interfaces;
+package com.example.donogear.interfaces;
 
 import com.example.donogear.interfaces.TickTime;
 

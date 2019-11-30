@@ -1,4 +1,4 @@
-package com.example.donogear.actionpages.adapters;
+package com.example.donogear.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,7 +18,7 @@ import static org.robolectric.annotation.LooperMode.Mode.PAUSED;
 
 @RunWith(RobolectricTestRunner.class)
 @LooperMode(PAUSED)
-public class GetFavourableColorTest {
+public class ItemAdapterTest {
 
     private ItemAdapter itemAdapter;
 
