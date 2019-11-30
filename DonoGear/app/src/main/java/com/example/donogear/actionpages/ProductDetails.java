@@ -1,8 +1,6 @@
 package com.example.donogear.actionpages;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -166,11 +164,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             @Override
             public void run() {
                 if (updatedDetails) {
-                    Log.e(TAG, "Displaying now");
                     displayBidDetails();
                 }
                 else {
-                    Log.e(TAG, "Waiting");
                     handler.postDelayed(this, 100);
                 }
             }
@@ -180,7 +176,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     }
 
     /**
-     * Update item
+     * Update item details which update in real time (i.e price and highestBidder)
      */
     private void getUpdatedItemDetails() {
         ParseQuery<ParseObject> collectibleQuery = ParseQuery.getQuery(COLLECTIBLES);
@@ -552,7 +548,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 Toast.makeText(getApplicationContext(), "Ok button clicked", Toast.LENGTH_SHORT).show());
     }
 
-    //TODO - Implement functionality for place bid button
     @Override
     public void onClick(View view) {
         Bundle bundle = new Bundle();
@@ -571,7 +566,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 break;
 
             case R.id.buy:
-                //TODO - button for drops
                 bundle.putString(ITEM_ID, itemId);
                 bundle.putString(ITEM_NAME, itemName);
                 bundle.putInt(BUY_NOW, itemBuyNowPrice);
@@ -585,7 +579,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     ParseUser user = ParseUser.getCurrentUser();
                     Log.d(TAG, "Current username is: " + user.getUsername() + " and highest: " + itemHighestBidder);
                     if (user.getUsername().equals(itemHighestBidder)) {
-                        Log.e(TAG, "Yep");
                         new AlertDialog.Builder(ProductDetails.this)
                                 .setTitle(ALERT_MESSAGE)
                                 .setMessage(HIGHEST_BID_MESSAGE)
@@ -601,7 +594,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     return;
                 }
                 break;
-
 
             case R.id.read_more:
                 TextView desc = findViewById(R.id.description);
@@ -647,8 +639,11 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         setItemBidText(itemBidAmount);
     }
 
+    /**
+     * Set textview for itemBidAmount
+     * @param itemBidAmount - current bid amount
+     */
     private void setItemBidText(int itemBidAmount) {
-        Log.e(TAG, "Setting text: " + itemBidAmount);
         currentBidAmount.setText("$" + itemBidAmount);
         if (itemBidAmount == 0) {
             currentBidAmount.setText(NO_CURRENT_BIDS);
