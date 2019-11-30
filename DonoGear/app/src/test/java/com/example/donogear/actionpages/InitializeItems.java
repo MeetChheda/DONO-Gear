@@ -43,6 +43,7 @@ public class InitializeItems {
         startBid = 2000; buyItNowPrice = 0;
         category = "auction"; endDate = new Date();
         listOfImages = null;
+        isTrending = true;
         addToList();
 
         id = "02";

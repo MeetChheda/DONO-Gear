@@ -1,58 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/AppTheme"
     android:fitsSystemWindows="true">
 
-    <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/backbtn"
-        android:layout_margin="10dp"
-        android:background="@null"
-        android:src="@drawable/ic_back"/>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
+        android:layout_marginBottom="100dp"
+        android:orientation="vertical"
+        android:id="@+id/linear_profile">
 
         <Button
             android:id="@+id/myaccount_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="250dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="20dp"
-            android:background="#2FD6D6"
-            android:paddingStart="50dp"
-            android:paddingLeft="10dp"
-            android:paddingEnd="50dp"
-            android:paddingRight="10dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginHorizontal="50dp"
+            android:background="@color/colorPrimaryDark"
+            android:paddingHorizontal="50dp"
+            android:paddingVertical="10dp"
             android:text="My Account"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/myinterests_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginHorizontal="50dp"
+            android:layout_below="@id/myaccount_btn"
+            android:background="@color/colorPrimaryDark"
+            android:paddingHorizontal="50dp"
+            android:paddingVertical="10dp"
+            android:text="My Interests"
             android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/userlogout_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="20dp"
-            android:background="#2FD6D6"
-            android:paddingStart="50dp"
-            android:paddingLeft="10dp"
-            android:paddingEnd="50dp"
-            android:paddingRight="10dp"
+            android:background="@color/colorPrimaryDark"
+            android:paddingHorizontal="50dp"
+            android:paddingVertical="10dp"
             android:text="Logout"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            android:layout_marginHorizontal="50dp"
             android:textColor="@android:color/white" />
-    </LinearLayout>
+    </RelativeLayout>
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_snackbar"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp">
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/item_bid_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/bottom_sheet_behavior" />
 
 </RelativeLayout>

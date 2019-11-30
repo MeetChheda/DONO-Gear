@@ -26,22 +26,31 @@ import java.util.List;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TIME_UP;
 
+/**
+ * Adapter for setting Trending Items
+ */
 public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<ItemDetails> itemDetailsList;
+    private List<ItemDetails> trendingItemsList;
     private ItemClickListener itemClickListener;
     // Get the type for onItemClickListener
     private String type;
 
-    public TrendingAdapter(){}
+    public TrendingAdapter(){
+        //default constructor
+    }
     public TrendingAdapter(Context context, List<ItemDetails> list) {
         mContext = context;
-        itemDetailsList = list;
+        trendingItemsList = list;
     }
 
+    /**
+     * Set trending items list
+     * @param newList - if list is updated, set new list of all trending items
+     */
     public void setItemList(List<ItemDetails> newList) {
-        itemDetailsList = newList;
+        trendingItemsList = newList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,7 +80,7 @@ public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder itemHolder, final int i) {
-        ItemDetails curItem = itemDetailsList.get(i);
+        ItemDetails curItem = trendingItemsList.get(i);
         int textColor = Color.BLACK;
         int timeColor = Color.BLACK;
         if (curItem.listOfImages != null && curItem.listOfImages.size() > 0) {
@@ -152,7 +161,7 @@ public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return itemDetailsList.size();
+        return trendingItemsList.size();
     }
 
     public void setClickListener(ItemClickListener itemClickListener, String type) {

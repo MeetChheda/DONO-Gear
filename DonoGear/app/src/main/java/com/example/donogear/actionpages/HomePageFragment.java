@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.donogear.R;
 import com.example.donogear.interfaces.ItemClickListener;
@@ -22,10 +23,16 @@ import com.example.donogear.models.ItemDetails;
 import com.example.donogear.utils.AnnouncementAdapter;
 import com.example.donogear.utils.MyInterestsItemAdapter;
 import com.example.donogear.utils.TrendingAdapter;
+import com.parse.Parse;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static com.example.donogear.utils.Constants.LOGIN_ERROR;
 import static com.example.donogear.utils.Constants.MY_INTERESTS;
 import static com.example.donogear.utils.Constants.TRENDING;
 
@@ -54,7 +61,6 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
     public HomePageFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +93,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
      * Initializing layout and setting adapters of trending items, announcements and myInterests item
      */
     private void initializeLayout() {
+
         trendingText = view.findViewById(R.id.trending_text);
         trendingRecyclerView = view.findViewById(R.id.card_view_trending_recycler_list);
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getContext(),
@@ -128,9 +135,12 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         LinearLayoutManager horizontalInterestsLayoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
         myInterestsRecyclerView.setLayoutManager(horizontalInterestsLayoutManager);
-        myInterestsItemList = new ArrayList<>();
-        myInterestsItemAdapter = new MyInterestsItemAdapter(activity, activity.listOfItems);
-        myInterestsItemList = activity.listOfItems;
+        ParseUser user = ParseUser.getCurrentUser();
+        List<String> selectedTags = getUserInterests(user);
+        System.out.println(selectedTags);
+        myInterestsItemList = filterItemsBySelectedTags(selectedTags, activity.superCopyList);
+        myInterestsItemAdapter = new MyInterestsItemAdapter(activity, myInterestsItemList);
+//        myInterestsItemList = activity.listOfItems;
         if (myInterestsItemList.size() > 0) {
             myInterestsText.setVisibility(View.VISIBLE);
         }
@@ -143,6 +153,41 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         myInterestsItemAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Get all interests for a user
+     * @param user - current user
+     * @return - list of interests for a user
+     */
+    private List<String> getUserInterests(ParseUser user) {
+        if (user == null) {
+            return new ArrayList<String>();
+        }
+        Object obj = user.get(MY_INTERESTS);
+        return (ArrayList<String>) obj;
+    }
+
+
+    /**
+     * filtering items based on interests
+     * @param selectedTags - tags or interests of the user
+     * @param items - list of all items
+     * @return - filtered items based on interests
+     */
+    public List<ItemDetails> filterItemsBySelectedTags(List<String> selectedTags, List<ItemDetails> items) {
+
+        HashSet<String> selectedItemsId = new HashSet<>();
+        for (String str: selectedTags) {
+            if (activity.tagsToItems.containsKey(str)) {
+                selectedItemsId.addAll(activity.tagsToItems.get(str));
+            }
+        }
+        if (selectedTags.size() == 0 ) {
+            return new ArrayList<ItemDetails>();
+        }
+        return items.stream()
+                .filter(item -> selectedItemsId.contains(item.id))
+                .collect(Collectors.toList());
+    }
 
     /**
      * Filter item list and set trending item list

@@ -26,6 +26,9 @@ import java.util.List;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TIME_UP;
 
+/**
+ * Adapter for setting User Interests Item
+ */
 public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItemAdapter.ViewHolder> {
 
     private Context mContext;
@@ -34,12 +37,18 @@ public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItem
     // Get the type for onItemClickListener
     private String type;
 
-    public MyInterestsItemAdapter(){}
+    public MyInterestsItemAdapter(){
+        // default constructor
+    }
     public MyInterestsItemAdapter(Context context, List<ItemDetails> list) {
         mContext = context;
         itemDetailsList = list;
     }
 
+    /**
+     * Set user interests list
+     * @param newList - if list is updated, set new list of all user interests
+     */
     public void setItemList(List<ItemDetails> newList) {
         itemDetailsList = newList;
     }

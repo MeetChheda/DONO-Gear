@@ -16,5 +16,10 @@
     <string name="twitter_consumer_secret">5rees94ygtumdHz7EwfcnIZCYG1XlihBFoQrsc4geCLSJi9pAH</string>
 
     <string name="guest_user_account_message">Create a DONO Gear account to access account information</string>
+
+    <string name="youtube_API">AIzaSyCVWUJGZKAliR2yKIVgT5idQvQAWdMWT40</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
 
