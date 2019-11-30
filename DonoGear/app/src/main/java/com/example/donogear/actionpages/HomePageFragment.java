@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.donogear.R;
 import com.example.donogear.interfaces.ItemClickListener;
@@ -23,16 +22,13 @@ import com.example.donogear.models.ItemDetails;
 import com.example.donogear.utils.AnnouncementAdapter;
 import com.example.donogear.utils.MyInterestsItemAdapter;
 import com.example.donogear.utils.TrendingAdapter;
-import com.parse.Parse;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.example.donogear.utils.Constants.LOGIN_ERROR;
 import static com.example.donogear.utils.Constants.MY_INTERESTS;
 import static com.example.donogear.utils.Constants.TRENDING;
 
@@ -140,7 +136,6 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
         System.out.println(selectedTags);
         myInterestsItemList = filterItemsBySelectedTags(selectedTags, activity.superCopyList);
         myInterestsItemAdapter = new MyInterestsItemAdapter(activity, myInterestsItemList);
-//        myInterestsItemList = activity.listOfItems;
         if (myInterestsItemList.size() > 0) {
             myInterestsText.setVisibility(View.VISIBLE);
         }
@@ -182,7 +177,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
             }
         }
         if (selectedTags.size() == 0 ) {
-            return new ArrayList<ItemDetails>();
+            return new ArrayList<>();
         }
         return items.stream()
                 .filter(item -> selectedItemsId.contains(item.id))

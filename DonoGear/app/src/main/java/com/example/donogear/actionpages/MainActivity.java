@@ -81,13 +81,9 @@ public class MainActivity extends AppCompatActivity implements
     public boolean hasAllData;
     public boolean hasAllImages;
     private ProgressBar bar;
-    public List<String> userInterests;
 
     private List<String> selectedCauses;
     private List<String> selectedTopics;
-
-
-    //TODO - Mapping for better storing and querying of list of items
 
 
     @Override
