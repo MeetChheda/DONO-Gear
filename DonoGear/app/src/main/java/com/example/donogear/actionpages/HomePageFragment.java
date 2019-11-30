@@ -20,8 +20,8 @@ import com.example.donogear.interfaces.ItemClickListener;
 import com.example.donogear.models.AnnouncementDetails;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.utils.AnnouncementAdapter;
-import com.example.donogear.utils.ItemAdapter;
 import com.example.donogear.utils.MyInterestsItemAdapter;
+import com.example.donogear.utils.TrendingAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
     private RecyclerView myInterestsRecyclerView;
     private List<AnnouncementDetails> listOfAnnouncements;
     private AnnouncementAdapter announcementAdapter;
-    private ItemAdapter trendingItemAdapter;
+    private TrendingAdapter trendingItemAdapter;
     private MyInterestsItemAdapter myInterestsItemAdapter;
     private List<ItemDetails> trendingItemList;
     private List<ItemDetails> myInterestsItemList;
@@ -93,9 +93,8 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
                 LinearLayoutManager.HORIZONTAL, false);
         trendingRecyclerView.setLayoutManager(horizontalLayoutManager);
         trendingItemList = new ArrayList<>();
-        trendingItemAdapter = activity.itemAdapter;
         trendingItemList = displayTrendingItems(activity.copyList);
-        System.out.println(activity.copyList);
+        trendingItemAdapter = new TrendingAdapter(activity, trendingItemList);
         if (trendingItemList.size() == 0) {
             trendingText.setVisibility(View.GONE);
         } else {

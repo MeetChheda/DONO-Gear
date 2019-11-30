@@ -29,6 +29,7 @@ public class InitializeItems {
     private Date endDate;
     private int costPerEntry;
     private List<File> listOfImages;
+    private boolean isTrending;
 
     private List<ItemDetails> itemDetailsList;
 
@@ -77,7 +78,7 @@ public class InitializeItems {
 
     private void addToList() {
         ItemDetails item = new ItemDetails(id, itemName, itemDescription, startBid, buyItNowPrice,
-                currentPrice, highestBidder, category, endDate, costPerEntry, listOfImages);
+                currentPrice, highestBidder, category, endDate, costPerEntry, listOfImages, isTrending);
         itemDetailsList.add(item);
     }
 

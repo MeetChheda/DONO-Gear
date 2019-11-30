@@ -1,7 +1,11 @@
 package com.example.donogear.actionpages;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,7 +36,14 @@ import com.example.donogear.interfaces.TickTime;
 import com.example.donogear.interfaces.onSavePressed;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
+import com.example.donogear.utils.YoutubeClass;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -48,6 +59,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
@@ -83,6 +96,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private boolean hasVideos, hasProceeds;
     private LinearLayout raffle_buttons;
     private RelativeLayout full_layout;
+    private ProductDetails mainActivity;
     private Button raffle;
     private Button auction;
     private Button drop;
@@ -90,7 +104,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private TextView startBidAmount;
     private TextView currentBidAmount;
     private ParseLiveQueryClient liveQueryClient;
-
+    private YoutubeClass youtubeClass;
+    private FragmentActivity mContext;
+    private FragmentManager manager;
     private BottomSheetDialogFragment dialogFragment;
 
     @Override
@@ -119,7 +135,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     displayVideo(itemVideosUrl, itemVideosLayout);
                 }
                 else {
-//                    System.out.println("Video? : " + hasVideos);
                     handler.postDelayed(this, 1000);
                 }
             }
@@ -141,6 +156,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
         checkForRealTimeUpdate();
     }
+
 
     /**
      * Updates the bid amount in real time by subscribing to the database and waiting for a change
@@ -237,7 +253,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         readButton.setOnClickListener(this);
         hasProceeds = false;
         hasVideos = false;
-
+        mContext = new FragmentActivity();
+        manager = mContext.getSupportFragmentManager();
         try {
             liveQueryClient = ParseLiveQueryClient.Factory.getClient(
                     new URI(getString(R.string.back4app_live_server))
@@ -247,6 +264,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         }
     }
 
+
     /**
      * Displays the video snippet
      * TODO - Working code for snippet / better UI to show video display button
@@ -254,6 +272,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private void displayVideo(List<String> videoList, LinearLayout videoContainer) {
         if (videoList == null || videoList.size() == 0)
             return;
+
         for (int i = 0; i < videoList.size(); i += 3) {
             LinearLayout newLayout = new LinearLayout(getBaseContext());
             newLayout.setOrientation(LinearLayout.HORIZONTAL);

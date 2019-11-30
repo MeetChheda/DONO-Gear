@@ -26,7 +26,7 @@ import java.util.List;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TIME_UP;
 
-public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItemAdapter.ViewHolder> {
+public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHolder> {
 
     private Context mContext;
     private List<ItemDetails> itemDetailsList;
@@ -34,8 +34,8 @@ public class MyInterestsItemAdapter extends RecyclerView.Adapter<MyInterestsItem
     // Get the type for onItemClickListener
     private String type;
 
-    public MyInterestsItemAdapter(){}
-    public MyInterestsItemAdapter(Context context, List<ItemDetails> list) {
+    public TrendingAdapter(){}
+    public TrendingAdapter(Context context, List<ItemDetails> list) {
         mContext = context;
         itemDetailsList = list;
     }

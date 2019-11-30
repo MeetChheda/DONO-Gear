@@ -183,6 +183,7 @@
                         android:id="@+id/videoButtons"
                         android:layout_below="@id/bidLayout"/>
 
+
                     <VideoView
                         android:id="@+id/videoView"
                         android:layout_width="350dp"
@@ -204,7 +205,7 @@
                         android:id="@+id/proceedsDummy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/videoView"
+                        android:layout_below="@+id/videoButtons"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/time_outline"
                         android:textColor="#000"
