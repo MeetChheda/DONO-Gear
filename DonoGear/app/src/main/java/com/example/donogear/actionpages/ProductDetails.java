@@ -82,6 +82,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private static final String TAG = "ProductDetails";
     private String itemId, itemName, itemDescription, itemHighestBidder, category;
     private int itemBidAmount, startBid, costPerEntry, itemBuyNowPrice;
+    private boolean updatedDetails;
     private Date itemTime;
     private List<File> itemImages;
     private List<String> itemVideosUrl;
@@ -92,7 +93,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private boolean hasVideos, hasProceeds;
     private LinearLayout raffle_buttons;
     private RelativeLayout full_layout;
-    private ProductDetails mainActivity;
     private Button raffle;
     private Button auction;
     private Button drop;
@@ -110,6 +110,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         initData();
         RelativeLayout fullLayout = findViewById(R.id.full_item);
         fullLayout.setVisibility(GONE);
+        getUpdatedItemDetails();
         itemVideosUrl = getItemVideos();
         getItemProceedsDetails();
         LinearLayout horizontalScrollViewContainer = findViewById(R.id.inner_layout);
@@ -160,7 +161,37 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             }
         };
         handler.post(proceedsRunnable);
+
+        Runnable updatedRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (updatedDetails) {
+                    Log.e(TAG, "Displaying now");
+                    displayBidDetails();
+                }
+                else {
+                    Log.e(TAG, "Waiting");
+                    handler.postDelayed(this, 100);
+                }
+            }
+        };
+        handler.post(updatedRunnable);
         checkForRealTimeUpdate();
+    }
+
+    /**
+     * Update item
+     */
+    private void getUpdatedItemDetails() {
+        ParseQuery<ParseObject> collectibleQuery = ParseQuery.getQuery(COLLECTIBLES);
+        collectibleQuery.whereEqualTo("objectId", itemId);
+        collectibleQuery.getFirstInBackground((item, e) -> {
+            if (e == null) {
+                itemBidAmount = item.getInt("currentBid");
+                itemHighestBidder = item.getString("highestBidder");
+            }
+            updatedDetails = true;
+        });
     }
 
 
@@ -176,7 +207,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         subscriptionHandling.handleEvents((query, event, object) -> {
             itemBidAmount = object.getInt("currentBid");
             itemHighestBidder = object.getString("highestBidder");
-            runOnUiThread(() -> currentBidAmount.setText("$" + itemBidAmount));
+            runOnUiThread(() ->setItemBidText(itemBidAmount));
         });
     }
 
@@ -265,6 +296,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         readButton.setOnClickListener(this);
         hasProceeds = false;
         hasVideos = false;
+        updatedDetails = false;
         try {
             liveQueryClient = ParseLiveQueryClient.Factory.getClient(
                     new URI(getString(R.string.back4app_live_server))
@@ -326,10 +358,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private void displayBidDetails() {
         findViewById(R.id.bidLayout).setVisibility(View.VISIBLE);
         startBidAmount.setText("$" + startBid);
-        currentBidAmount.setText("$" + itemBidAmount);
-        if (itemBidAmount == 0) {
-            currentBidAmount.setText(NO_CURRENT_BIDS);
-        }
+        setItemBidText(itemBidAmount);
     }
 
     /**
@@ -615,8 +644,14 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         RealTimeUpdate.writeNewBid(itemId, newBidAmount, ParseUser.getCurrentUser());
 
         itemBidAmount = newBidAmount;
-        if (itemBidAmount > 0) {
-            currentBidAmount.setText("$" + newBidAmount);
+        setItemBidText(itemBidAmount);
+    }
+
+    private void setItemBidText(int itemBidAmount) {
+        Log.e(TAG, "Setting text: " + itemBidAmount);
+        currentBidAmount.setText("$" + itemBidAmount);
+        if (itemBidAmount == 0) {
+            currentBidAmount.setText(NO_CURRENT_BIDS);
         }
     }
 }
