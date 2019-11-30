@@ -45,7 +45,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
     private List<String> searchArray;
     private List<ItemDetails> listOfItems, copyList;
     private ItemAdapter itemAdapter;
-    private FloatingActionButton filterButton;
+    private ImageView filterButton;
     private AutoCompleteTextView actv;
     static BottomSheetDialogFragment fragment;
     private Button cross;

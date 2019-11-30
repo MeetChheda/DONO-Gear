@@ -1,6 +1,8 @@
 package com.example.donogear.actionpages;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -33,6 +35,7 @@ import com.example.donogear.interfaces.onSavePressed;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -48,6 +51,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
@@ -88,6 +92,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private boolean hasVideos, hasProceeds;
     private LinearLayout raffle_buttons;
     private RelativeLayout full_layout;
+    private ProductDetails mainActivity;
     private Button raffle;
     private Button auction;
     private Button drop;
@@ -95,7 +100,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private TextView startBidAmount;
     private TextView currentBidAmount;
     private ParseLiveQueryClient liveQueryClient;
-
     private BottomSheetDialogFragment dialogFragment;
 
     @Override
@@ -158,6 +162,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         handler.post(proceedsRunnable);
         checkForRealTimeUpdate();
     }
+
 
     /**
      * Updates the bid amount in real time by subscribing to the database and waiting for a change
@@ -260,7 +265,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         readButton.setOnClickListener(this);
         hasProceeds = false;
         hasVideos = false;
-
         try {
             liveQueryClient = ParseLiveQueryClient.Factory.getClient(
                     new URI(getString(R.string.back4app_live_server))
@@ -269,6 +273,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             e.printStackTrace();
         }
     }
+
 
     /**
      * Displays the video snippet
