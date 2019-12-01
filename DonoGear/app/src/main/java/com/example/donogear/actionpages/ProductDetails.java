@@ -33,6 +33,7 @@ import com.example.donogear.interfaces.onSavePressed;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -48,6 +49,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
@@ -78,6 +80,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private static final String TAG = "ProductDetails";
     private String itemId, itemName, itemDescription, itemHighestBidder, category;
     private int itemBidAmount, startBid, costPerEntry, itemBuyNowPrice;
+    private boolean updatedDetails;
     private Date itemTime;
     private List<File> itemImages;
     private List<String> itemVideosUrl;
@@ -95,7 +98,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private TextView startBidAmount;
     private TextView currentBidAmount;
     private ParseLiveQueryClient liveQueryClient;
-
     private BottomSheetDialogFragment dialogFragment;
 
     @Override
@@ -106,6 +108,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         initData();
         RelativeLayout fullLayout = findViewById(R.id.full_item);
         fullLayout.setVisibility(GONE);
+        getUpdatedItemDetails();
         itemVideosUrl = getItemVideos();
         getItemProceedsDetails();
         LinearLayout horizontalScrollViewContainer = findViewById(R.id.inner_layout);
@@ -156,8 +159,37 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             }
         };
         handler.post(proceedsRunnable);
+
+        Runnable updatedRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (updatedDetails) {
+                    displayBidDetails();
+                }
+                else {
+                    handler.postDelayed(this, 100);
+                }
+            }
+        };
+        handler.post(updatedRunnable);
         checkForRealTimeUpdate();
     }
+
+    /**
+     * Update item details which update in real time (i.e price and highestBidder)
+     */
+    private void getUpdatedItemDetails() {
+        ParseQuery<ParseObject> collectibleQuery = ParseQuery.getQuery(COLLECTIBLES);
+        collectibleQuery.whereEqualTo("objectId", itemId);
+        collectibleQuery.getFirstInBackground((item, e) -> {
+            if (e == null) {
+                itemBidAmount = item.getInt("currentBid");
+                itemHighestBidder = item.getString("highestBidder");
+            }
+            updatedDetails = true;
+        });
+    }
+
 
     /**
      * Updates the bid amount in real time by subscribing to the database and waiting for a change
@@ -171,7 +203,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         subscriptionHandling.handleEvents((query, event, object) -> {
             itemBidAmount = object.getInt("currentBid");
             itemHighestBidder = object.getString("highestBidder");
-            runOnUiThread(() -> currentBidAmount.setText("$" + itemBidAmount));
+            runOnUiThread(() ->setItemBidText(itemBidAmount));
         });
     }
 
@@ -260,7 +292,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         readButton.setOnClickListener(this);
         hasProceeds = false;
         hasVideos = false;
-
+        updatedDetails = false;
         try {
             liveQueryClient = ParseLiveQueryClient.Factory.getClient(
                     new URI(getString(R.string.back4app_live_server))
@@ -269,6 +301,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             e.printStackTrace();
         }
     }
+
 
     /**
      * Displays the video snippet
@@ -321,10 +354,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private void displayBidDetails() {
         findViewById(R.id.bidLayout).setVisibility(View.VISIBLE);
         startBidAmount.setText("$" + startBid);
-        currentBidAmount.setText("$" + itemBidAmount);
-        if (itemBidAmount == 0) {
-            currentBidAmount.setText(NO_CURRENT_BIDS);
-        }
+        setItemBidText(itemBidAmount);
     }
 
     /**
@@ -518,7 +548,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 Toast.makeText(getApplicationContext(), "Ok button clicked", Toast.LENGTH_SHORT).show());
     }
 
-    //TODO - Implement functionality for place bid button
     @Override
     public void onClick(View view) {
         Bundle bundle = new Bundle();
@@ -537,7 +566,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                 break;
 
             case R.id.buy:
-                //TODO - button for drops
                 bundle.putString(ITEM_ID, itemId);
                 bundle.putString(ITEM_NAME, itemName);
                 bundle.putInt(BUY_NOW, itemBuyNowPrice);
@@ -551,7 +579,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     ParseUser user = ParseUser.getCurrentUser();
                     Log.d(TAG, "Current username is: " + user.getUsername() + " and highest: " + itemHighestBidder);
                     if (user.getUsername().equals(itemHighestBidder)) {
-                        Log.e(TAG, "Yep");
                         new AlertDialog.Builder(ProductDetails.this)
                                 .setTitle(ALERT_MESSAGE)
                                 .setMessage(HIGHEST_BID_MESSAGE)
@@ -567,7 +594,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     return;
                 }
                 break;
-
 
             case R.id.read_more:
                 TextView desc = findViewById(R.id.description);
@@ -610,8 +636,17 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         RealTimeUpdate.writeNewBid(itemId, newBidAmount, ParseUser.getCurrentUser());
 
         itemBidAmount = newBidAmount;
-        if (itemBidAmount > 0) {
-            currentBidAmount.setText("$" + newBidAmount);
+        setItemBidText(itemBidAmount);
+    }
+
+    /**
+     * Set textview for itemBidAmount
+     * @param itemBidAmount - current bid amount
+     */
+    private void setItemBidText(int itemBidAmount) {
+        currentBidAmount.setText("$" + itemBidAmount);
+        if (itemBidAmount == 0) {
+            currentBidAmount.setText(NO_CURRENT_BIDS);
         }
     }
 }

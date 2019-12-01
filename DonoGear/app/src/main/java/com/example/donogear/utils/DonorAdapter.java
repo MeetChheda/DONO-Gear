@@ -37,8 +37,8 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.ViewHolder>{
     }
 
     /**
-     * Set cause list
-     * @param newList - if list is updated, set new list of all causes
+     * Set donor list
+     * @param newList - if list is updated, set new list of all donors
      */
     public void setDonorList(List<DonorDetails> newList) {
         donorDetailsList = newList;

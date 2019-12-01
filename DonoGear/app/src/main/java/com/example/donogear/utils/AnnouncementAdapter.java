@@ -82,7 +82,7 @@ public class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapte
         announcementHolder.announcementDescription.setText(announcementDescription);
 
         announcementHolder.announcementTitle.setTextColor(textColor);
-        announcementHolder.announcementDescription.setTextColor(textColor);
+//        announcementHolder.announcementDescription.setTextColor(textColor);
     }
 
     /**

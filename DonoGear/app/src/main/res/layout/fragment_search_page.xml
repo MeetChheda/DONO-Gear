@@ -16,12 +16,21 @@
     <ImageView
         android:id="@+id/search_img"
         android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:layout_marginRight="10dp"
-        android:src="@mipmap/search_icon"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:src="@mipmap/ic_search"
         android:contentDescription="Search button"
         android:layout_marginTop="15dp" />
 
+    <ImageView
+        android:id="@+id/filter_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp"
+        android:src="@mipmap/ic_filter"
+        android:layout_alignParentRight="true"
+        android:contentDescription="Filter button"
+        android:layout_marginTop="15dp" />
     <TextView
         android:id="@+id/no_records"
         android:layout_width="match_parent"
@@ -76,18 +85,18 @@
             </RelativeLayout>
         </ScrollView>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/filter_button"
-            android:layout_width="70dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="75dp"
-            android:backgroundTint="#fff"
-            android:padding="10dp"
-            android:src="@drawable/ic_filter">
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/filter_button"-->
+<!--            android:layout_width="70dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginEnd="25dp"-->
+<!--            android:layout_marginBottom="75dp"-->
+<!--            android:backgroundTint="#fff"-->
+<!--            android:padding="10dp"-->
+<!--            android:src="@drawable/ic_filter">-->
 
-        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+<!--        </com.google.android.material.floatingactionbutton.FloatingActionButton>-->
     </RelativeLayout>
 </RelativeLayout>
