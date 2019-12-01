@@ -18,6 +18,7 @@ import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.stripe.exception.StripeException;
+import com.stripe.model.CardCollection;
 import com.stripe.model.Customer;
 
 import java.util.HashMap;
@@ -240,7 +241,7 @@ public class MyAccountActivity extends AppCompatActivity {
         String customerId = (String) user.get(CUSTOMER_ID);
 
         if (customerId != null) {
-            intializePaymentInfo(customerId);
+            initializePaymentInfo(customerId);
         } else {
             LinearLayout paymentDetails = findViewById(R.id.existing_payment_layout);
             paymentDetails.setVisibility(View.INVISIBLE);
@@ -252,7 +253,7 @@ public class MyAccountActivity extends AppCompatActivity {
      * layout is invisible
      * @param customerId The customer ID
      */
-    private void intializePaymentInfo(String customerId) {
+    private void initializePaymentInfo(String customerId) {
         LinearLayout paymentDetails = findViewById(R.id.existing_payment_layout);
 
         Map<String, Object> params = new HashMap<>();

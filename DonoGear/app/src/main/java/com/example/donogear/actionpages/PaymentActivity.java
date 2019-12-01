@@ -161,7 +161,6 @@ public class PaymentActivity extends AppCompatActivity {
             Toast.makeText(this, "Enter valid details", Toast.LENGTH_SHORT).show();
             return;
         }
-        Log.d(TAG, params.toString());
         boolean validation = card.validateCard();
         if(validation) {
             startProgress("Validating Credit Card");
