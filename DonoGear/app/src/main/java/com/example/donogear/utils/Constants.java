@@ -69,4 +69,5 @@ public class Constants {
     public static final String INCOMPLETE_DETAILS = "Please review your order details again. " +
             "Some of them might be missing / invalid\n";
     public static final String CARD_TOKEN = "cardToken";
+    public static final String CUSTOMER_ID = "customerId";
 }

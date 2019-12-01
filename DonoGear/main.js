@@ -67,4 +67,19 @@ Parse.Cloud.define("saveCreditCard", async (request) => {
       return customerId;
 });
 
+Parse.Cloud.define("getCreditCard", async (request) => {
+      let paymentMethods = await Stripe.paymentMethods.list({
+            customer: request.params.customerId, type: 'card', limit: "1"
+      });
+
+      let paymentMethod = paymentMethods.data[0];
+      let card = null;
+
+      if (paymentMethod) {
+           card = paymentMethod.card;
+      }
+
+      return card;
+});
+
 

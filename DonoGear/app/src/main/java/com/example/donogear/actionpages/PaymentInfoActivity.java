@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.donogear.utils.Constants.CARD_TOKEN;
+import static com.example.donogear.utils.Constants.CUSTOMER_ID;
 import static com.example.donogear.utils.Constants.PUBLISHABLE_KEY;
 
 public class PaymentInfoActivity extends AppCompatActivity {
-    private static final String CUSTOMER_ID = "customerId";
     private static final String NAME = "name";
     private static final String SAVE_CREDIT_CARD_SERVICE_NAME = "saveCreditCard";
 
@@ -44,6 +44,8 @@ public class PaymentInfoActivity extends AppCompatActivity {
         Button saveBtn = findViewById(R.id.save_payment_btn);
         saveBtn.setOnClickListener(v -> {
             if (cardMultilineWidget.getCard() != null && cardMultilineWidget.getCard().validateCard()) {
+                startProgress();
+
                 new Stripe(this, PUBLISHABLE_KEY).createToken(
                         cardMultilineWidget.getCard(),
                         new ApiResultCallback<Token>() {
