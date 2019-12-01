@@ -28,6 +28,7 @@ import static com.example.donogear.utils.Constants.BUY_NOW;
 import static com.example.donogear.utils.Constants.CARD_TOKEN;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ERROR_SHIP;
+import static com.example.donogear.utils.Constants.INCOMPLETE_DETAILS;
 import static com.example.donogear.utils.Constants.INVALID_CARD_CVC;
 import static com.example.donogear.utils.Constants.INVALID_CARD_DETAILS;
 import static com.example.donogear.utils.Constants.INVALID_CARD_EXP;
@@ -39,7 +40,6 @@ import static com.example.donogear.utils.Constants.RAFFLE_COUNT;
 
 public class PaymentActivity extends AppCompatActivity {
 
-    private static final String TAG = "PaymentActivity";
     private static String itemName;
     private static String itemId;
     private static int raffle_count;
@@ -147,11 +147,11 @@ public class PaymentActivity extends AppCompatActivity {
      */
     private void buy() {
         if (!validShippingDetails()) {
-            String missingItems = String.join(", ", missingKeys).trim();
-            missingItems = "\nThe missing field(s) is / are: " + missingItems;
+            String missingItems = String.join("\n", missingKeys).trim();
+            missingItems = "The missing field(s) is / are:\n" + missingItems;
             new AlertDialog.Builder(this)
                     .setTitle(ERROR_SHIP)
-                    .setMessage(ERROR_BID_MESSAGE + missingItems)
+                    .setMessage(INCOMPLETE_DETAILS + missingItems)
                     .setNegativeButton("OK", null)
                     .show();
             return;
