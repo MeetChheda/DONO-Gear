@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.example.donogear.actionpages.MainActivity;
 import com.example.donogear.R;
 import com.parse.ParseUser;
+import com.stripe.Stripe;
 
 public class LauncherActivity extends AppCompatActivity {
 

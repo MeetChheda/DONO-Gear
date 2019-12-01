@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".utils.App"
@@ -15,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".actionpages.ShippingDetailsActivity"></activity>
+        <activity android:name=".actionpages.PaymentInfoActivity"/>
+        <activity android:name=".actionpages.ShippingDetailsActivity"/>
         <activity android:name=".actionpages.PaymentActivity" />
         <activity android:name=".actionpages.MyAccountActivity" />
         <activity android:name=".actionpages.ProductDetails" />

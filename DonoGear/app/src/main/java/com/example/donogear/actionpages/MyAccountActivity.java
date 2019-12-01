@@ -1,5 +1,6 @@
 package com.example.donogear.actionpages;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -13,13 +14,20 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.donogear.R;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static com.example.donogear.utils.Constants.CUSTOMER_ID;
 import static com.example.donogear.utils.Constants.EMAIL_PATTERN;
 import static com.example.donogear.utils.Constants.SAVE_USER_DETAILS;
 import static com.example.donogear.utils.Constants.UPDATE_USER_DETAILS;
@@ -28,11 +36,16 @@ import static com.example.donogear.utils.Constants.UPDATE_USER_DETAILS;
  * Maintains my account page
  */
 public class MyAccountActivity extends AppCompatActivity {
-
+    private static final String GET_CREDIT_CARD_SERVICE_NAME = "getCreditCard";
     private static final String PHONE_NUM = "phoneNumber";
+    private static final String EXP_DATE_FORMAT = "%s/%s";
+    private static final String CARD_NUMBER_FORMAT = "XXXX-XXXX-XXXX-%s";
+
     private String currentUserName;
     private String currentEmail;
     private String currentPhoneNumber;
+    private String currentLast4Digits;
+    private String currentExpDate;
     private EditText userNameInput;
     private EditText emailInput;
     private EditText phoneNumberInput;
@@ -40,6 +53,7 @@ public class MyAccountActivity extends AppCompatActivity {
     private Button cancelSettingsUpdateButton;
     private TextView guestUserMessage;
     private boolean isUpdatingUserSettings = false;
+    private Button editPaymentInfoButton;
     private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 
     @Override
@@ -49,6 +63,7 @@ public class MyAccountActivity extends AppCompatActivity {
 
         updateUserSettingsButton = findViewById(R.id.update_settings_button);
         initializeLayout();
+
 
         updateUserSettingsButton.setOnClickListener(v -> {
 
@@ -71,7 +86,6 @@ public class MyAccountActivity extends AppCompatActivity {
      */
     private void initializeLayout() {
         ParseUser user = ParseUser.getCurrentUser();
-
         if (user != null) {
             initializeAuthenticatedUserLayout(user);
         } else {
@@ -87,7 +101,6 @@ public class MyAccountActivity extends AppCompatActivity {
      */
     private boolean validateUserInputs() {
         boolean isValid = true;
-
         clearInputErrors();
 
         if (TextUtils.isEmpty(userNameInput.getText())){
@@ -105,7 +118,6 @@ public class MyAccountActivity extends AppCompatActivity {
             phoneNumberInput.setError("Please enter a valid phone number");
             isValid = false;
         }
-
         return isValid;
     }
 
@@ -124,6 +136,13 @@ public class MyAccountActivity extends AppCompatActivity {
         userNameInput.setText(currentUserName);
         emailInput.setText(currentEmail);
         phoneNumberInput.setText(currentPhoneNumber);
+
+        editPaymentInfoButton = findViewById(R.id.edit_payment_btn);
+
+        editPaymentInfoButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, PaymentInfoActivity.class);
+            startActivity(intent);
+        });
     }
 
     /**
@@ -131,10 +150,16 @@ public class MyAccountActivity extends AppCompatActivity {
      */
     private void initializeGuestUserLayout() {
         guestUserMessage = findViewById(R.id.guest_user_message);
-        guestUserMessage.setVisibility(View.VISIBLE);
+        guestUserMessage.setVisibility(VISIBLE);
 
         LinearLayout userSettings = findViewById(R.id.user_settings);
         userSettings.setVisibility(GONE);
+
+        LinearLayout editPaymentLayout = findViewById(R.id.edit_payment_layout);
+        editPaymentLayout.setVisibility(GONE);
+
+        LinearLayout paymentDetails = findViewById(R.id.existing_payment_layout);
+        paymentDetails.setVisibility(GONE);
     }
 
     /**
@@ -145,7 +170,8 @@ public class MyAccountActivity extends AppCompatActivity {
         phoneNumberInput.setEnabled(true);
         emailInput.setEnabled(true);
         updateUserSettingsButton.setText(SAVE_USER_DETAILS);
-        cancelSettingsUpdateButton.setVisibility(View.VISIBLE);
+        cancelSettingsUpdateButton.setVisibility(VISIBLE);
+        editPaymentInfoButton.setVisibility(INVISIBLE);
 
         cancelSettingsUpdateButton.setOnClickListener(v -> {
             userNameInput.setText(currentUserName);
@@ -165,6 +191,7 @@ public class MyAccountActivity extends AppCompatActivity {
         emailInput.setEnabled(false);
         updateUserSettingsButton.setText(UPDATE_USER_DETAILS);
         cancelSettingsUpdateButton.setVisibility(INVISIBLE);
+        editPaymentInfoButton.setVisibility(VISIBLE);
     }
 
     /**
@@ -209,5 +236,56 @@ public class MyAccountActivity extends AppCompatActivity {
         if (phoneNum != null) {
             currentPhoneNumber = (String) phoneNum;
         }
+
+        String customerId = (String) user.get(CUSTOMER_ID);
+
+        if (customerId != null) {
+            intializePaymentInfo(customerId);
+        } else {
+            LinearLayout paymentDetails = findViewById(R.id.existing_payment_layout);
+            paymentDetails.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
+     * Initializes the payment details layout. If the user does not have any saved payment, this
+     * layout is invisible
+     * @param customerId The customer ID
+     */
+    private void intializePaymentInfo(String customerId) {
+        LinearLayout paymentDetails = findViewById(R.id.existing_payment_layout);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put(CUSTOMER_ID, customerId);
+
+        ParseCloud.callFunctionInBackground(GET_CREDIT_CARD_SERVICE_NAME, params, (response, e) -> {
+
+            if (e == null) {
+                Log.d("Cloud Response", "Successfully retrieved card");
+
+                if (response != null) {
+                    HashMap<String, Object> cardInfo = (HashMap<String, Object>) response;
+                    currentLast4Digits = (String) cardInfo.get("last4");
+                    TextView last4CardDigits = findViewById(R.id.cardNumberLabel);
+                    last4CardDigits.setText(String.format(CARD_NUMBER_FORMAT, currentLast4Digits));
+
+                    currentExpDate = String.format(EXP_DATE_FORMAT, cardInfo.get("exp_month"),
+                            cardInfo.get("exp_year"));
+                    TextView expDataTextView = findViewById(R.id.expDateLabel);
+                    expDataTextView.setText(currentExpDate);
+                    paymentDetails.setVisibility(VISIBLE);
+                } else {
+                    paymentDetails.setVisibility(View.INVISIBLE);
+                }
+
+            } else {
+                Log.e("Cloud Response", "Error retrieving card: " + e, e);
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

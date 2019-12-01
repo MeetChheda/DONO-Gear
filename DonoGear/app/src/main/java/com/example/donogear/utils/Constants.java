@@ -54,7 +54,7 @@ public class Constants {
     public static final String LOGIN_PROMPT = "Please login to place a bid";
     public static final String SAVE_USER_DETAILS = "Save details";
     public static final String UPDATE_USER_DETAILS = "Update details";
-    public static final String SAVE_USER_INTERESTS = "Saved user preferences";
+    public static final String SAVE_USER_INTERESTS = "Saved your interests";
     public static final String LOGIN_ERROR = "Unknown error occurred. Try logging in again";
     public static final String LOGIN_FOR_DETAILS = "Log in / register with DONO-Gear to create a " +
             "profile and use many exciting features";
@@ -65,9 +65,9 @@ public class Constants {
     public static final String INVALID_CARD_DETAILS = "Stripe - The card details that you entered are invalid";
     public static final String PUBLISHABLE_KEY = "pk_test_BS3lFguklXYlFf8oc5Ul9kg300mSOJkSYT";
 
-
     public static final String ERROR_SHIP = "There was some problem with your request";
     public static final String INCOMPLETE_DETAILS = "Please review your order details again. " +
             "Some of them might be missing / invalid\n";
-
+    public static final String CARD_TOKEN = "cardToken";
+    public static final String CUSTOMER_ID = "customerId";
 }
