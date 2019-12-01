@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.example.donogear.actionpages.MainActivity;
 import com.example.donogear.R;
 import com.parse.ParseUser;
+import com.stripe.Stripe;
 
 public class LauncherActivity extends AppCompatActivity {
     private ParseUser parseUser;
@@ -18,7 +19,7 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-
+        ParseUser.logOut();
         Button loginButton = findViewById(R.id.login_btn);
         Button guestButton = findViewById(R.id.guest_btn);
         loginButton.setOnClickListener(view -> loginClicked());
