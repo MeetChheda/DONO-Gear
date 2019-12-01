@@ -164,7 +164,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             @Override
             public void run() {
                 if (updatedDetails) {
-                    displayBidDetails();
+                    if (category.equals(AUCTION_IDENTIFIER)) {
+                        displayBidDetails();
+                    }
                 }
                 else {
                     handler.postDelayed(this, 100);
@@ -614,6 +616,17 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         }
     }
 
+    /**
+     * Set textview for itemBidAmount
+     * @param itemBidAmount - current bid amount
+     */
+    private void setItemBidText(int itemBidAmount) {
+        currentBidAmount.setText("$" + itemBidAmount);
+        if (itemBidAmount == 0) {
+            currentBidAmount.setText(NO_CURRENT_BIDS);
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (!checkButtonPressed(flag)) {
@@ -637,16 +650,5 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
         itemBidAmount = newBidAmount;
         setItemBidText(itemBidAmount);
-    }
-
-    /**
-     * Set textview for itemBidAmount
-     * @param itemBidAmount - current bid amount
-     */
-    private void setItemBidText(int itemBidAmount) {
-        currentBidAmount.setText("$" + itemBidAmount);
-        if (itemBidAmount == 0) {
-            currentBidAmount.setText(NO_CURRENT_BIDS);
-        }
     }
 }
