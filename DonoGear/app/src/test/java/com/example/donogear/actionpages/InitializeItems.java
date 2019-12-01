@@ -1,6 +1,9 @@
 package com.example.donogear.actionpages;
 
+import com.example.donogear.models.CausesDetails;
+import com.example.donogear.models.DonorDetails;
 import com.example.donogear.models.ItemDetails;
+import com.example.donogear.utils.CausesAdapter;
 
 import org.junit.Before;
 
@@ -30,8 +33,20 @@ public class InitializeItems {
     private int costPerEntry;
     private List<File> listOfImages;
     private boolean isTrending;
-
     private List<ItemDetails> itemDetailsList;
+
+    public String donorId;
+    public String donorName;
+    public String donorCategory;
+    public List<File> donorImages;
+    private List<DonorDetails> donorDetailsList;
+
+    public String causesId;
+    public String causeTitle;
+    public String causeCategory;
+    public List<File> causesImages;
+    public String causesWebsiteUrl;
+    private List<CausesDetails> causesDetailsList;
 
     @Before
     public void init() {
@@ -52,6 +67,7 @@ public class InitializeItems {
         startBid = 4000; buyItNowPrice = 0;
         category = "auction"; endDate = new Date();
         listOfImages = null;
+        isTrending = false;
         addToList();
 
         id = "03";
@@ -59,6 +75,7 @@ public class InitializeItems {
         highestBidder = null; costPerEntry = 10;
         category = "raffle"; endDate = new Date();
         listOfImages = null;
+        isTrending = true;
         addToList();
 
         id = "04";
@@ -66,6 +83,7 @@ public class InitializeItems {
         highestBidder = null; costPerEntry = 10;
         category = "drop"; endDate = new Date();
         listOfImages = null;
+        isTrending = false;
         addToList();
 
         id = "05";
@@ -74,6 +92,7 @@ public class InitializeItems {
         startBid = 3000; buyItNowPrice = 0;
         category = "auction"; endDate = new Date();
         listOfImages = null;
+        isTrending = true;
         addToList();
     }
 
@@ -83,7 +102,57 @@ public class InitializeItems {
         itemDetailsList.add(item);
     }
 
+    public void initDonors() {
+        donorDetailsList = new ArrayList<>();
+        donorId = "01"; donorName = "Donor01";
+        donorCategory = "artist";
+        donorImages = null;
+        addDonorToList();
+
+        donorId = "02"; donorName = "Donor02";
+        donorCategory = "artist";
+        donorImages = null;
+        addDonorToList();
+
+        donorId = "03"; donorName = "Donor03";
+        donorCategory = "artist";
+        donorImages = null;
+        addDonorToList();
+    }
+
+    public void initCauses() {
+        causesDetailsList = new ArrayList<>();
+        causesId = "01"; causeTitle = "Causes01";
+        causeCategory = "health";
+        causesImages = null;
+        addCausesToList();
+
+        causesId = "02"; causeTitle = "Causes02";
+        causeCategory = "health";
+        causesImages = null;
+        addCausesToList();
+
+    }
+
+    private void addDonorToList() {
+        DonorDetails donorDetails = new DonorDetails(donorId, donorName, donorCategory, donorImages);
+        donorDetailsList.add(donorDetails);
+    }
+
+    private void addCausesToList() {
+        CausesDetails causesDetails = new CausesDetails(causesId, causeTitle, causeCategory, causesImages, causesWebsiteUrl);
+        causesDetailsList.add(causesDetails);
+    }
+
     public List<ItemDetails> getItemDetailsList() {
         return itemDetailsList;
+    }
+
+    public List<DonorDetails> getDonorDetailsList() {
+        return donorDetailsList;
+    }
+
+    public List<CausesDetails> getCausesDetailsList() {
+        return causesDetailsList;
     }
 }

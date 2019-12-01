@@ -93,10 +93,10 @@ public class BrowsePageFragment extends Fragment {
         if (getArguments() != null) {
             String typeOfSearch = getArguments().getString("type");
             if (typeOfSearch.equals(DONOR_IDENTIFIER)) {
-                displayDonor();
+                displayDonor(activity.donorDetailsList);
             }
             else {
-                displayCauses();
+                displayCauses(activity.causesDetailsList);
             }
         }
     }
@@ -104,25 +104,27 @@ public class BrowsePageFragment extends Fragment {
     /**
      * display donor fragment by setting appropriate adapter in recycler view
      */
-    public void displayDonor() {
-        listOfDonors = activity.donorDetailsList;
+    public int displayDonor(List<DonorDetails> donorDetails) {
+        listOfDonors = donorDetails;
         System.out.println("Size " + listOfDonors.size());
-        donorAdapter = activity.donorAdapter;
-        donorAdapter.setDonorList(listOfDonors);
-        recyclerView.setAdapter(donorAdapter);
-        donorAdapter.notifyDataSetChanged();
+        //donorAdapter = activity.donorAdapter;
+//        donorAdapter.setDonorList(listOfDonors);
+//        recyclerView.setAdapter(donorAdapter);
+//        donorAdapter.notifyDataSetChanged();
+        return listOfDonors.size();
     }
 
     /**
      * display causes fragment by setting appropriate adapter in recycler view
      */
-    public void displayCauses() {
-        listOfCauses = activity.causesDetailsList;
+    public int displayCauses(List<CausesDetails> causesDetailsList) {
+        listOfCauses = causesDetailsList;
         System.out.println("Size " + listOfCauses.size());
-        causesAdapter = activity.causesAdapter;
-        causesAdapter.setCausesList(listOfCauses);
-        recyclerView.setAdapter(causesAdapter);
-        causesAdapter.notifyDataSetChanged();
+//        causesAdapter = activity.causesAdapter;
+//        causesAdapter.setCausesList(listOfCauses);
+//        recyclerView.setAdapter(causesAdapter);
+//        causesAdapter.notifyDataSetChanged();
+        return listOfCauses.size();
     }
 
 }

@@ -118,7 +118,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
      * @param bitmap - Decoding image into string
      * @return  - favourable text color required
      */
-    private int getFavourableTimeColor(Bitmap bitmap) {
+    public int getFavourableTimeColor(Bitmap bitmap) {
         int pixel = bitmap.getPixel(bitmap.getWidth() - 1, 0);
         Color bgImageColor =  Color.valueOf(Color.rgb(Color.red(pixel), Color.green(pixel), Color.blue(pixel)));
         return bgImageColor.luminance() > 0.5 ? Color.BLACK : Color.WHITE;

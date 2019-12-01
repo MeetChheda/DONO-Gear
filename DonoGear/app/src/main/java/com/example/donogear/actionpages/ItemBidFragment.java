@@ -166,17 +166,17 @@ public class ItemBidFragment extends BottomSheetDialogFragment implements View.O
         edit_price.setText(amount.substring(1));
     }
 
-    private boolean validationBid(String text, int latestBidValue) {
+    public boolean validationBid(String text, int latestBidValue) {
         for (char ch: text.toCharArray()) {
             if (!Character.isDigit(ch)) {
-                Toast.makeText(getContext(), "Enter a number", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Enter a number", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
         int value = Integer.parseInt(text);
         if (value <= latestBidValue) {
-            Toast.makeText(getContext(), "Your bid has to be higher than the current bid",
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Your bid has to be higher than the current bid",
+//                    Toast.LENGTH_SHORT).show();
             return false;
         }
         //TODO - Query for the current bid value before accepting user bid and set

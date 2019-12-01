@@ -32,7 +32,7 @@ public class ItemAdapterTest {
      * text as the output. This white-text will be placed on top of the dark image
      */
     @Test
-    public void getWhiteTextTest() {
+    public void getWhiteTextColorTest() {
         Bitmap bitmap = createImage(100, 100, Color.BLACK);
         int textColor = itemAdapter.getFavourableTextColor(bitmap);
         Assert.assertEquals(Color.WHITE, textColor);
@@ -43,10 +43,10 @@ public class ItemAdapterTest {
      * text as the output. This black-text will be placed on top of the light image
      */
     @Test
-    public void getBlackTextTest() {
+    public void getBlackTimeColorTest() {
         Bitmap bitmap = createImage(100, 100, Color.WHITE);
-        int textColor = itemAdapter.getFavourableTextColor(bitmap);
-        Assert.assertEquals(Color.BLACK, textColor);
+        int timeColor = itemAdapter.getFavourableTimeColor(bitmap);
+        Assert.assertEquals(Color.BLACK, timeColor);
     }
 
     /**

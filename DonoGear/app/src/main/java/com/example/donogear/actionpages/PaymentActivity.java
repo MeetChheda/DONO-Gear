@@ -80,7 +80,7 @@ public class PaymentActivity extends AppCompatActivity {
         TextView amount = findViewById(R.id.payment_amount);
         title.setText(itemName);
         amount.setText("$" +itemPrice);
-
+        params = new HashMap<>();
         keys = Arrays.asList(
                 "email", "name", "address", "zip", "city_state"
         );
@@ -95,14 +95,14 @@ public class PaymentActivity extends AppCompatActivity {
         shipping = findViewById(R.id.shipping);
         reset = findViewById(R.id.clear_form);
         getUserDetails();
-        if (!validShippingDetails()) {
+        if (!validShippingDetails(params, new ArrayList<String>(), keys)) {
             purchase.setAlpha(0.25f);
         }
     }
 
     @Override
     public void onResume() {
-        if (!validShippingDetails()) {
+        if (!validShippingDetails(params, new ArrayList<String>(), keys)) {
             purchase.setAlpha(0.25f);
         } else {
             purchase.setAlpha(1f);
@@ -114,8 +114,8 @@ public class PaymentActivity extends AppCompatActivity {
      * Validate if user has entered all fields
      * @return check if there is ant missingKey
      */
-    private boolean validShippingDetails() {
-        missingKeys = new ArrayList<>();
+    protected boolean validShippingDetails(HashMap<String, Object> params, List<String> missing, List<String> keys) {
+        missingKeys = missing;
         for (String key: keys) {
             if (!params.containsKey(key)) {
                 missingKeys.add(key);
@@ -145,7 +145,7 @@ public class PaymentActivity extends AppCompatActivity {
      * Stripe method to facilitate purchase
      */
     private void buy() {
-        if (!validShippingDetails()) {
+        if (!validShippingDetails(params, new ArrayList<String>(), keys)) {
             String missingItems = String.join(", ", missingKeys).trim();
             missingItems = "\nThe missing field(s) is / are: " + missingItems;
             new AlertDialog.Builder(this)

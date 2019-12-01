@@ -26,6 +26,10 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.ViewHolder>{
     private List<DonorDetails> donorDetailsList;
 //    private ItemClickListener itemClickListener;
 
+    public DonorAdapter() {
+        //default constructor
+    }
+
     /**
      * Default constructor for donor adapter
      * @param context - Reference of Main activity

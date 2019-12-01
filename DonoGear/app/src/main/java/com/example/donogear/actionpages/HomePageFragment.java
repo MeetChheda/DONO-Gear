@@ -100,7 +100,7 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
                 LinearLayoutManager.HORIZONTAL, false);
         trendingRecyclerView.setLayoutManager(horizontalLayoutManager);
         trendingItemList = new ArrayList<>();
-        trendingItemList = displayTrendingItems(activity.copyList);
+        trendingItemList = displayTrendingItems(activity.copyList, trendingItemList);
         trendingItemAdapter = new TrendingAdapter(activity, trendingItemList);
         if (trendingItemList.size() == 0) {
             trendingText.setVisibility(View.GONE);
@@ -194,9 +194,9 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
      * @param itemDetailsList - list of all items
      * @return - list of items which are trending
      */
-    private List<ItemDetails> displayTrendingItems(List<ItemDetails> itemDetailsList) {
+    protected List<ItemDetails> displayTrendingItems(List<ItemDetails> itemDetailsList, List<ItemDetails> trendingItemList) {
         for (ItemDetails itemDetails: itemDetailsList) {
-            if (itemDetails.isTrending && itemDetails.listOfImages.size() > 0) {
+            if (itemDetails.isTrending) {
                 trendingItemList.add(itemDetails);
             }
         }

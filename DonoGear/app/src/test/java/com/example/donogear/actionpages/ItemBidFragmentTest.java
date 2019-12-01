@@ -59,4 +59,31 @@ public class ItemBidFragmentTest {
         int newAmount = itemBidFragment.changeAmount(value, steps, latestValue, SUBTRACT_FROM_BID);
         Assert.assertEquals(2300, newAmount);
     }
+
+    /**
+     * Test to check if entered bid is not a number
+     */
+    @Test
+    public void nonIntegerEnteredAsBidTest()  {
+        boolean actual = itemBidFragment.validationBid("abc",100);
+        Assert.assertEquals(false, actual);
+    }
+
+    /**
+     * Test to check if entered bid is less than latest bid
+     */
+    @Test
+    public void valueBidLessThanLatestBidTest()  {
+        boolean actual = itemBidFragment.validationBid("50",100);
+        Assert.assertEquals(false, actual);
+    }
+
+    /**
+     * Test to check if entered bid is valid
+     */
+    @Test
+    public void validBidEntered()  {
+        boolean actual = itemBidFragment.validationBid("500",100);
+        Assert.assertEquals(true, actual);
+    }
 }
