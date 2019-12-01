@@ -50,7 +50,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
 import static com.example.donogear.utils.Constants.AUCTION_IDENTIFIER;
@@ -187,9 +186,20 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             if (e == null) {
                 itemBidAmount = item.getInt("currentBid");
                 itemHighestBidder = item.getString("highestBidder");
+                setBidButton();
             }
             updatedDetails = true;
         });
+    }
+
+    private void setBidButton() {
+        ParseUser user = ParseUser.getCurrentUser();
+        auction.setText("Place Bid");
+        if (user != null) {
+            if (user.getUsername().equals(itemHighestBidder)) {
+                runOnUiThread(() -> auction.setText("You are the highest bidder!"));
+            }
+        }
     }
 
 
@@ -206,6 +216,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             itemBidAmount = object.getInt("currentBid");
             itemHighestBidder = object.getString("highestBidder");
             runOnUiThread(() ->setItemBidText(itemBidAmount));
+            setBidButton();
         });
     }
 
@@ -378,7 +389,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             public void onFinish() {
                 time_remaining.setText(TIME_UP);
                 time_remaining.setTextColor(Color.RED);
-                //itemHolder.timeHolder.setVisibility(View.GONE);
+                auction.setEnabled(false);
+                raffle.setEnabled(false);
             }
         }.start();
     }

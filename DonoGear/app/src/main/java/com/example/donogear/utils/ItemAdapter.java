@@ -94,7 +94,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             itemHolder.titleText.setTextColor(textColor);
             itemHolder.timeHolder.setTextColor(timeColor);
             itemHolder.endTimeText.setTextColor(timeColor);
-            tickTime(endTime, itemHolder, i);
+            tickTime(endTime, itemHolder);
         }
         if (curItem.category.equals(DROP_IDENTIFIER)) {
             itemHolder.timeHolder.setVisibility(View.GONE);
@@ -129,16 +129,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
      * Get time at every second
      * @param endTime - endTime of the auction
      * @param itemHolder - hold the item in the view
-     * @param position - get position of item
      */
-    private void tickTime(final Date endTime, final ViewHolder itemHolder, final int position) {
+    private void tickTime(final Date endTime, final ViewHolder itemHolder) {
         final long timeInMilliSec = endTime.getTime() - Calendar.getInstance().getTimeInMillis();
         itemHolder.timer = new CountDownTimer(timeInMilliSec, 1000) {
             @Override
             public void onTick(long l) {
                 String newTime = TickTime.displayTime(l);
                 itemHolder.endTimeText.setText(newTime);
-                notifyItemChanged(position);
+                notifyItemChanged(itemHolder.getAdapterPosition());
             }
 
             @Override
@@ -148,7 +147,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             }
         }.start();
     }
-
 
     @Override
     public int getItemCount() {

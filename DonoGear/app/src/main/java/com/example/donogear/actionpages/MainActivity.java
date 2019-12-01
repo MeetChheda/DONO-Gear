@@ -34,6 +34,7 @@ import com.parse.ParseUser;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -154,7 +155,8 @@ public class MainActivity extends AppCompatActivity implements
                     ItemDetails itemDetails = new ItemDetails(itemId, itemName, itemDescription,
                             startBid, buyNowPrice, currentBid, highestBidder, category, endDate,
                             costPerEntry, itemImages, trending);
-
+                    if (endDate != null && endDate.getTime() + 5000 < Calendar.getInstance().getTimeInMillis())
+                        continue;
                     searchArray.add(itemName);
                     listOfItems.add(itemDetails);
                     itemAdapter.notifyDataSetChanged();
