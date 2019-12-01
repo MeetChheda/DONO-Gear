@@ -25,6 +25,7 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import static com.example.donogear.utils.Constants.BUY_NOW;
+import static com.example.donogear.utils.Constants.CARD_TOKEN;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ERROR_SHIP;
 import static com.example.donogear.utils.Constants.INVALID_CARD_CVC;
@@ -195,7 +196,7 @@ public class PaymentActivity extends AppCompatActivity {
      * @param cardToken - card token
      */
     private void charge(Token cardToken){
-        params.put("cardToken", cardToken.getId());
+        params.put(CARD_TOKEN, cardToken.getId());
         startProgress("Purchasing Item");
         ParseCloud.callFunctionInBackground("purchaseItem", params, (response, e) -> {
             finishProgress();

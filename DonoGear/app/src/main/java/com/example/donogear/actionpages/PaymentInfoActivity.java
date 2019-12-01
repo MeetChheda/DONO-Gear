@@ -20,12 +20,17 @@ import com.stripe.android.view.CardMultilineWidget;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.donogear.utils.Constants.CUSTOMER_ID;
+import static com.example.donogear.utils.Constants.CARD_TOKEN;
 import static com.example.donogear.utils.Constants.PUBLISHABLE_KEY;
 
 public class PaymentInfoActivity extends AppCompatActivity {
+    private static final String CUSTOMER_ID = "customerId";
+    private static final String NAME = "name";
+    private static final String SAVE_CREDIT_CARD_SERVICE_NAME = "saveCreditCard";
+
     private ProgressDialog progress;
     private CardMultilineWidget cardMultilineWidget;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +38,6 @@ public class PaymentInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_payment_info);
         cardMultilineWidget = findViewById(R.id.savedCardWidget);
         Bundle bundle = getIntent().getExtras();
-        String customerId = bundle.getString(CUSTOMER_ID);
-        String cardId = bundle.getString(CUSTOMER_ID);
 
         progress = new ProgressDialog(this);
 
@@ -45,14 +48,14 @@ public class PaymentInfoActivity extends AppCompatActivity {
                         cardMultilineWidget.getCard(),
                         new ApiResultCallback<Token>() {
 
-                            public void onError(Exception error) {
+                            public void onError(Exception e) {
+                                Log.e("PaymentInfoActivity", "Error saving card: " + e.getMessage(), e);
                                 Toast.makeText(PaymentInfoActivity.this,
-                                        "Stripe -" + error.toString(),
-                                        Toast.LENGTH_LONG).show();
+                                        "Error saving card", Toast.LENGTH_LONG).show();
                             }
 
                             public void onSuccess(Token token) {
-                                handleCustomer(customerId, cardId, token);
+                                saveCreditCard(token);
                             }
                         });
 
@@ -72,34 +75,46 @@ public class PaymentInfoActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Returns the user to the My Account page
+     */
     private void returnToMyAccount() {
         Intent intent = new Intent(this, MyAccountActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
-    private void handleCustomer(String customerId, String previousCardId, Token cardToken) {
-        Map<String, Object> customerParams = new HashMap<>();
-        customerParams.put("cardToken", cardToken.getId());
-        customerParams.put("name", ParseUser.getCurrentUser().getUsername());
+    /**
+     * Saves the user's credit card to the payment service
+     *
+     * @param cardToken The token holding the credit card information
+     */
+    private void saveCreditCard(Token cardToken) {
+        ParseUser user = ParseUser.getCurrentUser();
+        Map<String, Object> params = new HashMap<>();
+        params.put(CARD_TOKEN, cardToken.getId());
+        params.put(NAME, user.getUsername());
+        String customerId = (String) user.get(CUSTOMER_ID);
 
+        // If the user has not previously saved a credit card, they do not have a customer ID. A new
+        // one will be generated if no param is passed
         if (customerId != null) {
-            customerParams.put("customerId", customerId);
+            params.put(CUSTOMER_ID, customerId);
         }
 
-        ParseCloud.callFunctionInBackground("saveCard", customerParams, (response, e) -> {
+        ParseCloud.callFunctionInBackground(SAVE_CREDIT_CARD_SERVICE_NAME, params, (response, e) -> {
             progress.dismiss();
 
             if (e == null) {
                 Log.d("Cloud Response", "Successfully saved card " + response.toString());
-                ParseUser user = ParseUser.getCurrentUser();
-                user.put("customerId", response.toString());
+                // Add the customer ID to the Parse user to be used in the future
+                user.put(CUSTOMER_ID, response.toString());
+                user.saveInBackground();
                 Toast.makeText(getApplicationContext(),
                         "Payment Successfully Saved",
                         Toast.LENGTH_LONG).show();
             } else {
-
-                Log.d("Cloud Response", "Error saving card: " + e);
+                Log.e("Cloud Response", "Error saving card: " + e, e);
                 Toast.makeText(getApplicationContext(),
                         "Failed to Save Payment",
                         Toast.LENGTH_LONG).show();
@@ -107,33 +122,6 @@ public class PaymentInfoActivity extends AppCompatActivity {
 
             returnToMyAccount();
         });
-
-//        try {
-//            final Customer customer = null;
-//
-//            if (customer != null && previousCardId != null) {
-//                savedCard = (Card) customer.getSources().retrieve(previousCardId);
-//
-//                new AlertDialog.Builder(PaymentInfoActivity.this)
-//                        .setTitle("Delete Payment")
-//                        .setMessage("Are you sure you want to overwrite the saved payment?")
-//                        .setPositiveButton("YES", (dialogInterface, i) -> overwriteSavedCard(customer, customerParams))
-//                        .setNegativeButton("NO", null)
-//                        .show();
-//
-//            } else {
-//                Customer.create(customerParams);
-////                Map<String, Object> cardParams = new HashMap<>();
-////                cardParams.put("payment_method", cardMultilineWidget.getCard());
-////                customer.getSources().create(cardParams);
-//                returnToMyAccount();
-//            }
-//
-//        } catch (StripeException e) {
-//            Log.e("PaymentInfoActivity", "Error saving payment information: " + e.getMessage(), e);
-//            Toast.makeText(getApplicationContext(), "Unable to save payment",
-//                    Toast.LENGTH_LONG).show();
-//        }
     }
 
     /**

@@ -39,30 +39,32 @@ Parse.Cloud.define("purchaseItem", async (request) => {
    return 'OK';
 });
 
-Parse.Cloud.define("saveCard", async (request) => {
-   let customer;
-   let customerId;
+Parse.Cloud.define("saveCreditCard", async (request) => {
+      let customer;
+      let customerId;
 
-   if (request.params.customerId !== null) {
-       customer = await Stripe.customers.update(request.params.customerId, {
-            source: request.params.cardToken,
-            name: request.params.name
-       })
+      if (!request.params.customerId) {
 
-       customerId = customer.id;
-   } else {
+         customer = await Stripe.customers.create({
+              source: request.params.cardToken,
+              name: request.params.name
+         })
 
-       customer = await Stripe.customers.create({
-            source: request.params.cardToken,
-            name: request.params.name
-       })
+         customerId = customer.id;
+      } else {
+          customer = await Stripe.customers.update(request.params.customerId, {
+               source: request.params.cardToken,
+               name: request.params.name
+          })
 
-       customerId = customer.id;
-   }
+          customerId = customer.id;
+      }
 
-   if (! customerId) {
-        throw new Error('Unable to save card');
-   }
+      if (! customerId) {
+           throw new Error('Unable to save card');
+      }
 
-   return customerId;
+      return customerId;
 });
+
+

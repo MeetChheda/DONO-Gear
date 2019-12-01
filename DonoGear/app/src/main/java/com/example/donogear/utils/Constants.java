@@ -64,13 +64,9 @@ public class Constants {
     public static final String INVALID_CARD_CVC = "Stripe - The CVC code that you entered is invalid";
     public static final String INVALID_CARD_DETAILS = "Stripe - The card details that you entered are invalid";
     public static final String PUBLISHABLE_KEY = "pk_test_BS3lFguklXYlFf8oc5Ul9kg300mSOJkSYT";
-    public static final String SECRET_KEY = "sk_test_tsAWwq2H1mSx37s3jP70y9Uq00eF1RyNUT";
-
 
     public static final String ERROR_SHIP = "There was some problem with your request";
     public static final String INCOMPLETE_DETAILS = "Please review your order details again. " +
             "Some of them might be missing / invalid\n";
-    public static final String CUSTOMER_ID = "customerId";
-    public static final String CARD_ID = "cardId";
-
+    public static final String CARD_TOKEN = "cardToken";
 }
