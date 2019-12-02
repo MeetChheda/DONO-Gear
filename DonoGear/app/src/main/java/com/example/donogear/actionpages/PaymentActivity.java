@@ -204,6 +204,7 @@ public class PaymentActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),
                         "Item Purchased Successfully ",
                         Toast.LENGTH_LONG).show();
+                finish();
             } else {
                 Log.d("Cloud Response", "Exception: " + e);
                 Toast.makeText(getApplicationContext(),

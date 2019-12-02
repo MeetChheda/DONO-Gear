@@ -3,6 +3,7 @@ package com.example.donogear.actionpages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -116,13 +117,16 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         displayRemainingTime();
         displayItemDetails();
         checkCategory(category);
-        ProgressBar bar = findViewById(R.id.progress_cyclic);
+        ProgressDialog bar = new ProgressDialog(this);
+        bar.show();
+        bar.setMessage("Fetching data");
         boolean[] flags = new boolean[2];
 
         /*
           Delay timers (2) to facilitate populating of layout only after background tasks of fetching
           the item-specific videos and proceeds details have been finished
          */
+
         Runnable videoRunnable = new Runnable() {
             @Override
             public void run() {
@@ -130,7 +134,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     flags[0] = true;
                     displayVideo(itemVideosUrl, itemVideosLayout);
                     if (flags[1]) {
-                        bar.setVisibility(GONE);
+                        bar.dismiss();
                         fullLayout.setVisibility(View.VISIBLE);
                     }
                 }
@@ -148,7 +152,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     flags[1] = true;
                     displayProceedsDetails();
                     if (flags[0]) {
-                        bar.setVisibility(GONE);
+                        bar.dismiss();
                         fullLayout.setVisibility(View.VISIBLE);
                     }
                 }

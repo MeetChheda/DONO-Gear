@@ -1,5 +1,6 @@
 package com.example.donogear.actionpages;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -72,9 +73,6 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
             category = getArguments().getString("type");
         }
         setHasOptionsMenu(true);
-//        ProgressDialog pd = new ProgressDialog(getContext());
-//        pd.setMessage("Fetching data");
-//        pd.show();
         handler = new Handler();
         Runnable proceedsRunnable = new Runnable() {
             @Override
@@ -84,11 +82,8 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
                     initButtonClicks();
                     searchBox();
                     displayData();
-//                    pd.dismiss();
                 }
                 else {
-                    Log.e(TAGS, activity.hasAllImages + "and " + activity.hasAllData + " and "
-                    + activity.hasProceedTitle);
                     handler.postDelayed(this, 100);
                 }
             }
@@ -123,6 +118,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         itemAdapter = activity.itemAdapter;
         itemAdapter.setItemList(listOfItems);
         recyclerView.setAdapter(itemAdapter);
+        itemAdapter.notifyDataSetChanged();
         searchFlag = false;
 
         itemAdapter.setClickListener(this, SEARCH);

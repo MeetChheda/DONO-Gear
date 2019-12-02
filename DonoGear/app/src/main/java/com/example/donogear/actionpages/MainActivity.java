@@ -203,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements
                     final String causeTitle = cause.getString("proceedTitle");
                     final String category = cause.getString("category");
                     final String websiteUrl = cause.getString("websiteUrl");
-                    Log.e(TAGS, collectibleId + " -> " + causeTitle + " -> " + websiteUrl);
                     if (collectibleId != null && causeTitle != null) {
                         collectibleToProceedMap.put(collectibleId, causeTitle);
                     }
@@ -248,8 +247,6 @@ public class MainActivity extends AppCompatActivity implements
             if (collectibleToProceedMap.containsKey(id)) {
                 item.setProceedTitle(collectibleToProceedMap.get(id));
             }
-            System.out.println(collectibleToProceedMap);
-            Log.e(TAGS, item.printData());
         }
         itemAdapter.setItemList(listOfItems);
         itemAdapter.notifyDataSetChanged();
