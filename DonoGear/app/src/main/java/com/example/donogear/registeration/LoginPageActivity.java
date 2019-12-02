@@ -25,6 +25,7 @@ import org.json.JSONException;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -285,5 +286,29 @@ public class LoginPageActivity extends AppCompatActivity {
         });
     }
 
+    public String loginCheck(HashMap<String, String> credentials, String username, String password) {
+        if (credentials.containsKey(username)) {
+            if (password.equals(credentials.get(username))) {
+                return "SUCCESS";
+            }
+            else{
+                return "Password is incorrect";
+            }
+        }
+        return "Username is incorrect";
+    }
 
+    public String signUpCheck(HashMap<String, String> credentials, String username, String email, String password) {
+        if (credentials.containsKey(username)) {
+            return "Username already exists";
+        }
+        if (!emailValidator(email)) {
+            return "Email invalid";
+        }
+        if (password.trim().length() < 8) {
+            return "Password is invalid";
+        }
+        credentials.put(username, password);
+        return "SUCCESS";
+    }
 }

@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.annotation.LooperMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-
+@LooperMode(LooperMode.Mode.PAUSED)
 /**
  * Tests to check if the list of items are filtered correctly based on the current category
  */
