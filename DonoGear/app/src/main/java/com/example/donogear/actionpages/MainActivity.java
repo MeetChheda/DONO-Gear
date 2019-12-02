@@ -30,7 +30,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,7 +50,6 @@ import static com.example.donogear.utils.Constants.DONOR;
 import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.HOME_IDENTIFIER;
-import static com.example.donogear.utils.Constants.MY_INTERESTS;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TAGS;
@@ -59,7 +57,7 @@ import static com.example.donogear.utils.Constants.TAGS;
 public class MainActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener, onSavePressed {
 
-    public boolean searchFlag;
+    public boolean searchFlag, hasProceedTitle;
     public List<String> searchArray;
     public static ArrayList[] tags;
     public List<String> tagsSelected;
@@ -85,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private List<String> selectedCauses;
     private List<String> selectedTopics;
+    private Map<String, String> collectibleToProceedMap;
 
 
     @Override
@@ -200,9 +199,14 @@ public class MainActivity extends AppCompatActivity implements
                 for (ParseObject cause: causes) {
                     String causeId = cause.getObjectId();
                     final List<File> causeImageList = getImageForCause(causeId);
+                    final String collectibleId = cause.getString("collectibleId");
                     final String causeTitle = cause.getString("proceedTitle");
                     final String category = cause.getString("category");
                     final String websiteUrl = cause.getString("websiteUrl");
+                    Log.e(TAGS, collectibleId + " -> " + causeTitle + " -> " + websiteUrl);
+                    if (collectibleId != null && causeTitle != null) {
+                        collectibleToProceedMap.put(collectibleId, causeTitle);
+                    }
                     CausesDetails causeObject = new CausesDetails(causeId, causeTitle, category, causeImageList, websiteUrl);
                     causesDetailsList.add(causeObject);
                     causesAdapter.notifyDataSetChanged();
@@ -212,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements
                 Toast.makeText(MainActivity.this, "Error: " + e, Toast.LENGTH_SHORT).show();
                 Log.e("Error", e.toString());
             }
+            editAdapter();
         });
 
         //get all the recent announcement from database
@@ -235,6 +240,20 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("Error", e.toString());
             }
         });
+    }
+
+    private void editAdapter() {
+        for (ItemDetails item: listOfItems) {
+            String id = item.id;
+            if (collectibleToProceedMap.containsKey(id)) {
+                item.setProceedTitle(collectibleToProceedMap.get(id));
+            }
+            System.out.println(collectibleToProceedMap);
+            Log.e(TAGS, item.printData());
+        }
+        itemAdapter.setItemList(listOfItems);
+        itemAdapter.notifyDataSetChanged();
+        hasProceedTitle = true;
     }
 
 
@@ -362,9 +381,11 @@ public class MainActivity extends AppCompatActivity implements
         tagsSelected = new ArrayList<>();
         searchArray = new ArrayList<>();
         tagsToItems = new HashMap<>();
+        collectibleToProceedMap = new HashMap<>();
         searchFlag = false;
         hasAllData = false;
-        hasAllImages = true;
+        hasProceedTitle = false;
+        hasAllImages = false;
 
         innerTabs = findViewById(R.id.innerSearchtabs);
         innerBrowseTabs = findViewById(R.id.innerBrowsetabs);

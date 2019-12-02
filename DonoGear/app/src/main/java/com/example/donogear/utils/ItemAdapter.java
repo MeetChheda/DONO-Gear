@@ -46,7 +46,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
-        private TextView titleText, endTimeText, timeHolder;
+        private TextView titleText, endTimeText, timeHolder, proceedTitle;
         CountDownTimer timer;
 
         public ViewHolder(View itemView) {
@@ -55,6 +55,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             titleText = itemView.findViewById(R.id.title);
             endTimeText = itemView.findViewById(R.id.time_left);
             timeHolder = itemView.findViewById(R.id.time_holder);
+            proceedTitle = itemView.findViewById(R.id.proceed_item_title);
 
             itemView.setOnClickListener(view ->
                     itemClickListener.onItemClick(view, getAdapterPosition(), type)
@@ -86,12 +87,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             title = title.substring(0, title.lastIndexOf(" ")) + "...";
         }
         itemHolder.titleText.setText(title);
+        String proceedTitle = "And support " + curItem.proceedTitle;
+        itemHolder.proceedTitle.setText(proceedTitle);
         Date endTime = curItem.endDate;
         if (itemHolder.timer != null) {
             itemHolder.timer.cancel();
         }
         if (!curItem.category.equals(DROP_IDENTIFIER)) {
             itemHolder.titleText.setTextColor(textColor);
+            itemHolder.proceedTitle.setTextColor(textColor);
             itemHolder.timeHolder.setTextColor(timeColor);
             itemHolder.endTimeText.setTextColor(timeColor);
             tickTime(endTime, itemHolder);

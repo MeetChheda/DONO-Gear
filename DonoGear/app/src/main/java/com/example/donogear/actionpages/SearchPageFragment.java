@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,12 +28,13 @@ import com.example.donogear.interfaces.myOnBackPressed;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.utils.ItemAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.donogear.utils.Constants.SEARCH;
+import static com.example.donogear.utils.Constants.TAGS;
 
 
 /**
@@ -70,17 +72,23 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
             category = getArguments().getString("type");
         }
         setHasOptionsMenu(true);
+//        ProgressDialog pd = new ProgressDialog(getContext());
+//        pd.setMessage("Fetching data");
+//        pd.show();
         handler = new Handler();
         Runnable proceedsRunnable = new Runnable() {
             @Override
             public void run() {
-                if(activity.hasAllImages && activity.hasAllData) {
+                if(activity.hasAllImages && activity.hasAllData && activity.hasProceedTitle) {
                     initializeLayout();
                     initButtonClicks();
                     searchBox();
                     displayData();
+//                    pd.dismiss();
                 }
                 else {
+                    Log.e(TAGS, activity.hasAllImages + "and " + activity.hasAllData + " and "
+                    + activity.hasProceedTitle);
                     handler.postDelayed(this, 100);
                 }
             }
@@ -106,6 +114,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         search = view.findViewById(R.id.search_img);
 
         listOfItems = activity.listOfItems;
+        listOfItems.forEach(itemDetails -> System.out.println(itemDetails.printData()));
         copyList = activity.copyList;
         searchArray = activity.searchArray;
         filterDataByCategory();
