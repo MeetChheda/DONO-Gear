@@ -35,6 +35,7 @@ import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -50,6 +51,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
@@ -99,6 +102,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private TextView currentBidAmount;
     private ParseLiveQueryClient liveQueryClient;
     private BottomSheetDialogFragment dialogFragment;
+    private Timer myTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,16 +217,25 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
      */
     private void checkForRealTimeUpdate() {
         Log.d(TAG,"Checking for new price now " + itemBidAmount);
-        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
-        parseQuery.whereGreaterThanOrEqualTo("startBid", Math.max(itemBidAmount, startBid));
-        SubscriptionHandling<ParseObject> subscriptionHandling = liveQueryClient.subscribe(parseQuery);
-        subscriptionHandling.handleEvents((query, event, object) -> {
-            itemBidAmount = object.getInt("currentBid");
-            itemHighestBidder = object.getString("highestBidder");
-            Log.e(TAG, "Updating highest bid: " + itemBidAmount);
-            runOnUiThread(() ->setItemBidText(itemBidAmount));
-            setBidButton();
-        });
+        myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery(COLLECTIBLES);
+                query.whereEqualTo("objectId", itemId);
+                query.getFirstInBackground((object, e) -> {
+                    if (e == null) {
+                        if (object != null) {
+                            itemBidAmount = object.getInt("currentBid");
+                            itemHighestBidder = object.getString("highestBidder");
+                            runOnUiThread(() ->setItemBidText(itemBidAmount));
+                            setBidButton();
+//
+                        }
+                    }
+                });
+            }
+        }, 0, 500);
     }
 
     /**
