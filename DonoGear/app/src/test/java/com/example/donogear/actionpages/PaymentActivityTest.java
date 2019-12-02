@@ -25,6 +25,7 @@ public class PaymentActivityTest {
         paymentActivity = new PaymentActivity();
     }
 
+    // TC-05-06
     @Test
     public void emailKeyNotPresentTest() {
         paramsTest = new HashMap<>();
@@ -37,6 +38,7 @@ public class PaymentActivityTest {
 
     }
 
+    // TC-05-04
     @Test
     public void addressKeyNotPresentTest() {
         paramsTest = new HashMap<>();
@@ -49,6 +51,7 @@ public class PaymentActivityTest {
 
     }
 
+    // TC-05-02
     @Test
     public void stateKeyNotPresentTest() {
         paramsTest = new HashMap<>();
@@ -61,6 +64,7 @@ public class PaymentActivityTest {
 
     }
 
+    // TC-05-05
     @Test
     public void zipKeyNotPresentTest() {
         paramsTest = new HashMap<>();
@@ -73,6 +77,7 @@ public class PaymentActivityTest {
 
     }
 
+    // TC-05-03
     @Test
     public void nameKeyNotPresentTest() {
         paramsTest = new HashMap<>();
@@ -85,6 +90,7 @@ public class PaymentActivityTest {
 
     }
 
+    // TC-05-01
     @Test
     public void allKeyPresentTest() {
         paramsTest = new HashMap<>();

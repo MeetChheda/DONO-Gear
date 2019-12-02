@@ -54,6 +54,7 @@ public class MainActivityTest {
     }
 
     /**
+     * TC-04-01
      * Test to check when the item list is empty
      */
     @Test
@@ -65,6 +66,7 @@ public class MainActivityTest {
     }
 
     /**
+     * TC-04-02
      * Test to filter the list only for auction items (returns 3 items correctly, of 5)
      */
     @Test
@@ -81,6 +83,7 @@ public class MainActivityTest {
     }
 
     /**
+     * TC-04-03
      * Test to filter the list only for raffle items (returns 1 item correctly, of 5)
      */
     @Test
@@ -92,6 +95,7 @@ public class MainActivityTest {
     }
 
     /**
+     * TC-04-04
      * Test to filter the list only for drops-items (returns 1 item correctly, of 5)
      */
     @Test
@@ -104,6 +108,7 @@ public class MainActivityTest {
 
 
     /**
+     * TC-04-05
      * Test to check whether all items are displayed when no filters are selected (or reset filters)
      */
     @Test
@@ -118,6 +123,7 @@ public class MainActivityTest {
     }
 
     /**
+     * TC-04-06
      * Test to filter items based on three tags (returned list is an OR query, i.w. returns items
      * which belong to ANY ONE or more tags)
      */
@@ -132,6 +138,7 @@ public class MainActivityTest {
     }
 
     /**
+     * TC-04-06
      * Test to filter items based on only one single tag
      */
     @Test
@@ -145,6 +152,7 @@ public class MainActivityTest {
     }
 
     /**
+     * TC-04-05
      * Test to filter items based on tags which have no items currently in the database. An
      * appropriate message is displayed and the no items are found
      */

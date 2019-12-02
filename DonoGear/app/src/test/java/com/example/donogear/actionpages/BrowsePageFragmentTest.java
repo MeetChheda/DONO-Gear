@@ -31,11 +31,13 @@ public class BrowsePageFragmentTest {
         donorAdapter = new DonorAdapter();
     }
 
+    // TC-01-02
     @Test
     public void getAllDonorListFromFragmentTest() {
         Assert.assertEquals(3, browsePageFragment.displayDonor(donorDetailsList)    );
     }
 
+    // TC-01-03
     @Test
     public void getAllCausesListFromFragmentTest() {
         Assert.assertEquals(2, browsePageFragment.displayCauses(causesDetailsList));

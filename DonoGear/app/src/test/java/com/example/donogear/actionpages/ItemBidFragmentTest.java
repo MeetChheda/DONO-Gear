@@ -32,6 +32,7 @@ public class ItemBidFragmentTest {
     }
 
     /**
+     * TC-03-04
      * Test to check if a the bid amount updates correctly when increased
      */
     @Test
@@ -46,6 +47,7 @@ public class ItemBidFragmentTest {
     }
 
     /**
+     * TC-03-05
      * Test to check if a the bid amount updates correctly when decreased and is within bounds
      * (higher than the current bid)
      */
@@ -61,6 +63,7 @@ public class ItemBidFragmentTest {
     }
 
     /**
+     * TC-03-01
      * Test to check if entered bid is not a number
      */
     @Test
@@ -70,6 +73,7 @@ public class ItemBidFragmentTest {
     }
 
     /**
+     * TC-03-03
      * Test to check if entered bid is less than latest bid
      */
     @Test
@@ -79,6 +83,7 @@ public class ItemBidFragmentTest {
     }
 
     /**
+     * TC-03-02
      * Test to check if entered bid is valid
      */
     @Test

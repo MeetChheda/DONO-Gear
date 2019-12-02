@@ -27,6 +27,7 @@ public class LoginPageActivityTest {
         userCredentials.put("user7", "12345678");
     }
 
+    // TC-02-01
     @Test
     public void usernameInvalidOnLoginTest() {
         String username = "user8";
@@ -34,6 +35,7 @@ public class LoginPageActivityTest {
         Assert.assertEquals("Username is incorrect", loginPageActivity.loginCheck(userCredentials, username, password));
     }
 
+    // TC-02-02
     @Test
     public void passwordInvalidOnLoginTest() {
         String username = "user1";
@@ -41,6 +43,7 @@ public class LoginPageActivityTest {
         Assert.assertEquals("Password is incorrect", loginPageActivity.loginCheck(userCredentials, username, password));
     }
 
+    // TC-02-03
     @Test
     public void userValidOnLoginTest() {
         String username = "user1";
@@ -48,6 +51,7 @@ public class LoginPageActivityTest {
         Assert.assertEquals("SUCCESS", loginPageActivity.loginCheck(userCredentials, username, password));
     }
 
+    // TC-02-04
     @Test
     public void userExistsOnSignUpTest() {
         String username = "user1";
@@ -56,6 +60,7 @@ public class LoginPageActivityTest {
         Assert.assertEquals("Username already exists", loginPageActivity.signUpCheck(userCredentials, username, email, password));
     }
 
+    // TC-02-05
     @Test
     public void emailInvalidOnSignUpTest() {
         String username = "user8";
@@ -64,6 +69,7 @@ public class LoginPageActivityTest {
         Assert.assertEquals("Email invalid", loginPageActivity.signUpCheck(userCredentials, username, email, password));
     }
 
+    // TC-02-06
     @Test
     public void passwordInvalidOnSignUpTest() {
         String username = "user8";
@@ -72,6 +78,7 @@ public class LoginPageActivityTest {
         Assert.assertEquals("Password is invalid", loginPageActivity.signUpCheck(userCredentials, username, email, password));
     }
 
+    // TC-02-07
     @Test
     public void userValidOnSignUpTest() {
         String username = "user9";

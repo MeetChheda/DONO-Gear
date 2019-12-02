@@ -13,6 +13,7 @@ public class TickTimeTest {
     private long timeInMilliSec;
 
     /**
+     * TC-01-04
      * Test to parse time for one day
      */
     @Test
@@ -24,6 +25,7 @@ public class TickTimeTest {
     }
 
     /**
+     * TC-01-05
      * Test to parse time for one hour
      */
     @Test
@@ -35,6 +37,7 @@ public class TickTimeTest {
     }
 
     /**
+     * TC-01-06
      * Test to parse time for one minute
      */
     @Test

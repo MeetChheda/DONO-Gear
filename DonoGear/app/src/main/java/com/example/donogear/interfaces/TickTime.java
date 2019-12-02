@@ -13,9 +13,9 @@ public interface TickTime {
     }
 
     static List<String> getTimeList(long difference) {
-        long millisInDay = 1000 * 60 * 60 * 24;
-        long millisInHour = 1000 * 60 * 60;
-        long millisInMinute = 1000 * 60;
+        long millisInDay = 1000L * 60 * 60 * 24;
+        long millisInHour = 1000L * 60 * 60;
+        long millisInMinute = 1000L * 60;
         long millisInSecond = 1000;
 
         long days = difference / millisInDay;

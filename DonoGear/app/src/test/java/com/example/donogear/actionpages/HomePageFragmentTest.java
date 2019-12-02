@@ -26,6 +26,7 @@ public class HomePageFragmentTest {
         homePageFragment = new HomePageFragment();
     }
 
+    // TC-01-01
     @Test
     public void getTrendingItemListTest() {
         List<ItemDetails> trendingItemList = homePageFragment.displayTrendingItems(itemDetailsList, new ArrayList<ItemDetails>());
