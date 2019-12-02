@@ -276,13 +276,19 @@ public class MyAccountActivity extends AppCompatActivity {
                     expDataTextView.setText(currentExpDate);
                     paymentDetails.setVisibility(VISIBLE);
                 } else {
-                    paymentDetails.setVisibility(View.INVISIBLE);
+                    paymentDetails.setVisibility(GONE);
                 }
 
             } else {
                 Log.e("Cloud Response", "Error retrieving card: " + e, e);
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        updateSavedUserInformation();
+        super.onResume();
     }
 
     @Override

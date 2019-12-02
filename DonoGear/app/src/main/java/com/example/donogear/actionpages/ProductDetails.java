@@ -219,6 +219,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         subscriptionHandling.handleEvents((query, event, object) -> {
             itemBidAmount = object.getInt("currentBid");
             itemHighestBidder = object.getString("highestBidder");
+            Log.e(TAG, "Updating highest bid: " + itemBidAmount);
             runOnUiThread(() ->setItemBidText(itemBidAmount));
             setBidButton();
         });

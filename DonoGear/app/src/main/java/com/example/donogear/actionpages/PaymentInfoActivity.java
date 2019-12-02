@@ -96,7 +96,6 @@ public class PaymentInfoActivity extends AppCompatActivity {
 
         ParseCloud.callFunctionInBackground(SAVE_CREDIT_CARD_SERVICE_NAME, params, (response, e) -> {
             progress.dismiss();
-
             if (e == null) {
                 Log.d("Cloud Response", "Successfully saved card " + response.toString());
                 // Add the customer ID to the Parse user to be used in the future
