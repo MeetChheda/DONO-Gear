@@ -73,22 +73,10 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
             category = getArguments().getString("type");
         }
         setHasOptionsMenu(true);
-        handler = new Handler();
-        Runnable proceedsRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if(activity.hasAllImages && activity.hasAllData && activity.hasProceedTitle) {
-                    initializeLayout();
-                    initButtonClicks();
-                    searchBox();
-                    displayData();
-                }
-                else {
-                    handler.postDelayed(this, 100);
-                }
-            }
-        };
-        handler.post(proceedsRunnable);
+        initializeLayout();
+        initButtonClicks();
+        searchBox();
+        displayData();
 
         return view;
     }

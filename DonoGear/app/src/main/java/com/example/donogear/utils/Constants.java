@@ -70,4 +70,8 @@ public class Constants {
             "Some of them might be missing / invalid\n";
     public static final String CARD_TOKEN = "cardToken";
     public static final String CUSTOMER_ID = "customerId";
+
+    public static final String HIGHEST_BIDDER_MESSAGE = "You are the highest bidder!";
+    public static final String PLACE_BID = "Place Bid";
+
 }

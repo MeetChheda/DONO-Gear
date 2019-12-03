@@ -63,11 +63,13 @@ import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ERROR_BID_TITLE;
+import static com.example.donogear.utils.Constants.HIGHEST_BIDDER_MESSAGE;
 import static com.example.donogear.utils.Constants.HIGHEST_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ITEM_ID;
 import static com.example.donogear.utils.Constants.ITEM_NAME;
 import static com.example.donogear.utils.Constants.LOGIN_PROMPT;
 import static com.example.donogear.utils.Constants.NO_CURRENT_BIDS;
+import static com.example.donogear.utils.Constants.PLACE_BID;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_COUNT;
@@ -102,7 +104,6 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
     private TextView currentBidAmount;
     private ParseLiveQueryClient liveQueryClient;
     private BottomSheetDialogFragment dialogFragment;
-    private Timer myTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,10 +203,10 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
     private void setBidButton() {
         ParseUser user = ParseUser.getCurrentUser();
-        auction.setText("Place Bid");
+        auction.setText(PLACE_BID);
         if (user != null) {
             if (user.getUsername().equals(itemHighestBidder)) {
-                runOnUiThread(() -> auction.setText("You are the highest bidder!"));
+                runOnUiThread(() -> auction.setText(HIGHEST_BIDDER_MESSAGE));
             }
         }
     }
@@ -216,26 +217,15 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
      * using Parse Live Queries
      */
     private void checkForRealTimeUpdate() {
-        Log.d(TAG,"Checking for new price now " + itemBidAmount);
-        myTimer = new Timer();
-        myTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery(COLLECTIBLES);
-                query.whereEqualTo("objectId", itemId);
-                query.getFirstInBackground((object, e) -> {
-                    if (e == null) {
-                        if (object != null) {
-                            itemBidAmount = object.getInt("currentBid");
-                            itemHighestBidder = object.getString("highestBidder");
-                            runOnUiThread(() ->setItemBidText(itemBidAmount));
-                            setBidButton();
-//
-                        }
-                    }
-                });
-            }
-        }, 0, 500);
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
+        parseQuery.whereEqualTo("objectId", itemId);
+        SubscriptionHandling<ParseObject> subscriptionHandling = liveQueryClient.subscribe(parseQuery);
+        subscriptionHandling.handleEvents((query, event, object) -> {
+            itemBidAmount = object.getInt("currentBid");
+            itemHighestBidder = object.getString("highestBidder");
+            runOnUiThread(() ->setItemBidText(itemBidAmount));
+            setBidButton();
+        });
     }
 
     /**
