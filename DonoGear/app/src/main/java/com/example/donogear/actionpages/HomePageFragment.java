@@ -155,10 +155,10 @@ public class HomePageFragment extends Fragment implements ItemClickListener {
      */
     private List<String> getUserInterests(ParseUser user) {
         if (user == null) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
         Object obj = user.get(MY_INTERESTS);
-        return (ArrayList<String>) obj;
+        return obj == null ? new ArrayList<> () : (ArrayList<String>) obj;
     }
 
 
