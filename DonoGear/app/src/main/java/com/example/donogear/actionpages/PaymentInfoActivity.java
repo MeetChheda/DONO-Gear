@@ -23,6 +23,7 @@ import java.util.Map;
 import static com.example.donogear.utils.Constants.CARD_TOKEN;
 import static com.example.donogear.utils.Constants.CUSTOMER_ID;
 import static com.example.donogear.utils.Constants.PUBLISHABLE_KEY;
+import static com.example.donogear.utils.Constants.TAGS;
 
 public class PaymentInfoActivity extends AppCompatActivity {
     private static final String NAME = "name";
@@ -70,20 +71,9 @@ public class PaymentInfoActivity extends AppCompatActivity {
 
         Button cancelBtn = findViewById(R.id.cancel_payment_update_btn);
         cancelBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MyAccountActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            finish();
         });
 
-    }
-
-    /**
-     * Returns the user to the My Account page
-     */
-    private void returnToMyAccount() {
-        Intent intent = new Intent(this, MyAccountActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
     }
 
     /**
@@ -106,7 +96,6 @@ public class PaymentInfoActivity extends AppCompatActivity {
 
         ParseCloud.callFunctionInBackground(SAVE_CREDIT_CARD_SERVICE_NAME, params, (response, e) -> {
             progress.dismiss();
-
             if (e == null) {
                 Log.d("Cloud Response", "Successfully saved card " + response.toString());
                 // Add the customer ID to the Parse user to be used in the future
@@ -121,8 +110,7 @@ public class PaymentInfoActivity extends AppCompatActivity {
                         "Failed to Save Payment",
                         Toast.LENGTH_LONG).show();
             }
-
-            returnToMyAccount();
+            finish();
         });
     }
 
@@ -133,5 +121,11 @@ public class PaymentInfoActivity extends AppCompatActivity {
         progress.setTitle("Saving Card Information");
         progress.setMessage("Please Wait");
         progress.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
     }
 }

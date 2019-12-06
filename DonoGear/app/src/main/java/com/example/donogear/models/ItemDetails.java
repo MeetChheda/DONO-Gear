@@ -2,7 +2,9 @@ package com.example.donogear.models;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
  * TODO: isTrending variable will be dynamic in future
  */
 public class ItemDetails implements Serializable {
+    private Map<String, ItemDetails> collectibleIdToProceedMap;
     public String id;
     public String itemName;
     public String itemDescription;
@@ -22,6 +25,7 @@ public class ItemDetails implements Serializable {
     public Date endDate;
     public List<File> listOfImages;
     public boolean isTrending;
+    public String proceedTitle;
 
     /**
      * Default constructor for ItemDetails (Auction / Raffle items)
@@ -56,6 +60,14 @@ public class ItemDetails implements Serializable {
     }
 
     /**
+     * Set proceed-title for collectibles
+     * @param title - title to be set
+     */
+    public void setProceedTitle(String title) {
+        this.proceedTitle = title;
+    }
+
+    /**
      * Printing item details for debugging
      * @return - item details; printed
      */
@@ -63,6 +75,7 @@ public class ItemDetails implements Serializable {
         return "Name: " + this.itemName + " category: " + this.category + " costPerEntry: " +
                 this.costPerEntry + " startBid: " + this.startBid + " highest bidder: " +
                 this.highestBidder + " with images: " + this.listOfImages.size() + " and endtime: "
-                + (this.endDate == null ? "N/A" : this.endDate);
+                + (this.endDate == null ? "N/A" : this.endDate) + " and proceed title: " +
+                this.proceedTitle;
     }
 }

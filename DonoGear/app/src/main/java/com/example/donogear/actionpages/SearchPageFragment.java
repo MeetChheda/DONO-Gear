@@ -1,5 +1,6 @@
 package com.example.donogear.actionpages;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,12 +29,13 @@ import com.example.donogear.interfaces.myOnBackPressed;
 import com.example.donogear.models.ItemDetails;
 import com.example.donogear.utils.ItemAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.donogear.utils.Constants.SEARCH;
+import static com.example.donogear.utils.Constants.TAGS;
 
 
 /**
@@ -70,22 +73,10 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
             category = getArguments().getString("type");
         }
         setHasOptionsMenu(true);
-        handler = new Handler();
-        Runnable proceedsRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if(activity.hasAllImages && activity.hasAllData) {
-                    initializeLayout();
-                    initButtonClicks();
-                    searchBox();
-                    displayData();
-                }
-                else {
-                    handler.postDelayed(this, 100);
-                }
-            }
-        };
-        handler.post(proceedsRunnable);
+        initializeLayout();
+        initButtonClicks();
+        searchBox();
+        displayData();
 
         return view;
     }
@@ -106,6 +97,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         search = view.findViewById(R.id.search_img);
 
         listOfItems = activity.listOfItems;
+        listOfItems.forEach(itemDetails -> System.out.println(itemDetails.printData()));
         copyList = activity.copyList;
         searchArray = activity.searchArray;
         filterDataByCategory();
@@ -114,6 +106,7 @@ public class SearchPageFragment extends Fragment implements ItemClickListener, m
         itemAdapter = activity.itemAdapter;
         itemAdapter.setItemList(listOfItems);
         recyclerView.setAdapter(itemAdapter);
+        itemAdapter.notifyDataSetChanged();
         searchFlag = false;
 
         itemAdapter.setClickListener(this, SEARCH);

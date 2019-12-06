@@ -17,6 +17,9 @@ import com.example.donogear.R;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.stripe.exception.StripeException;
+import com.stripe.model.CardCollection;
+import com.stripe.model.Customer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,7 +87,6 @@ public class MyAccountActivity extends AppCompatActivity {
      */
     private void initializeLayout() {
         ParseUser user = ParseUser.getCurrentUser();
-
         if (user != null) {
             initializeAuthenticatedUserLayout(user);
         } else {
@@ -100,7 +102,6 @@ public class MyAccountActivity extends AppCompatActivity {
      */
     private boolean validateUserInputs() {
         boolean isValid = true;
-
         clearInputErrors();
 
         if (TextUtils.isEmpty(userNameInput.getText())){
@@ -118,7 +119,6 @@ public class MyAccountActivity extends AppCompatActivity {
             phoneNumberInput.setError("Please enter a valid phone number");
             isValid = false;
         }
-
         return isValid;
     }
 
@@ -142,7 +142,6 @@ public class MyAccountActivity extends AppCompatActivity {
 
         editPaymentInfoButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, PaymentInfoActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
     }
@@ -242,7 +241,7 @@ public class MyAccountActivity extends AppCompatActivity {
         String customerId = (String) user.get(CUSTOMER_ID);
 
         if (customerId != null) {
-            intializePaymentInfo(customerId);
+            initializePaymentInfo(customerId);
         } else {
             LinearLayout paymentDetails = findViewById(R.id.existing_payment_layout);
             paymentDetails.setVisibility(View.INVISIBLE);
@@ -252,10 +251,9 @@ public class MyAccountActivity extends AppCompatActivity {
     /**
      * Initializes the payment details layout. If the user does not have any saved payment, this
      * layout is invisible
-     *
      * @param customerId The customer ID
      */
-    private void intializePaymentInfo(String customerId) {
+    private void initializePaymentInfo(String customerId) {
         LinearLayout paymentDetails = findViewById(R.id.existing_payment_layout);
 
         Map<String, Object> params = new HashMap<>();
@@ -272,13 +270,13 @@ public class MyAccountActivity extends AppCompatActivity {
                     TextView last4CardDigits = findViewById(R.id.cardNumberLabel);
                     last4CardDigits.setText(String.format(CARD_NUMBER_FORMAT, currentLast4Digits));
 
-                    currentExpDate = String.format(EXP_DATE_FORMAT, (Integer) cardInfo.get("exp_month"),
-                            (Integer) cardInfo.get("exp_year"));
+                    currentExpDate = String.format(EXP_DATE_FORMAT, cardInfo.get("exp_month"),
+                            cardInfo.get("exp_year"));
                     TextView expDataTextView = findViewById(R.id.expDateLabel);
                     expDataTextView.setText(currentExpDate);
                     paymentDetails.setVisibility(VISIBLE);
                 } else {
-                    paymentDetails.setVisibility(View.INVISIBLE);
+                    paymentDetails.setVisibility(GONE);
                 }
 
             } else {
@@ -288,9 +286,13 @@ public class MyAccountActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        updateSavedUserInformation();
+        super.onResume();
+    }
+
+    @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        finish();
     }
 }

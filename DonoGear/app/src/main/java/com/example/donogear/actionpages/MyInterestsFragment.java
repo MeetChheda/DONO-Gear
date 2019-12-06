@@ -8,6 +8,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,6 +112,8 @@ public class MyInterestsFragment extends BottomSheetDialogFragment implements Vi
     private void getUserPreferences() {
         if (getArguments() != null) {
             List<String> interests = getArguments().getStringArrayList(MY_INTERESTS);
+            if (interests == null)
+                return;
             selectedTags.addAll(interests);
         }
         setButtons();

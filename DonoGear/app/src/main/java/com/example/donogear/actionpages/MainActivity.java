@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,10 +32,10 @@ import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +52,6 @@ import static com.example.donogear.utils.Constants.DONOR;
 import static com.example.donogear.utils.Constants.DONOR_IDENTIFIER;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.HOME_IDENTIFIER;
-import static com.example.donogear.utils.Constants.MY_INTERESTS;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_IDENTIFIER;
 import static com.example.donogear.utils.Constants.TAGS;
@@ -58,7 +59,7 @@ import static com.example.donogear.utils.Constants.TAGS;
 public class MainActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener, onSavePressed {
 
-    public boolean searchFlag;
+    public boolean searchFlag, hasProceedTitle;
     public List<String> searchArray;
     public static ArrayList[] tags;
     public List<String> tagsSelected;
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private List<String> selectedCauses;
     private List<String> selectedTopics;
+    private Map<String, String> collectibleToProceedMap;
 
 
     @Override
@@ -154,7 +156,8 @@ public class MainActivity extends AppCompatActivity implements
                     ItemDetails itemDetails = new ItemDetails(itemId, itemName, itemDescription,
                             startBid, buyNowPrice, currentBid, highestBidder, category, endDate,
                             costPerEntry, itemImages, trending);
-
+                    if (endDate != null && endDate.getTime() + 5000 < Calendar.getInstance().getTimeInMillis())
+                        continue;
                     searchArray.add(itemName);
                     listOfItems.add(itemDetails);
                     itemAdapter.notifyDataSetChanged();
@@ -190,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-
         //Querying causes data
         ParseQuery<ParseObject> causesQuery = ParseQuery.getQuery(PROCEEDS);
         causesQuery.findInBackground((causes, e) -> {
@@ -198,13 +200,18 @@ public class MainActivity extends AppCompatActivity implements
                 for (ParseObject cause: causes) {
                     String causeId = cause.getObjectId();
                     final List<File> causeImageList = getImageForCause(causeId);
+                    final String collectibleId = cause.getString("collectibleId");
                     final String causeTitle = cause.getString("proceedTitle");
                     final String category = cause.getString("category");
                     final String websiteUrl = cause.getString("websiteUrl");
+                    if (collectibleId != null && causeTitle != null) {
+                        collectibleToProceedMap.put(collectibleId, causeTitle);
+                    }
                     CausesDetails causeObject = new CausesDetails(causeId, causeTitle, category, causeImageList, websiteUrl);
                     causesDetailsList.add(causeObject);
                     causesAdapter.notifyDataSetChanged();
                 }
+                editAdapter();
             } else {
                 // Something is wrong
                 Toast.makeText(MainActivity.this, "Error: " + e, Toast.LENGTH_SHORT).show();
@@ -233,6 +240,18 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e("Error", e.toString());
             }
         });
+    }
+
+    private void editAdapter() {
+        for (ItemDetails item: listOfItems) {
+            String id = item.id;
+            if (collectibleToProceedMap.containsKey(id)) {
+                item.setProceedTitle(collectibleToProceedMap.get(id));
+            }
+            Log.e(TAGS, item.printData());
+        }
+        itemAdapter.setItemList(listOfItems);
+        hasProceedTitle = true;
     }
 
 
@@ -360,9 +379,11 @@ public class MainActivity extends AppCompatActivity implements
         tagsSelected = new ArrayList<>();
         searchArray = new ArrayList<>();
         tagsToItems = new HashMap<>();
+        collectibleToProceedMap = new HashMap<>();
         searchFlag = false;
         hasAllData = false;
-        hasAllImages = true;
+        hasProceedTitle = false;
+        hasAllImages = false;
 
         innerTabs = findViewById(R.id.innerSearchtabs);
         innerBrowseTabs = findViewById(R.id.innerBrowsetabs);
@@ -374,7 +395,23 @@ public class MainActivity extends AppCompatActivity implements
         mainNavigation.setSelectedItemId(R.id.navigation_search);
         mainNavigation.setItemIconSize(120);
 
-        loadFragment(new SearchPageFragment(), AUCTION_IDENTIFIER);
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Fetching all collectibles");
+        dialog.show();
+        Handler handler = new Handler();
+        Runnable proceedsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(hasAllImages && hasAllData && hasProceedTitle) {
+                    loadFragment(new SearchPageFragment(), AUCTION_IDENTIFIER);
+                    dialog.dismiss();
+                }
+                else {
+                    handler.postDelayed(this, 100);
+                }
+            }
+        };
+        handler.post(proceedsRunnable);
     }
 
     /**

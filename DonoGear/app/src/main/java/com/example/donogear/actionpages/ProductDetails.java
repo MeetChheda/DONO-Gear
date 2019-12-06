@@ -3,6 +3,7 @@ package com.example.donogear.actionpages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -34,6 +35,7 @@ import com.example.donogear.models.ItemDetails;
 import com.example.donogear.models.ItemProceedsDetails;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -49,7 +51,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.view.View.GONE;
 import static com.example.donogear.utils.Constants.ALERT_MESSAGE;
@@ -60,11 +63,13 @@ import static com.example.donogear.utils.Constants.COLLECTIBLE_VIDEOS;
 import static com.example.donogear.utils.Constants.DROP_IDENTIFIER;
 import static com.example.donogear.utils.Constants.ERROR_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ERROR_BID_TITLE;
+import static com.example.donogear.utils.Constants.HIGHEST_BIDDER_MESSAGE;
 import static com.example.donogear.utils.Constants.HIGHEST_BID_MESSAGE;
 import static com.example.donogear.utils.Constants.ITEM_ID;
 import static com.example.donogear.utils.Constants.ITEM_NAME;
 import static com.example.donogear.utils.Constants.LOGIN_PROMPT;
 import static com.example.donogear.utils.Constants.NO_CURRENT_BIDS;
+import static com.example.donogear.utils.Constants.PLACE_BID;
 import static com.example.donogear.utils.Constants.PRIMARY_COLOR;
 import static com.example.donogear.utils.Constants.PROCEEDS;
 import static com.example.donogear.utils.Constants.RAFFLE_COUNT;
@@ -117,13 +122,16 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         displayRemainingTime();
         displayItemDetails();
         checkCategory(category);
-        ProgressBar bar = findViewById(R.id.progress_cyclic);
+        ProgressDialog bar = new ProgressDialog(this);
+        bar.show();
+        bar.setMessage("Fetching data");
         boolean[] flags = new boolean[2];
 
         /*
           Delay timers (2) to facilitate populating of layout only after background tasks of fetching
           the item-specific videos and proceeds details have been finished
          */
+
         Runnable videoRunnable = new Runnable() {
             @Override
             public void run() {
@@ -131,7 +139,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     flags[0] = true;
                     displayVideo(itemVideosUrl, itemVideosLayout);
                     if (flags[1]) {
-                        bar.setVisibility(GONE);
+                        bar.dismiss();
                         fullLayout.setVisibility(View.VISIBLE);
                     }
                 }
@@ -149,7 +157,7 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
                     flags[1] = true;
                     displayProceedsDetails();
                     if (flags[0]) {
-                        bar.setVisibility(GONE);
+                        bar.dismiss();
                         fullLayout.setVisibility(View.VISIBLE);
                     }
                 }
@@ -164,7 +172,9 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             @Override
             public void run() {
                 if (updatedDetails) {
-                    displayBidDetails();
+                    if (category.equals(AUCTION_IDENTIFIER)) {
+                        displayBidDetails();
+                    }
                 }
                 else {
                     handler.postDelayed(this, 100);
@@ -185,9 +195,20 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             if (e == null) {
                 itemBidAmount = item.getInt("currentBid");
                 itemHighestBidder = item.getString("highestBidder");
+                setBidButton();
             }
             updatedDetails = true;
         });
+    }
+
+    private void setBidButton() {
+        ParseUser user = ParseUser.getCurrentUser();
+        auction.setText(PLACE_BID);
+        if (user != null) {
+            if (user.getUsername().equals(itemHighestBidder)) {
+                runOnUiThread(() -> auction.setText(HIGHEST_BIDDER_MESSAGE));
+            }
+        }
     }
 
 
@@ -196,14 +217,14 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
      * using Parse Live Queries
      */
     private void checkForRealTimeUpdate() {
-        Log.d(TAG,"Checking for new price now " + itemBidAmount);
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery(COLLECTIBLES);
-        parseQuery.whereGreaterThanOrEqualTo("startBid", Math.max(itemBidAmount, startBid));
+        parseQuery.whereEqualTo("objectId", itemId);
         SubscriptionHandling<ParseObject> subscriptionHandling = liveQueryClient.subscribe(parseQuery);
         subscriptionHandling.handleEvents((query, event, object) -> {
             itemBidAmount = object.getInt("currentBid");
             itemHighestBidder = object.getString("highestBidder");
             runOnUiThread(() ->setItemBidText(itemBidAmount));
+            setBidButton();
         });
     }
 
@@ -376,7 +397,8 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
             public void onFinish() {
                 time_remaining.setText(TIME_UP);
                 time_remaining.setTextColor(Color.RED);
-                //itemHolder.timeHolder.setVisibility(View.GONE);
+                auction.setEnabled(false);
+                raffle.setEnabled(false);
             }
         }.start();
     }
@@ -614,6 +636,17 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
         }
     }
 
+    /**
+     * Set textview for itemBidAmount
+     * @param itemBidAmount - current bid amount
+     */
+    private void setItemBidText(int itemBidAmount) {
+        currentBidAmount.setText("$" + itemBidAmount);
+        if (itemBidAmount == 0) {
+            currentBidAmount.setText(NO_CURRENT_BIDS);
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (!checkButtonPressed(flag)) {
@@ -637,16 +670,5 @@ public class ProductDetails extends AppCompatActivity implements ButtonDesign,
 
         itemBidAmount = newBidAmount;
         setItemBidText(itemBidAmount);
-    }
-
-    /**
-     * Set textview for itemBidAmount
-     * @param itemBidAmount - current bid amount
-     */
-    private void setItemBidText(int itemBidAmount) {
-        currentBidAmount.setText("$" + itemBidAmount);
-        if (itemBidAmount == 0) {
-            currentBidAmount.setText(NO_CURRENT_BIDS);
-        }
     }
 }
